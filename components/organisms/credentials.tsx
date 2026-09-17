@@ -111,12 +111,13 @@ export function CertificateList() {
           <li key={cert.slug}>
             {cert.url ? (
               <a
-                aria-label={`${sobrePage.certificados.view}: ${cert.title}, ${cert.issuer}, ${date}`}
                 className="group/cert block h-full rounded-xl outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
                 href={cert.url}
                 rel="noopener noreferrer"
                 target="_blank"
               >
+                {/* Prefixo só para leitor de tela: o nome acessível continua contendo o texto visível. */}
+                <span className="sr-only">{sobrePage.certificados.view}: </span>
                 {card}
               </a>
             ) : (
