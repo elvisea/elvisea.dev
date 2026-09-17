@@ -59,6 +59,9 @@ Closes #N
 ```
 
 - Fatos da verificação só se foram realmente executados.
+- `Closes #N` numa linha própria, só para issues que o PR resolve. Para citar a
+  palavra como exemplo, use código (`` `Closes #N` `` ou bloco): o `/merge` lê
+  as linhas próprias do corpo para saber o que fechar.
 - A assinatura final entra quando o PR vem de um agente.
 
 ## Comandos
