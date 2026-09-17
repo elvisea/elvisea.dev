@@ -51,3 +51,26 @@ describe("readContactFormData", () => {
     expect(readContactFormData(fd).startedAt).toBeNull();
   });
 });
+
+describe("serviço de origem", () => {
+  it("aceita slug existente e descarta vazio ou desconhecido", () => {
+    expect(
+      contactSchema.parse({ ...valid, service: "pagamentos-pix" }).service,
+    ).toBe("pagamentos-pix");
+    expect(
+      contactSchema.parse({ ...valid, service: "" }).service,
+    ).toBeUndefined();
+    const unknown = contactSchema.safeParse({
+      ...valid,
+      service: "nao-existe",
+    });
+    expect(unknown.success).toBe(true);
+    expect(unknown.data?.service).toBeUndefined();
+  });
+
+  it("readContactFormData lê o campo oculto", () => {
+    const fd = new FormData();
+    fd.set("service", "pagamentos-pix");
+    expect(readContactFormData(fd).values.service).toBe("pagamentos-pix");
+  });
+});

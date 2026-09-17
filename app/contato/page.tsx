@@ -1,11 +1,15 @@
+import { Suspense } from "react";
+
 import { ArrowUpRightIcon } from "lucide-react";
 
 import { SectionHeader } from "@/components/molecules/section-header";
 import { ContactForm } from "@/components/organisms/contact-form";
+import { ContactFormWithPrefill } from "@/components/organisms/contact-form-with-prefill";
 import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { contatoPage } from "@/content/pt-BR/pages/contato";
 import { site } from "@/content/pt-BR/site";
+import { listServiceOptions } from "@/features/services/repository/services-repository";
 import { PageJsonLd } from "@/lib/seo/json-ld";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { cn } from "cn";
@@ -29,7 +33,11 @@ export default function ContatoPage() {
         title={contatoPage.header.title}
       />
       <div className="grid gap-8 lg:grid-cols-[1fr_18rem]">
-        <ContactForm />
+        {/* Parâmetros da URL só existem no navegador: o HTML estático traz o
+            formulário sem pré-preenchimento, trocado ao hidratar. */}
+        <Suspense fallback={<ContactForm />}>
+          <ContactFormWithPrefill services={listServiceOptions()} />
+        </Suspense>
         <aside className="h-fit">
           <Card className="bg-surface">
             <CardHeader>

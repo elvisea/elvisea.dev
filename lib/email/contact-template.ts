@@ -2,6 +2,7 @@
 import type { ContactInput } from "@/app/actions/contact/schema";
 import { contatoPage } from "@/content/pt-BR/pages/contato";
 import { site } from "@/content/pt-BR/site";
+import { servicesRepository } from "@/features/services/repository/services-repository";
 
 function escapeHtml(value: string): string {
   return value
@@ -15,6 +16,10 @@ export function buildContactEmail(input: ContactInput, receivedAt: Date) {
   const reason =
     contatoPage.fields.reason.options.find((o) => o.value === input.reason)
       ?.label ?? input.reason;
+  const service = input.service
+    ? (servicesRepository.findBySlug(input.service)?.shortTitle ??
+      input.service)
+    : undefined;
   const when = receivedAt.toLocaleString("pt-BR", {
     timeZone: "America/Sao_Paulo",
   });
@@ -24,6 +29,7 @@ export function buildContactEmail(input: ContactInput, receivedAt: Date) {
     ["E-mail", input.email],
     ["Empresa", input.company ?? "—"],
     ["Assunto", reason],
+    ...(service ? [["Serviço", service] as [string, string]] : []),
     ["Recebido em", when],
   ];
 
@@ -43,7 +49,7 @@ export function buildContactEmail(input: ContactInput, receivedAt: Date) {
 </body></html>`;
 
   return {
-    subject: `[${site.domain}] ${reason}: ${input.name}`,
+    subject: `[${site.domain}] ${reason}${service ? ` (${service})` : ""}: ${input.name}`,
     text,
     html,
   };
