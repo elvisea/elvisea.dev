@@ -1,5 +1,5 @@
 ---
-description: Mescla o PR verde (merge commit), limpa branch e worktree locais e mantém o PR de release em dia.
+description: Mescla o PR verde (merge commit), fecha a issue, limpa branch e worktree locais e mantém o PR de release em dia.
 argument-hint: "[número do PR]"
 disable-model-invocation: true
 ---
@@ -51,11 +51,25 @@ Sem CI verde ou com conflito, não mesclar em nenhum caso.
    `git branch -d` falhou com "not fully merged": investigar antes de pensar
    em `-D`.
 
-5. **PR de release:** acrescentar `Closes #<issue>` do PR mesclado na descrição
-   do PR de release aberto (`develop` → `main`), se ainda não estiver lá. A
-   issue só fecha quando a release chega na `main`.
+5. **Fechar a issue.** A branch padrão do GitHub é `main`, então o `Closes #N`
+   de um PR para `develop` não fecha a issue sozinho. Fechar aqui cada issue do
+   `Closes #N` do PR (em geral o número da branch: `chore/37` → #37):
 
-6. **Relatar:** branch atual, commit de merge, branch e worktree removidas.
+   ```bash
+   gh pr view <N> --json body -q .body | grep -oE 'Closes #[0-9]+'
+   gh issue view <issue> --json state -q .state
+   gh issue close <issue> --reason completed \
+     --comment "Concluída no PR #<N>, mesclado na \`develop\`. Chega à \`main\` com a próxima release."
+   ```
+
+   Issue já `CLOSED`: nada a fazer. PR de release (`develop` → `main`) não
+   precisa deste passo, porque o merge na branch padrão fecha as issues.
+
+6. **PR de release:** acrescentar o PR mesclado à lista e o `Closes #<issue>` na
+   descrição do PR de release aberto (`develop` → `main`), para rastreabilidade.
+
+7. **Relatar:** branch atual, commit de merge, issue fechada, branch e worktree
+   removidas.
 
 ## Merge de release (`develop` → `main`)
 

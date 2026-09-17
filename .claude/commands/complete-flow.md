@@ -72,7 +72,8 @@ Contexto do projeto: [`AGENTS.md`](../../AGENTS.md).
 **Canônico:** [`merge.md`](./merge.md).
 
 - PR para `develop`: mesclar com a CI verde.
-- Limpar branch e worktree; atualizar o PR de release com o `Closes #N`.
+- Fechar a issue do PR como concluída, limpar branch e worktree, e atualizar o
+  PR de release com o `Closes #N`.
 
 ---
 
