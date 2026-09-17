@@ -29,6 +29,23 @@ const nextConfig: NextConfig = {
   logging: {
     serverFunctions: false,
   },
+
+  /**
+   * Rotas do portfólio antigo (Next 15, em inglês) que podem estar indexadas
+   * ou em links externos. 308 transfere a relevância para as rotas novas.
+   * Não remover: links antigos continuam existindo fora do site.
+   */
+  async redirects() {
+    return [
+      {
+        source: "/experiences/:slug*",
+        destination: "/experiencia",
+        permanent: true,
+      },
+      { source: "/projects/:name*", destination: "/projetos", permanent: true },
+      { source: "/contact", destination: "/contato", permanent: true },
+    ];
+  },
 };
 
 export default nextConfig;
