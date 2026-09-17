@@ -26,5 +26,16 @@ export const blogPage = {
   },
   meta: {
     by: "Por",
+    readingTime: (min: number) => `${min} min de leitura`,
+    updated: "atualizado em",
+  },
+  post: {
+    back: "Todos os artigos",
+    toc: "Neste artigo",
+    shareLinkedIn: "Compartilhar no LinkedIn",
+  },
+  rss: {
+    title: "Artigos de Elvis Amancio",
+    link: "RSS",
   },
 } as const;

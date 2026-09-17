@@ -10,6 +10,7 @@ describe("pageMetadata", () => {
     expect(meta.title).toBeUndefined();
     expect(meta.description).toBe(site.description);
     expect(meta.alternates?.canonical).toBe("/");
+    expect(meta.alternates?.types).toHaveProperty("application/rss+xml");
     expect(meta.openGraph).toMatchObject({
       type: "website",
       siteName: site.domain,

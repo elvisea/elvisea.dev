@@ -1,8 +1,8 @@
 /**
  * Metadata por página com os padrões do site.
  *
- * Motivo: no Next, `openGraph` e `twitter` de uma página **substituem** os do
- * layout (não mesclam). Sem este helper, cada página teria de repetir
+ * Motivo: no Next, `openGraph`, `twitter` e `alternates` de uma página
+ * **substituem** os do layout (não mesclam). Sem este helper, cada página teria de repetir
  * `siteName`, `locale`, `type` e descrição, ou os perderia.
  *
  * A imagem OG vem dos arquivos `opengraph-image.tsx` (convenção do Next), que
@@ -13,6 +13,13 @@ import type { Metadata } from "next";
 import { site } from "@/content/pt-BR/site";
 
 export const siteTitle = `${site.person.name} · ${site.person.role}`;
+
+/** Feed RSS anunciado no `<head>` de todas as páginas. */
+export const rssAlternate = {
+  "application/rss+xml": [
+    { url: "/rss.xml", title: `Artigos · ${site.person.name}` },
+  ],
+};
 
 interface PageMetadataInput {
   /** Título da página; o layout aplica o template `%s · Nome`. Ausente = título padrão. */
@@ -38,7 +45,8 @@ export function pageMetadata({
   return {
     ...(title ? { title } : {}),
     description,
-    alternates: { canonical: path },
+    // `alternates` da página substitui o do layout: repetir o RSS aqui.
+    alternates: { canonical: path, types: rssAlternate },
     openGraph: {
       siteName: site.domain,
       locale: site.locale,

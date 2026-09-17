@@ -1,36 +1,32 @@
 /**
- * Rota `/blog/[slug]` — página individual de cada post (SSG).
+ * Rota `/blog/[slug]`: um post por página, gerado em build (SSG).
  *
- * `dynamicParams = false` faz qualquer slug fora do conjunto de
- * `generateStaticParams` retornar 404 — sem fallback dinâmico, sem
- * surpresa em produção.
- *
- * Fluxo:
- * 1. `generateStaticParams` lista todos os slugs publicados em build.
- * 2. `generateMetadata` resolve title/description/OG/canonical por post.
- * 3. `BlogPostPage` carrega frontmatter + corpo, renderiza markdown
- *    para HTML estático e injeta em `PostBody`.
- *
- * Se o slug não existir (caso defensivo, já barrado por `dynamicParams`),
- * `notFound()` lança e o Next entrega o `not-found.tsx` global.
+ * `dynamicParams = false`: slug fora de `generateStaticParams` (inexistente
+ * ou draft) responde 404, sem renderização dinâmica.
  */
 import type { Metadata } from "next";
+import Link from "next/link";
 import { notFound } from "next/navigation";
 
+import { ArrowLeftIcon, ArrowUpRightIcon } from "lucide-react";
+
+import { PostToc } from "@/components/molecules/post-toc";
 import { PostBody } from "@/components/organisms/post-body";
 import { PostHeader } from "@/components/organisms/post-header";
+import { blogPage } from "@/content/pt-BR/pages/blog";
+import { site } from "@/content/pt-BR/site";
 import { getAllSlugs, getPostBySlug, getPostWithHtml } from "@/lib/blog";
+import { blogPostingJsonLd, JsonLd } from "@/lib/seo/json-ld";
 import { pageMetadata } from "@/lib/seo/metadata";
 
 export const dynamic = "force-static";
 export const dynamicParams = false;
 
-/** Lista de `{ slug }` consumida pelo Next para pré-renderizar cada post. */
 export async function generateStaticParams() {
   return (await getAllSlugs()).map((slug) => ({ slug }));
 }
 
-/** Metadata por post a partir do frontmatter (canonical, OG de artigo). */
+/** Metadata do post: canonical e OG de artigo. A imagem vem do opengraph-image.tsx. */
 export async function generateMetadata({
   params,
 }: {
@@ -40,12 +36,12 @@ export async function generateMetadata({
   const post = await getPostBySlug(slug);
   if (!post) return {};
 
-  const { title, description, date, tags } = post.frontmatter;
+  const { title, description, date, updated, tags } = post.frontmatter;
   return pageMetadata({
     title,
     description,
     path: `/blog/${slug}`,
-    article: { publishedTime: date, tags },
+    article: { publishedTime: date, modifiedTime: updated, tags },
   });
 }
 
@@ -58,14 +54,33 @@ export default async function BlogPostPage({
   const data = await getPostWithHtml(slug);
   if (!data) notFound();
 
-  const { post, html } = data;
+  const { post, html, toc } = data;
+  const shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`${site.url}/blog/${slug}`)}`;
 
   return (
-    <article className="mx-auto max-w-3xl px-4 py-12 sm:px-6 sm:py-16 lg:py-20">
-      <PostHeader frontmatter={post.frontmatter} />
-      <div className="mt-10">
-        <PostBody html={html} />
-      </div>
+    <article className="mx-auto max-w-3xl space-y-10 px-4 py-12 sm:px-6 sm:py-16 lg:py-20">
+      <JsonLd data={blogPostingJsonLd({ slug, ...post.frontmatter })} />
+      <Link
+        className="inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-primary underline-offset-4 hover:underline"
+        href="/blog"
+      >
+        <ArrowLeftIcon aria-hidden className="size-4" />
+        {blogPage.post.back}
+      </Link>
+      <PostHeader post={post} />
+      <PostToc items={toc} />
+      <PostBody html={html} />
+      <footer className="border-t border-border pt-6">
+        <a
+          className="inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-primary underline-offset-4 hover:underline"
+          href={shareUrl}
+          rel="noopener noreferrer"
+          target="_blank"
+        >
+          {blogPage.post.shareLinkedIn}
+          <ArrowUpRightIcon aria-hidden className="size-4" />
+        </a>
+      </footer>
     </article>
   );
 }

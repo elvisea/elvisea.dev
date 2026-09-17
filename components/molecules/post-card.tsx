@@ -48,7 +48,10 @@ export function PostCard({ post }: PostCardProps) {
             {frontmatter.title}
           </Link>
         </CardTitle>
-        <PostMeta date={frontmatter.date} author={frontmatter.author} />
+        <PostMeta
+          date={frontmatter.date}
+          readingMinutes={post.readingMinutes}
+        />
       </CardHeader>
       <CardContent className="space-y-4">
         <CardDescription className="text-base leading-relaxed text-muted-foreground">
