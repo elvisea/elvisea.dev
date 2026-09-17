@@ -11,6 +11,15 @@ services:
     environment:
       NODE_ENV: production
       NEXT_TELEMETRY_DISABLED: 1
+      # Formulário de contato (ver .env.example).
+      EMAIL_TRANSPORT: ${EMAIL_TRANSPORT:-}
+      EMAIL_TO: ${EMAIL_TO:-}
+      EMAIL_FROM: ${EMAIL_FROM:-}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-465}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      TRUSTED_IP_HEADER: ${TRUSTED_IP_HEADER:-}
     healthcheck:
       test:
         [
