@@ -77,12 +77,12 @@ valores em `app/globals.css`):
 
 ## Componentização — design atômico
 
-| Camada         | Papel                            | Exemplos                                |
-| -------------- | -------------------------------- | --------------------------------------- |
-| **Átomos**     | Blocos mínimos                   | `components/ui/*` (saída do shadcn)     |
-| **Moléculas**  | Combinações simples de átomos    | `PostCard`, `PostMeta`, `ThemeToggle`   |
-| **Organismos** | Seções completas                 | `SiteHeader`, `HeroSection`, `BlogList` |
-| **Páginas**    | Rota + dados (`app/**/page.tsx`) | Home, `/blog`, `/blog/[slug]`           |
+| Camada         | Papel                            | Exemplos                                          |
+| -------------- | -------------------------------- | ------------------------------------------------- |
+| **Átomos**     | Blocos mínimos                   | `components/ui/*` (shadcn) e `components/atoms/*` |
+| **Moléculas**  | Combinações simples de átomos    | `PostCard`, `PostMeta`, `ThemeToggle`             |
+| **Organismos** | Seções completas                 | `SiteHeader`, `HeroSection`, `BlogList`           |
+| **Páginas**    | Rota + dados (`app/**/page.tsx`) | Home, `/blog`, `/blog/[slug]`                     |
 
 - Busca de dados e efeitos ficam em páginas e organismos, nunca em átomos.
 - TypeScript estrito, sem `any`. Responsivo do mobile ao desktop.

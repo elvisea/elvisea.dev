@@ -18,7 +18,7 @@ export function SiteFooter() {
           aria-label={site.a11y.footerNav}
           className="flex flex-wrap gap-x-6 gap-y-2 text-sm"
         >
-          {site.navigation.map((item) => (
+          {[...site.navigation, ...site.footerLinks].map((item) => (
             <Link
               key={item.href}
               className="text-muted-foreground underline-offset-4 hover:text-heading hover:underline"
