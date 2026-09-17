@@ -19,8 +19,16 @@ Workflow `ci.yml`, em PRs para `develop` e `main`:
 | **Lint, Format, Types, Test, Build** | `lint`, `format:check`, `typecheck`, `bun test`, build                       |
 | **GitGuardian Security Checks**      | app externo: varredura de segredos                                           |
 
-Mudanças só em `.claude/**`, `.cursor/**`, `AGENTS.md` ou `CLAUDE.md` não
-disparam a CI (`paths-ignore`). Sem checks, não há o que acompanhar.
+**Quando a CI não roda:**
+
+- mudanças só em `.claude/**`, `.cursor/**`, `AGENTS.md` ou `CLAUDE.md`
+  (`paths-ignore`);
+- commit do topo com `[skip ci]`, como o `chore(release)` no PR de
+  sincronização `main` → `develop`.
+
+Nesses casos só o GitGuardian aparece, e não se deve esperar pelos outros
+checks. Se o diff tocar código, validar localmente os mesmos passos da CI (ver
+`merge.md` § Merge de release).
 
 ## Procedimento
 
@@ -33,10 +41,15 @@ disparam a CI (`paths-ignore`). Sem checks, não há o que acompanhar.
 2. **Esperar os checks** (a lista pode demorar alguns segundos para aparecer):
 
    ```bash
+   gh pr view <N> --json commits -q '.commits[-1].messageHeadline'   # [skip ci]? não haverá CI
+   gh run list --branch "$(gh pr view <N> --json headRefName -q .headRefName)" --limit 3
    until gh pr checks <N> 2>/dev/null | grep -q .; do sleep 5; done
    gh pr checks <N> --watch --interval 20
    gh pr checks <N>
    ```
+
+   Se, depois de um minuto, só houver o GitGuardian e nenhum run novo em
+   `gh run list`, a CI não foi disparada (ver a lista acima): não esperar mais.
 
    Em sessão do Claude Code, prefira rodar a espera em segundo plano e seguir
    com outra tarefa até a notificação.

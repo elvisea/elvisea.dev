@@ -228,6 +228,9 @@ rodado antes de todo PR.
 - PR para `develop`; mesclado quando a CI passa. O PR de release
   (`develop` → `main`) só é mesclado com OK explícito do dono e gera tag,
   changelog, release e imagem no GHCR.
+- Depois da release, um PR `main` → `develop` traz o commit
+  `chore(release)`. Como ele tem `[skip ci]`, a validação desse PR é local.
+  PRs de release e de sincronização nunca usam `--delete-branch`.
 - A branch padrão do GitHub é `main`, então o `Closes #N` de um PR para
   `develop` não fecha a issue sozinho. O `merge` fecha a issue como concluída
   logo depois do merge, para que as issues abertas sejam só as pendentes. O PR
