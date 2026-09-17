@@ -36,6 +36,7 @@ export const site = {
     { href: "/projetos", label: "Projetos" },
     { href: "/sobre", label: "Sobre" },
     { href: "/blog", label: "Blog" },
+    { href: "/contato", label: "Contato" },
   ],
   /** Links extras do rodapé (fora do menu principal). */
   footerLinks: [

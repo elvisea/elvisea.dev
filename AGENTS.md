@@ -49,6 +49,10 @@ Fonte única de contexto para qualquer agente (Claude Code, Cursor, Codex…).
 - **Tudo estático no build.** Nenhuma leitura de filesystem em runtime; conteúdo
   entra por `import` (TS/JSON) ou é lido em build (Markdown). Assim o site roda
   igual em Docker standalone ou em Cloudflare Workers.
+- **Única parte em runtime:** a Server Action do formulário de contato
+  (`app/actions/contact`). O envio de e-mail é plugável (`lib/email/sender.ts`,
+  `EMAIL_TRANSPORT`), para trocar SMTP por API HTTP se a hospedagem exigir.
+  Não há confirmação por e-mail ao visitante (evita abuso do formulário).
 - **Não ligar `cacheComponents`** do Next 16: as rotas usam `dynamic =
 "force-static"` e `dynamicParams = false`, que ele proíbe.
 - `content/pt-BR/` guarda conteúdo e textos de interface (`site.ts`, `pages/*`,
