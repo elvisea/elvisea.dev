@@ -46,3 +46,5 @@ Issue → branch `tipo/<número>` a partir da `develop` → PR para `develop` �
 merge na `main` gera a release (semantic-release) e a imagem
 `ghcr.io/elvisea/elvisea.dev`. Detalhes para agentes de código em
 [`AGENTS.md`](AGENTS.md).
+
+Como escrever e divulgar posts: [`docs/BLOG.md`](docs/BLOG.md).
