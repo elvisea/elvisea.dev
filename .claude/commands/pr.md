@@ -88,8 +88,10 @@ gh api -X PATCH repos/elvisea/elvisea.dev/pulls/<N> -F body=@corpo.md
 - Mudanças só em `.claude/**`, `.cursor/**`, `AGENTS.md` ou `CLAUDE.md` não
   disparam a CI (`paths-ignore`).
 - **Issues:** a branch padrão do repositório é `main`, então o `Closes #N` de um
-  PR para `develop` não fecha a issue no merge. Ela fecha quando o PR de release
-  chega na `main`; por isso o PR de release acumula os `Closes` do ciclo.
+  PR para `develop` não fecha a issue sozinho. O [`merge.md`](./merge.md)
+  fecha a issue logo depois do merge. Mesmo assim, o `Closes #N` continua
+  obrigatório: ele diz qual issue fechar e fica no PR de release para
+  rastreabilidade.
 
 ## Regras
 
