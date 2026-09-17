@@ -9,6 +9,7 @@ import {
 } from "bun:test";
 
 import { contatoMessages } from "@/content/pt-BR/pages/contato";
+import { logger } from "@/lib/log/logger";
 
 import { submitContact } from "./action";
 import { ContactError } from "./errors";
@@ -18,6 +19,9 @@ import * as service from "./service";
 // spyOn (e não mock.module): é desfeito por mock.restore() e não vaza para
 // os outros arquivos de teste.
 const sendContactMessage = spyOn(service, "sendContactMessage");
+// Logger silenciado e observável em todos os testes deste arquivo.
+const logInfo = spyOn(logger, "info").mockImplementation(() => {});
+const logError = spyOn(logger, "error").mockImplementation(() => {});
 
 afterAll(() => {
   mock.restore();
@@ -41,6 +45,8 @@ function form(overrides: Record<string, string> = {}): FormData {
 describe("submitContact", () => {
   beforeEach(() => {
     sendContactMessage.mockReset();
+    logInfo.mockClear();
+    logError.mockClear();
     sendContactMessage.mockImplementation(() => Promise.resolve());
   });
 
@@ -49,8 +55,9 @@ describe("submitContact", () => {
     expect(sendContactMessage).toHaveBeenCalledTimes(1);
   });
 
-  it("honeypot preenchido: responde sucesso e não envia", async () => {
+  it("honeypot preenchido: responde sucesso, não envia e registra o evento", async () => {
     const result = await submitContact(null, form({ website: "http://x" }));
+    expect(logInfo).toHaveBeenCalledWith("contact.rejected.honeypot");
     expect(result).toEqual({ ok: true });
     expect(sendContactMessage).not.toHaveBeenCalled();
   });
@@ -82,6 +89,10 @@ describe("submitContact", () => {
     );
     expect(result).toEqual({ ok: true });
     expect(sendContactMessage).not.toHaveBeenCalled();
+    expect(logInfo).toHaveBeenCalledWith(
+      "contact.rejected.too_fast",
+      expect.objectContaining({ elapsedMs: expect.any(Number) }),
+    );
   });
 
   it("formulário válido sem startedAt (sem JavaScript): envia", async () => {
@@ -105,6 +116,14 @@ describe("submitContact", () => {
       expect(result.values?.email).toBe("invalido");
     }
     expect(sendContactMessage).not.toHaveBeenCalled();
+    // Só os nomes dos campos vão para o log, nunca os valores.
+    const call = logInfo.mock.calls.find(
+      ([event]) => event === "contact.validation_failed",
+    ) as [string, { fields: string[] }] | undefined;
+    expect(call?.[1].fields).toEqual(
+      expect.arrayContaining(["email", "message"]),
+    );
+    expect(JSON.stringify(call)).not.toContain("invalido");
   });
 
   it("repassa a mensagem de ContactError do service", async () => {
@@ -124,9 +143,11 @@ describe("submitContact", () => {
     sendContactMessage.mockImplementationOnce(() =>
       Promise.reject(new Error("boom")),
     );
-    const error = spyOn(console, "error").mockImplementation(() => {});
     const result = await submitContact(null, form());
-    error.mockRestore();
+    expect(logError).toHaveBeenCalledWith(
+      "contact.unexpected_error",
+      expect.objectContaining({ error: expect.any(Error) }),
+    );
     expect(result).toMatchObject({
       ok: false,
       error: contatoMessages.sendFailed,

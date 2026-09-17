@@ -3,6 +3,7 @@
 import { headers } from "next/headers";
 
 import { contatoMessages } from "@/content/pt-BR/pages/contato";
+import { logger } from "@/lib/log/logger";
 
 import { ContactError } from "./errors";
 import {
@@ -44,6 +45,7 @@ export async function submitContact(
   // Campo isca preenchido: robô. Sucesso falso, sem enviar, para não ensinar
   // o que foi detectado.
   if (honeypot) {
+    logger.info("contact.rejected.honeypot");
     return { ok: true };
   }
 
@@ -51,10 +53,15 @@ export async function submitContact(
   // mostra os erros, nunca a confirmação.
   const parsed = contactSchema.safeParse(values);
   if (!parsed.success) {
+    const fieldErrors = fieldErrorsFromIssues(parsed.error.issues);
+    // Só os nomes dos campos: valores digitados não vão para o log.
+    logger.info("contact.validation_failed", {
+      fields: Object.keys(fieldErrors),
+    });
     return {
       ok: false,
       error: contatoMessages.validationSummary,
-      fieldErrors: fieldErrorsFromIssues(parsed.error.issues),
+      fieldErrors,
       values,
     };
   }
@@ -62,7 +69,9 @@ export async function submitContact(
   // Formulário válido preenchido mais rápido do que uma pessoa conseguiria:
   // robô, sucesso falso. Sem `startedAt` (JavaScript não carregou) não bloqueia,
   // para não descartar em silêncio a mensagem de alguém real.
-  if (startedAt !== null && Date.now() - startedAt < MIN_FILL_MS) {
+  const elapsedMs = startedAt === null ? null : Date.now() - startedAt;
+  if (elapsedMs !== null && elapsedMs < MIN_FILL_MS) {
+    logger.info("contact.rejected.too_fast", { elapsedMs });
     return { ok: true };
   }
 
@@ -70,10 +79,11 @@ export async function submitContact(
     await sendContactMessage(parsed.data, await clientIp());
     return { ok: true };
   } catch (err) {
+    // ContactError já foi registrado pelo service.
     if (err instanceof ContactError) {
       return { ok: false, error: err.message, values };
     }
-    console.error("[contact] erro inesperado:", err);
+    logger.error("contact.unexpected_error", { error: err });
     return { ok: false, error: contatoMessages.sendFailed, values };
   }
 }
