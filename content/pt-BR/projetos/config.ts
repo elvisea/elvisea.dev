@@ -23,6 +23,10 @@ export const projectsConfig = {
     // Código ligado a empregadores (Trio e ATZ AERO).
     "umbrella-trio-lottopar",
     "aerobi-poc",
+    // Produtos próprios que não devem ser associados ao site (nicho do produto)
+    // ou cujo nome, sem README, passa a ideia errada (disparo em massa).
+    "viki_assistant_minio",
+    "envio-de-mensagens-em-massa",
     // Detalhes de infraestrutura própria.
     "local-infra",
     "openvpn",
