@@ -55,14 +55,40 @@ describe("submitContact", () => {
     expect(sendContactMessage).not.toHaveBeenCalled();
   });
 
-  it("envio rápido demais ou sem startedAt: responde sucesso e não envia", async () => {
-    expect(
-      await submitContact(null, form({ startedAt: String(Date.now()) })),
-    ).toEqual({ ok: true });
+  it("formulário vazio enviado na hora: mostra erros, nunca sucesso", async () => {
+    const empty = new FormData();
+    empty.set("startedAt", String(Date.now()));
+    const result = await submitContact(null, empty);
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.error).toBe(contatoMessages.validationSummary);
+      expect(Object.keys(result.fieldErrors ?? {})).toEqual(
+        expect.arrayContaining(["name", "email", "reason", "message"]),
+      );
+    }
+    expect(sendContactMessage).not.toHaveBeenCalled();
+  });
+
+  it("formulário vazio sem startedAt: mostra erros", async () => {
+    const result = await submitContact(null, new FormData());
+    expect(result.ok).toBe(false);
+    expect(sendContactMessage).not.toHaveBeenCalled();
+  });
+
+  it("formulário válido preenchido rápido demais: sucesso falso, sem envio", async () => {
+    const result = await submitContact(
+      null,
+      form({ startedAt: String(Date.now()) }),
+    );
+    expect(result).toEqual({ ok: true });
+    expect(sendContactMessage).not.toHaveBeenCalled();
+  });
+
+  it("formulário válido sem startedAt (sem JavaScript): envia", async () => {
     expect(await submitContact(null, form({ startedAt: "" }))).toEqual({
       ok: true,
     });
-    expect(sendContactMessage).not.toHaveBeenCalled();
+    expect(sendContactMessage).toHaveBeenCalledTimes(1);
   });
 
   it("validação: devolve erros por campo e os valores digitados", async () => {
