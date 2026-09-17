@@ -184,17 +184,76 @@ valores em `app/globals.css`):
 
 ## Fluxo de trabalho
 
-Comandos canônicos em [.claude/commands/](.claude/commands/): `branch`,
-`commit`, `review`, `pr`, `merge` e `fluxo-completo` (encadeia os anteriores).
-Revisor: [.claude/agents/code-reviewer.md](.claude/agents/code-reviewer.md).
-No Cursor, [.cursor/commands/](.cursor/commands/) e
-[.cursor/agents/](.cursor/agents/) só apontam para esses arquivos.
+Os roteiros ficam versionados no repositório e valem para qualquer agente. No
+Claude Code, comandos e skills viram `/nome`; no Cursor,
+[.cursor/commands/](.cursor/commands/) e [.cursor/agents/](.cursor/agents/)
+só apontam para os arquivos abaixo.
+
+**Comandos** ([.claude/commands/](.claude/commands/)): passos do fluxo,
+chamados por quem está trabalhando.
+
+| Comando            | Para quê                                                                 |
+| ------------------ | ------------------------------------------------------------------------ |
+| `branch`           | issue (se faltar) e branch `tipo/<número>` a partir da `develop`         |
+| `worktree`         | pasta de trabalho paralela para uma issue (outra tarefa ou outro agente) |
+| `commit`           | validação local e commits em Conventional Commits                        |
+| `review`           | checklist de revisão do diff (o mesmo do agente `code-reviewer`)         |
+| `pr`               | pull request para a `develop` com resumo, verificação e `Closes #N`      |
+| `merge`            | merge, limpeza de branch e worktree, PR de release em dia                |
+| `complete-flow`    | encadeia todos os passos acima                                           |
+| `scaffold-feature` | esqueleto de feature MVVM a partir de `features/services`                |
+
+**Skills** ([.claude/skills/](.claude/skills/)): tarefas que o agente também
+aciona sozinho quando o contexto pede.
+
+| Skill           | Para quê                                                                   |
+| --------------- | -------------------------------------------------------------------------- |
+| `pr-checks`     | acompanhar a CI do PR até verde, corrigindo falhas da branch               |
+| `smoke-test`    | rotas nos dois temas, em 400 e 1280 px, com screenshots e erros de console |
+| `page-errors`   | diagnóstico de erro de console, rede e servidor numa página                |
+| `perf-audit`    | trace de performance e Core Web Vitals no build de produção                |
+| `seo-audit`     | metadata, JSON-LD, sitemap, redirects, termos proibidos e Lighthouse       |
+| `release-check` | verificação completa da `develop` antes do merge de release                |
+
+**Revisor:** [.claude/agents/code-reviewer.md](.claude/agents/code-reviewer.md),
+rodado antes de todo PR.
+
+### Regras
 
 - Issue antes da branch; branch `tipo/<número>` a partir da `develop`.
 - Conventional Commits (semantic-release na `main`).
-- PR para `develop`; merge da `develop` na `main` gera release e imagem no GHCR.
 - Antes do PR: `bun run lint`, `bun run format:check`, `bun run typecheck`,
-  `bun test` e `bun --bun run build`.
+  `bun test` e `bun --bun run build`; mudança visual ou de rota passa pelas
+  skills `smoke-test` e `seo-audit`.
+- PR para `develop`; mesclado quando a CI passa. O PR de release
+  (`develop` → `main`) só é mesclado com OK explícito do dono e gera tag,
+  changelog, release e imagem no GHCR.
+- A branch padrão do GitHub é `main`: o `Closes #N` de um PR para `develop` só
+  fecha a issue quando o PR de release chega na `main`. O PR de release acumula
+  os `Closes` do ciclo.
+- Mudanças só em `.claude/**`, `.cursor/**`, `AGENTS.md` ou `CLAUDE.md` não
+  disparam a CI.
+
+### Worktrees
+
+Detalhes e comandos em [.claude/commands/worktree.md](.claude/commands/worktree.md).
+
+- **Trabalho que vira PR:** worktree **irmã** do repositório
+  (`../elvisea.dev-<número>`), criada com `git worktree add` a partir de
+  `origin/develop`.
+- **Isolamento do Claude Code** (`claude --worktree`, `EnterWorktree`,
+  subagentes com `isolation: worktree`):
+  - fica em `.claude/worktrees/`, ignorado pelo git e pelo ESLint;
+  - `worktree.baseRef: "head"` no `.claude/settings.json` faz a worktree partir
+    do `HEAD` atual e não da `main`;
+  - `.worktreeinclude` copia `.env` e `.env.local`.
+- **Dependências:** `bun install --frozen-lockfile` em cada worktree. **Nunca**
+  `node_modules` por symlink: o Turbopack do Next 16 recusa symlink que aponta
+  para fora do projeto.
+- **Dev server:** cada worktree em outra porta (`bun run dev --port 3001`); o
+  Next 16 recusa dois dev servers na mesma pasta.
+- **Isolamento:** um agente ou uma tarefa por worktree. Depois do merge,
+  `git worktree remove` e `git branch -d`.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
