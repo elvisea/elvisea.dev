@@ -1,0 +1,21 @@
+services:
+  web:
+    build:
+      context: .
+      target: dev
+    container_name: elvisea-dev-dev
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${PORT:-3000}:3000"
+    volumes:
+      # O bind mount sobrescreve o código; estas camadas preservam node_modules e .next da imagem.
+      # Ao mudar dependências: docker compose -f docker-compose.dev.yml down -v && docker compose -f docker-compose.dev.yml up --build
+      - .:/app
+      - /app/node_modules
+      - /app/.next
+    env_file:
+      - path: .env.local
+        required: false
+    environment:
+      - NODE_ENV=development
+      - NEXT_TELEMETRY_DISABLED=1
