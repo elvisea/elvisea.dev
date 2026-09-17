@@ -2,7 +2,7 @@
 export const contatoPage = {
   metaTitle: "Contato",
   metaDescription:
-    "Fale com Elvis Amancio sobre vagas, projetos ou outros assuntos.",
+    "Fale com Elvis Amancio sobre vagas, projetos ou outros assuntos. A resposta chega no e-mail informado.",
   header: {
     eyebrow: "Contato",
     title: "Enviar mensagem",
