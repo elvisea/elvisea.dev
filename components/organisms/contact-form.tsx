@@ -75,6 +75,11 @@ export function ContactForm() {
 
   const values = state && !state.ok ? state.values : undefined;
   const invalid = (name: string) => Boolean(errorsOf(state, name)?.length);
+  // Os campos do Base UI não aceitam troca de `defaultValue` depois de montados.
+  // Quando a action devolve os valores digitados, a `key` muda e os campos são
+  // remontados já com esses valores. O `startedAt` fica fora deste trecho para
+  // não reiniciar a contagem do anti-spam.
+  const fieldsKey = values ? JSON.stringify(values) : "inicial";
 
   return (
     <form
@@ -92,7 +97,7 @@ export function ContactForm() {
         </p>
       ) : null}
 
-      <FieldGroup>
+      <FieldGroup key={fieldsKey}>
         <div className="grid gap-6 sm:grid-cols-2">
           <Field data-invalid={invalid("name") || undefined}>
             <FieldLabel htmlFor="contato-nome">{fields.name.label}</FieldLabel>
