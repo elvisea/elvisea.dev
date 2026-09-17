@@ -1,3 +1,4 @@
+import { Card, CardContent } from "@/components/ui/card";
 import { perfil } from "@/content/pt-BR/perfil";
 
 /** Resumo + atuação, compartilhado entre home e `/sobre`. */
@@ -13,11 +14,12 @@ export function ProfileSummary({ atuacaoTitle }: { atuacaoTitle: string }) {
         </h3>
         <ul className="grid gap-3 md:grid-cols-2">
           {perfil.atuacao.map((item) => (
-            <li
-              key={item}
-              className="rounded-xl border border-border bg-card p-4 text-pretty text-foreground"
-            >
-              {item}
+            <li key={item}>
+              <Card className="h-full">
+                <CardContent className="text-base text-pretty text-foreground">
+                  {item}
+                </CardContent>
+              </Card>
             </li>
           ))}
         </ul>

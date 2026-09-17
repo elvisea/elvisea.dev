@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { Separator } from "@/components/ui/separator";
 import { site } from "@/content/pt-BR/site";
 
 const linkClass =
@@ -54,8 +55,9 @@ export function SiteFooter() {
           </ul>
         </nav>
       </div>
-      <div className="mx-auto mt-8 max-w-6xl px-4 sm:px-6">
-        <div className="flex flex-wrap justify-between gap-2 border-t border-border pt-6 text-xs text-muted-foreground">
+      <div className="mx-auto mt-8 max-w-6xl space-y-6 px-4 sm:px-6">
+        <Separator />
+        <div className="flex flex-wrap justify-between gap-2 text-xs text-muted-foreground">
           <span>
             © {year} {site.footer.copyright}
           </span>

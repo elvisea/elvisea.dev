@@ -2,9 +2,12 @@ import { ArrowUpRightIcon } from "lucide-react";
 
 import { SectionHeader } from "@/components/molecules/section-header";
 import { ContactForm } from "@/components/organisms/contact-form";
+import { buttonVariants } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { contatoPage } from "@/content/pt-BR/pages/contato";
 import { site } from "@/content/pt-BR/site";
 import { pageMetadata } from "@/lib/seo/metadata";
+import { cn } from "cn";
 
 export const metadata = pageMetadata({
   title: contatoPage.metaTitle,
@@ -23,25 +26,34 @@ export default function ContatoPage() {
       />
       <div className="grid gap-8 lg:grid-cols-[1fr_18rem]">
         <ContactForm />
-        <aside className="h-fit space-y-3 rounded-xl border border-border bg-surface p-6">
-          <h2 className="font-mono text-xs tracking-wide text-highlight uppercase">
-            {contatoPage.aside.title}
-          </h2>
-          <ul className="space-y-1">
-            {Object.values(site.links).map((link) => (
-              <li key={link.href}>
-                <a
-                  className="inline-flex min-h-11 items-center gap-1.5 font-medium text-primary underline-offset-4 hover:underline"
-                  href={link.href}
-                  rel="noopener noreferrer"
-                  target="_blank"
-                >
-                  {link.label}
-                  <ArrowUpRightIcon aria-hidden className="size-4" />
-                </a>
-              </li>
-            ))}
-          </ul>
+        <aside className="h-fit">
+          <Card className="bg-surface">
+            <CardHeader>
+              <CardTitle className="font-mono text-xs tracking-wide text-highlight uppercase">
+                <h2>{contatoPage.aside.title}</h2>
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <ul className="space-y-1">
+                {Object.values(site.links).map((link) => (
+                  <li key={link.href}>
+                    <a
+                      className={cn(
+                        buttonVariants({ variant: "link" }),
+                        "h-11 px-0 text-base",
+                      )}
+                      href={link.href}
+                      rel="noopener noreferrer"
+                      target="_blank"
+                    >
+                      {link.label}
+                      <ArrowUpRightIcon aria-hidden data-icon="inline-end" />
+                    </a>
+                  </li>
+                ))}
+              </ul>
+            </CardContent>
+          </Card>
         </aside>
       </div>
     </div>

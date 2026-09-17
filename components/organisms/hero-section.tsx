@@ -1,5 +1,6 @@
 import Link from "next/link";
 
+import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { homePage } from "@/content/pt-BR/pages/profissional";
 import { site } from "@/content/pt-BR/site";
@@ -25,11 +26,13 @@ export function HeroSection() {
             className="flex flex-wrap gap-2 pt-1"
           >
             {site.person.stack.map((tech) => (
-              <li
-                key={tech}
-                className="rounded-full border border-border bg-card/70 px-3 py-1 font-mono text-xs text-foreground"
-              >
-                {tech}
+              <li key={tech}>
+                <Badge
+                  className="h-7 bg-card/70 px-3 font-mono"
+                  variant="outline"
+                >
+                  {tech}
+                </Badge>
               </li>
             ))}
           </ul>

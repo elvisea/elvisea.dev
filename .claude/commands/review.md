@@ -64,6 +64,13 @@ design atômico).
   | Cores fixas     | proibidas em componentes; usar tokens  |
 
 - Manter **`components/ui/`** dominado pelo output estável da CLI onde possível — evitar “fork” grande sem razão documentada.
+- **Crítico:** elemento de interface recriado à mão quando existe componente
+  shadcn (Base UI) equivalente, ex.: `<select>`/`native-select` em vez de
+  `Select`, `<button>` em vez de `Button`/`ToggleGroup`, `div` com borda em vez
+  de `Card`, chip manual em vez de `Badge`, caixa de erro manual em vez de
+  `Alert`. Ver a tabela em `AGENTS.md` § Componentes de interface.
+- Link com aparência de botão usa `buttonVariants` em `<a>`/`Link`, não
+  `<Button render={<a />}>` (o Base UI força `role="button"`).
 
 ### Design atômico (AGENTS.md)
 

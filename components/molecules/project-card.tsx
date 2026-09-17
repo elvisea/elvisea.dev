@@ -2,12 +2,26 @@ import Link from "next/link";
 
 import { ArrowUpRightIcon, StarIcon } from "lucide-react";
 
+import { Badge } from "@/components/ui/badge";
+import { buttonVariants } from "@/components/ui/button";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { projetosPage } from "@/content/pt-BR/pages/projetos";
 import { formatYearMonth, toYearMonth } from "@/lib/content/dates";
 import type { Project } from "@/lib/projects/types";
+import { cn } from "cn";
 
-const linkClass =
-  "inline-flex min-h-11 items-center gap-1 text-sm font-medium text-primary underline-offset-4 hover:underline sm:min-h-0";
+const linkClass = cn(
+  buttonVariants({ variant: "link", size: "sm" }),
+  "h-11 px-0 sm:h-7",
+);
 
 export function ProjectCard({ project }: { project: Project }) {
   const { card } = projetosPage;
@@ -16,45 +30,47 @@ export function ProjectCard({ project }: { project: Project }) {
     : null;
 
   return (
-    <article className="flex h-full flex-col gap-3 rounded-xl border border-border bg-card p-5 transition-colors hover:border-primary/40">
-      <header className="flex items-start justify-between gap-3">
-        <h3 className="font-mono text-base font-semibold break-all text-heading">
-          {project.title}
-        </h3>
+    <Card className="h-full transition-shadow hover:ring-primary/40">
+      <CardHeader>
+        <CardTitle className="font-mono font-semibold break-all text-heading">
+          <h3>{project.title}</h3>
+        </CardTitle>
         {project.fork ? (
-          <span className="shrink-0 rounded-full border border-border px-2 py-0.5 font-mono text-xs text-muted-foreground">
-            {card.fork}
-          </span>
+          <CardAction>
+            <Badge className="font-mono" variant="outline">
+              {card.fork}
+            </Badge>
+          </CardAction>
         ) : null}
-      </header>
+        <CardDescription
+          className={cn(
+            "text-pretty",
+            project.summary ? "text-foreground" : "italic",
+          )}
+        >
+          {project.summary ?? card.noDescription}
+        </CardDescription>
+      </CardHeader>
 
-      <p
-        className={
-          project.summary
-            ? "text-sm text-pretty text-foreground"
-            : "text-sm text-muted-foreground italic"
-        }
-      >
-        {project.summary ?? card.noDescription}
-      </p>
+      <CardContent className="mt-auto">
+        <p className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs text-muted-foreground">
+          {project.language ? <span>{project.language}</span> : null}
+          {project.stars > 0 ? (
+            <span className="inline-flex items-center gap-1">
+              <StarIcon aria-hidden className="size-3" />
+              <span className="sr-only">{card.stars(project.stars)}</span>
+              <span aria-hidden>{project.stars}</span>
+            </span>
+          ) : null}
+          {updated ? (
+            <span>
+              {card.updated} {updated}
+            </span>
+          ) : null}
+        </p>
+      </CardContent>
 
-      <p className="mt-auto flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs text-muted-foreground">
-        {project.language ? <span>{project.language}</span> : null}
-        {project.stars > 0 ? (
-          <span className="inline-flex items-center gap-1">
-            <StarIcon aria-hidden className="size-3" />
-            <span className="sr-only">{card.stars(project.stars)}</span>
-            <span aria-hidden>{project.stars}</span>
-          </span>
-        ) : null}
-        {updated ? (
-          <span>
-            {card.updated} {updated}
-          </span>
-        ) : null}
-      </p>
-
-      <div className="flex flex-wrap gap-x-4 gap-y-1">
+      <CardFooter className="flex-wrap gap-x-4 gap-y-1 py-2">
         {project.caseStudy ? (
           <Link className={linkClass} href={`/projetos/${project.slug}`}>
             {card.caseStudy}
@@ -69,7 +85,7 @@ export function ProjectCard({ project }: { project: Project }) {
             target="_blank"
           >
             {card.code}
-            <ArrowUpRightIcon aria-hidden className="size-4" />
+            <ArrowUpRightIcon aria-hidden data-icon="inline-end" />
           </a>
         ) : null}
         {project.liveUrl ? (
@@ -81,10 +97,10 @@ export function ProjectCard({ project }: { project: Project }) {
             target="_blank"
           >
             {card.site}
-            <ArrowUpRightIcon aria-hidden className="size-4" />
+            <ArrowUpRightIcon aria-hidden data-icon="inline-end" />
           </a>
         ) : null}
-      </div>
-    </article>
+      </CardFooter>
+    </Card>
   );
 }

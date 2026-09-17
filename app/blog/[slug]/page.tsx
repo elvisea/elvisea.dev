@@ -13,6 +13,7 @@ import { ArrowLeftIcon, ArrowUpRightIcon } from "lucide-react";
 import { PostToc } from "@/components/molecules/post-toc";
 import { PostBody } from "@/components/organisms/post-body";
 import { PostHeader } from "@/components/organisms/post-header";
+import { Separator } from "@/components/ui/separator";
 import { blogPage } from "@/content/pt-BR/pages/blog";
 import { site } from "@/content/pt-BR/site";
 import { getAllSlugs, getPostBySlug, getPostWithHtml } from "@/lib/blog";
@@ -70,7 +71,8 @@ export default async function BlogPostPage({
       <PostHeader post={post} />
       <PostToc items={toc} />
       <PostBody html={html} />
-      <footer className="border-t border-border pt-6">
+      <footer className="space-y-6">
+        <Separator />
         <a
           className="inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-primary underline-offset-4 hover:underline"
           href={shareUrl}

@@ -2,6 +2,13 @@ import { FileTextIcon } from "lucide-react";
 
 import { SectionHeader } from "@/components/molecules/section-header";
 import { buttonVariants } from "@/components/ui/button";
+import {
+  Card,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { curriculoPage } from "@/content/pt-BR/pages/profissional";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { cn } from "cn";
@@ -23,30 +30,31 @@ export default function CurriculoPage() {
       />
       <ul className="grid max-w-4xl gap-4 md:grid-cols-2">
         {curriculoPage.files.map((file) => (
-          <li
-            key={file.href}
-            className="flex flex-col gap-4 rounded-xl border border-border bg-card p-6"
-          >
-            <FileTextIcon aria-hidden className="size-6 text-primary" />
-            <div className="space-y-2">
-              <h2 className="text-lg font-semibold text-heading">
-                {file.title}
-              </h2>
-              <p className="text-pretty text-muted-foreground">
-                {file.description}
-              </p>
-            </div>
-            <a
-              className={cn(
-                buttonVariants({ size: "lg" }),
-                "mt-auto h-11 w-full px-5 sm:w-auto sm:self-start",
-              )}
-              href={file.href}
-              rel="noopener"
-              target="_blank"
-            >
-              {curriculoPage.download}
-            </a>
+          <li key={file.href}>
+            <Card className="h-full">
+              <CardHeader className="gap-3">
+                <FileTextIcon aria-hidden className="size-6 text-primary" />
+                <CardTitle className="text-lg font-semibold text-heading">
+                  <h2>{file.title}</h2>
+                </CardTitle>
+                <CardDescription className="text-base text-pretty">
+                  {file.description}
+                </CardDescription>
+              </CardHeader>
+              <CardFooter className="mt-auto">
+                <a
+                  className={cn(
+                    buttonVariants({ size: "lg" }),
+                    "h-11 w-full px-5 sm:w-auto",
+                  )}
+                  href={file.href}
+                  rel="noopener"
+                  target="_blank"
+                >
+                  {curriculoPage.download}
+                </a>
+              </CardFooter>
+            </Card>
           </li>
         ))}
       </ul>

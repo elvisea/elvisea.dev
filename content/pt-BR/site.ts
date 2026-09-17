@@ -59,6 +59,7 @@ export const site = {
     copyright: "Elvis Erison Amancio",
   },
   theme: {
+    toggleAria: "Alternar tema",
     toggleLightAria: "Ativar tema claro",
     toggleDarkAria: "Ativar tema escuro",
   },

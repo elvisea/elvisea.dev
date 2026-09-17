@@ -8,9 +8,8 @@ import {
 } from "lucide-react";
 import { useTheme } from "next-themes";
 
-import { Button, buttonVariants } from "@/components/ui/button";
+import { Button } from "@/components/ui/button";
 import { site } from "@/content/pt-BR/site";
-import { cn } from "cn";
 
 function useClientMounted(): boolean {
   return React.useSyncExternalStore(
@@ -20,47 +19,35 @@ function useClientMounted(): boolean {
   );
 }
 
-/** Alterna tema claro / escuro — `next-themes` aplica/remover classe `dark` em `<html>`. */
+/**
+ * Alterna tema claro/escuro (`next-themes` aplica a classe `dark` no `<html>`).
+ * Antes de montar, o tema resolvido é desconhecido: o botão mostra um ícone
+ * neutro e um rótulo genérico, sem `disabled` (evita divergência de
+ * hidratação no Button do Base UI).
+ */
 export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
   const mounted = useClientMounted();
+  const isDark = mounted && resolvedTheme === "dark";
 
-  function cycleTheme() {
-    setTheme(resolvedTheme === "dark" ? "light" : "dark");
-  }
-
-  if (!mounted) {
-    // Placeholder sem Base UI: o primitivo resolve `disabled` via ref do DOM,
-    // o que diverge entre SSR (sem ref) e cliente (com ref) — causa de hydration mismatch.
-    return (
-      <button
-        aria-hidden
-        className={cn(
-          buttonVariants({ variant: "outline", size: "icon" }),
-          "size-10 shrink-0",
-        )}
-        disabled
-        type="button"
-      >
-        <SunMoonIcon aria-hidden className="size-5 opacity-60" />
-      </button>
-    );
-  }
-
-  const isDark = resolvedTheme === "dark";
+  const label = !mounted
+    ? site.theme.toggleAria
+    : isDark
+      ? site.theme.toggleLightAria
+      : site.theme.toggleDarkAria;
 
   return (
     <Button
-      aria-label={
-        isDark ? site.theme.toggleLightAria : site.theme.toggleDarkAria
-      }
+      aria-label={label}
       className="size-10 shrink-0"
       size="icon"
       type="button"
       variant="outline"
-      onClick={cycleTheme}
+      onClick={() => setTheme(resolvedTheme === "dark" ? "light" : "dark")}
     >
-      {isDark ? (
+      {!mounted ? (
+        <SunMoonIcon aria-hidden className="size-5 opacity-60" />
+      ) : isDark ? (
         <SunIcon aria-hidden className="size-5" />
       ) : (
         <MoonIcon aria-hidden className="size-5" />

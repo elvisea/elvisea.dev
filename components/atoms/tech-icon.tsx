@@ -1,14 +1,13 @@
 import { techIcons } from "@/lib/content/icons";
 import { cn } from "cn";
 
-interface TechIconProps {
+interface TechIconProps extends React.ComponentProps<"svg"> {
   /** Nome do export em `simple-icons` (ex.: `siReact`). */
   name?: string;
-  className?: string;
 }
 
 /** Ícone monocromático (`currentColor`), legível nos dois temas. */
-export function TechIcon({ name, className }: TechIconProps) {
+export function TechIcon({ name, className, ...props }: TechIconProps) {
   const icon = name ? techIcons[name] : undefined;
   if (!icon) return null;
 
@@ -19,6 +18,7 @@ export function TechIcon({ name, className }: TechIconProps) {
       role="img"
       viewBox="0 0 24 24"
       xmlns="http://www.w3.org/2000/svg"
+      {...props}
     >
       <path d={icon.path} />
     </svg>

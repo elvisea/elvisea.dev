@@ -39,7 +39,10 @@ export default function HomePage() {
       <JsonLd data={personJsonLd()} />
       <HeroSection />
 
-      <section className="border-b border-border py-20" id="perfil">
+      <section
+        className="scroll-mt-20 border-b border-border py-20"
+        id="perfil"
+      >
         <div className="mx-auto max-w-6xl space-y-10 px-4 sm:px-6">
           <SectionHeader
             eyebrow={homePage.profile.eyebrow}
@@ -51,7 +54,7 @@ export default function HomePage() {
       </section>
 
       <section
-        className="border-b border-border bg-surface py-20"
+        className="scroll-mt-20 border-b border-border bg-surface py-20"
         id="experiencia"
       >
         <div className="mx-auto max-w-6xl space-y-10 px-4 sm:px-6">
@@ -69,7 +72,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="border-b border-border py-20" id="projetos">
+      <section
+        className="scroll-mt-20 border-b border-border py-20"
+        id="projetos"
+      >
         <div className="mx-auto max-w-6xl space-y-10 px-4 sm:px-6">
           <SectionHeader
             eyebrow={projetosPage.preview.eyebrow}
@@ -86,7 +92,10 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="border-b border-border bg-surface py-20" id="stack">
+      <section
+        className="scroll-mt-20 border-b border-border bg-surface py-20"
+        id="stack"
+      >
         <div className="mx-auto max-w-6xl space-y-10 px-4 sm:px-6">
           <SectionHeader
             eyebrow={homePage.stack.eyebrow}
@@ -98,7 +107,7 @@ export default function HomePage() {
 
       <BlogPreviewSection />
 
-      <section className="py-20" id="contato">
+      <section className="scroll-mt-20 py-20" id="contato">
         <div className="mx-auto flex max-w-6xl flex-col items-start gap-6 px-4 sm:px-6 md:flex-row md:items-end md:justify-between">
           <SectionHeader
             description={contatoPage.home.description}
