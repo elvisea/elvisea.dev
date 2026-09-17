@@ -32,7 +32,14 @@ export const site = {
   },
   navigation: [
     { href: "/", label: "Início" },
+    { href: "/experiencia", label: "Experiência" },
+    { href: "/sobre", label: "Sobre" },
     { href: "/blog", label: "Blog" },
+  ],
+  /** Links extras do rodapé (fora do menu principal). */
+  footerLinks: [
+    { href: "/como-trabalho", label: "Como trabalho" },
+    { href: "/curriculo", label: "Currículo" },
   ],
   a11y: {
     skipToContent: "Pular para o conteúdo",

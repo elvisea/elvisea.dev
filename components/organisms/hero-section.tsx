@@ -1,4 +1,7 @@
+import Link from "next/link";
+
 import { buttonVariants } from "@/components/ui/button";
+import { homePage } from "@/content/pt-BR/pages/profissional";
 import { site } from "@/content/pt-BR/site";
 import { cn } from "cn";
 
@@ -18,7 +21,7 @@ export function HeroSection() {
             {site.person.role}
           </p>
           <ul
-            aria-label="Stack principal"
+            aria-label={homePage.hero.stackLabel}
             className="flex flex-wrap gap-2 pt-1"
           >
             {site.person.stack.map((tech) => (
@@ -32,23 +35,37 @@ export function HeroSection() {
           </ul>
         </div>
         <div className="flex flex-col gap-3 sm:flex-row">
-          {Object.values(site.links).map((link, index) => (
-            <a
-              key={link.href}
-              className={cn(
-                buttonVariants({
-                  variant: index === 0 ? "default" : "outline",
-                  size: "lg",
-                }),
-                "h-11 w-full px-5 sm:w-auto",
-              )}
-              href={link.href}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              {link.label}
-            </a>
-          ))}
+          <a
+            className={cn(
+              buttonVariants({ size: "lg" }),
+              "h-11 w-full px-5 sm:w-auto",
+            )}
+            href={site.links.linkedin.href}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            {site.links.linkedin.label}
+          </a>
+          <a
+            className={cn(
+              buttonVariants({ variant: "outline", size: "lg" }),
+              "h-11 w-full px-5 sm:w-auto",
+            )}
+            href={site.links.github.href}
+            rel="noopener noreferrer"
+            target="_blank"
+          >
+            {site.links.github.label}
+          </a>
+          <Link
+            className={cn(
+              buttonVariants({ variant: "outline", size: "lg" }),
+              "h-11 w-full px-5 sm:w-auto",
+            )}
+            href="/curriculo"
+          >
+            {homePage.hero.resume}
+          </Link>
         </div>
       </div>
     </section>
