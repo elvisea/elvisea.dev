@@ -56,7 +56,20 @@
       "WebFetch(domain:bun.com)",
       "WebFetch(domain:bun.sh)",
       "WebFetch(domain:nextjs.org)",
-      "WebFetch(domain:tailwindcss.com)"
+      "WebFetch(domain:tailwindcss.com)",
+      "Bash(bun audit:*)",
+      "Bash(git worktree:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(gh run:*)",
+      "Bash(docker run:*)",
+      "Bash(docker inspect:*)",
+      "Bash(docker rm:*)",
+      "Bash(docker rmi:*)",
+      "Bash(docker logs:*)",
+      "mcp__chrome-devtools"
     ]
+  },
+  "worktree": {
+    "baseRef": "head"
   }
 }

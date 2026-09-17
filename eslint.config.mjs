@@ -12,7 +12,15 @@ const eslintConfig = defineConfig([
     // detecção não roda. Manter igual à major/minor do React no package.json.
     settings: { react: { version: "19.3" } },
   },
-  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),
+  // `.claude/**` inclui `.claude/worktrees/`, cópias do repositório criadas
+  // pelos subagentes do Claude Code: sem isso, o lint varre o projeto de novo.
+  globalIgnores([
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+    ".claude/**",
+  ]),
   prettier,
 ]);
 
