@@ -39,9 +39,10 @@ export const site = {
     /** Perfis que identificam a pessoa nos dados estruturados (`sameAs`), fora da interface. */
     otherProfiles: ["https://www.youtube.com/@elviseamancio"],
   },
+  // Sem "Início": o nome no cabeçalho já leva à home.
   navigation: [
-    { href: "/", label: "Início" },
     { href: "/experiencia", label: "Experiência" },
+    { href: "/servicos", label: "Serviços" },
     { href: "/projetos", label: "Projetos" },
     { href: "/sobre", label: "Sobre" },
     { href: "/blog", label: "Blog" },
