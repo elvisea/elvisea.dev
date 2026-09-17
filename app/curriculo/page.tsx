@@ -10,6 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { curriculoPage } from "@/content/pt-BR/pages/profissional";
+import { PageJsonLd } from "@/lib/seo/json-ld";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { cn } from "cn";
 
@@ -22,6 +23,9 @@ export const metadata = pageMetadata({
 export default function CurriculoPage() {
   return (
     <div className="mx-auto max-w-6xl space-y-12 px-4 py-16 sm:px-6 lg:py-20">
+      <PageJsonLd
+        breadcrumb={[{ name: curriculoPage.metaTitle, path: "/curriculo" }]}
+      />
       <SectionHeader
         as="h1"
         description={curriculoPage.header.description}

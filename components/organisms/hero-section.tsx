@@ -6,7 +6,10 @@ import { homePage } from "@/content/pt-BR/pages/profissional";
 import { site } from "@/content/pt-BR/site";
 import { cn } from "cn";
 
-/** Hero da home: nome, cargo, stack e links. Sem slogan (ver AGENTS.md). */
+/**
+ * Hero da home: nome, cargo, stack e links. Sem slogan (ver AGENTS.md).
+ * Currículo é o botão principal (público prioritário: quem contrata).
+ */
 export function HeroSection() {
   return (
     <section className="bg-hero-decor relative overflow-hidden border-b border-border">
@@ -15,12 +18,16 @@ export function HeroSection() {
           <p className="font-mono text-sm text-highlight">
             {site.person.location}
           </p>
-          <h1 className="text-4xl font-bold tracking-tight text-balance text-heading md:text-5xl lg:text-6xl">
-            {site.person.name}
+          {/* H1 com nome e cargo (lido como "Nome — Cargo"); visualmente em duas linhas. */}
+          <h1 className="space-y-5">
+            <span className="block text-4xl font-bold tracking-tight text-balance text-heading md:text-5xl lg:text-6xl">
+              {site.person.name}
+            </span>
+            <span className="sr-only"> — </span>
+            <span className="block text-xl font-normal text-muted-foreground md:text-2xl">
+              {site.person.role}
+            </span>
           </h1>
-          <p className="text-xl text-muted-foreground md:text-2xl">
-            {site.person.role}
-          </p>
           <ul
             aria-label={homePage.hero.stackLabel}
             className="flex flex-wrap gap-2 pt-1"
@@ -38,9 +45,18 @@ export function HeroSection() {
           </ul>
         </div>
         <div className="flex flex-col gap-3 sm:flex-row">
-          <a
+          <Link
             className={cn(
               buttonVariants({ size: "lg" }),
+              "h-11 w-full px-5 sm:w-auto",
+            )}
+            href="/curriculo"
+          >
+            {homePage.hero.resume}
+          </Link>
+          <a
+            className={cn(
+              buttonVariants({ variant: "outline", size: "lg" }),
               "h-11 w-full px-5 sm:w-auto",
             )}
             href={site.links.linkedin.href}
@@ -60,15 +76,6 @@ export function HeroSection() {
           >
             {site.links.github.label}
           </a>
-          <Link
-            className={cn(
-              buttonVariants({ variant: "outline", size: "lg" }),
-              "h-11 w-full px-5 sm:w-auto",
-            )}
-            href="/curriculo"
-          >
-            {homePage.hero.resume}
-          </Link>
         </div>
       </div>
     </section>

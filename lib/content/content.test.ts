@@ -7,10 +7,15 @@ import { existsSync } from "node:fs";
 import path from "node:path";
 
 import { certificados } from "@/content/pt-BR/certificados";
+import { blogPage } from "@/content/pt-BR/pages/blog";
+import { contatoPage } from "@/content/pt-BR/pages/contato";
 import {
   comoTrabalhoPage,
   curriculoPage,
+  experienciaPage,
+  sobrePage,
 } from "@/content/pt-BR/pages/profissional";
+import { projetosPage } from "@/content/pt-BR/pages/projetos";
 import { experiencias } from "@/content/pt-BR/experiencias";
 import { formacao } from "@/content/pt-BR/formacao";
 import { perfil } from "@/content/pt-BR/perfil";
@@ -129,5 +134,36 @@ describe("regras de conteúdo", () => {
     expect(texts.toLowerCase()).not.toMatch(
       /(?<![a-zà-ú])(licita|salári|pretensão salarial)/,
     );
+  });
+});
+
+describe("SEO das páginas (AGENTS.md § SEO)", () => {
+  const pages = {
+    blog: blogPage,
+    contato: contatoPage,
+    comoTrabalho: comoTrabalhoPage,
+    curriculo: curriculoPage,
+    experiencia: experienciaPage,
+    projetos: projetosPage,
+    sobre: sobrePage,
+  };
+
+  it.each(Object.entries(pages))(
+    "%s tem título até 60 e descrição entre 70 e 160 caracteres",
+    (_, page) => {
+      expect(
+        `${page.metaTitle} · ${site.person.name}`.length,
+      ).toBeLessThanOrEqual(60);
+      expect(page.metaDescription.length).toBeGreaterThanOrEqual(70);
+      expect(page.metaDescription.length).toBeLessThanOrEqual(160);
+    },
+  );
+
+  it("home tem título até 60 e descrição entre 70 e 160 caracteres", () => {
+    expect(
+      `${site.person.name} · ${site.person.role}`.length,
+    ).toBeLessThanOrEqual(60);
+    expect(site.description.length).toBeGreaterThanOrEqual(70);
+    expect(site.description.length).toBeLessThanOrEqual(160);
   });
 });

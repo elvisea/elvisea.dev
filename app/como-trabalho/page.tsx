@@ -2,6 +2,7 @@ import { SectionHeader } from "@/components/molecules/section-header";
 import { PostBody } from "@/components/organisms/post-body";
 import { comoTrabalhoPage } from "@/content/pt-BR/pages/profissional";
 import { renderContentPage } from "@/lib/content/markdown-page";
+import { PageJsonLd } from "@/lib/seo/json-ld";
 import { pageMetadata } from "@/lib/seo/metadata";
 
 export const dynamic = "force-static";
@@ -17,6 +18,11 @@ export default async function ComoTrabalhoPage() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-10 px-4 py-16 sm:px-6 lg:py-20">
+      <PageJsonLd
+        breadcrumb={[
+          { name: comoTrabalhoPage.metaTitle, path: "/como-trabalho" },
+        ]}
+      />
       <SectionHeader
         as="h1"
         description={comoTrabalhoPage.header.description}

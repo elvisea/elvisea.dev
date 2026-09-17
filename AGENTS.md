@@ -7,8 +7,16 @@ Fonte única de contexto para qualquer agente (Claude Code, Cursor, Codex…).
 
 - **O que é:** site pessoal de **Elvis Erison Amancio** (`elvisea.dev`). Extensão
   do currículo e do LinkedIn: experiência, projetos, blog e contato.
-- **Público:** recrutadores, gestores técnicos e empresas (majoritariamente não
-  desenvolvedores). Idioma: **somente PT-BR**.
+- **Públicos, em ordem de prioridade** (a maioria não é desenvolvedor):
+  1. **Contratação:** recrutadores, RH, CEOs, CTOs e contratantes.
+  2. **Empresas que buscam serviços no Google** (chatbot com IA, automação,
+     sistemas, aplicativos…).
+  3. **Técnicos e desenvolvedores**, em geral vindos do LinkedIn.
+
+  Quando uma decisão de página favorece um público em detrimento de outro, vale
+  a ordem acima.
+
+- **Idioma:** somente PT-BR.
 - **Repositório público.** Nada de segredo, dado pessoal sensível ou informação
   interna de empregador em código, conteúdo, commit ou issue.
 
@@ -27,6 +35,34 @@ Fonte única de contexto para qualquer agente (Claude Code, Cursor, Codex…).
 5. **Não inventar números** (clientes, usuários, percentuais). Todo fato precisa
    de fonte.
 6. Tom: profissional, direto e técnico, sem jargão de marketing.
+
+## SEO
+
+Mapa de termos, modelo de página e checklist de lançamento em
+[docs/SEO.md](docs/SEO.md).
+
+1. **Uma intenção de busca por página.** Título final (com o sufixo
+   ` · Elvis Amancio`) com até 60 caracteres e `metaDescription` entre 70 e
+   160, ambos sobre essa intenção. Acima disso o Google corta; muito curta, ele
+   troca por um trecho da página. `lib/content/content.test.ts` confere.
+2. **Um H1 por página, descritivo:** diz o que a página é (cargo, serviço,
+   assunto). Nada de slogan, que também é regra de conteúdo.
+3. **Sem meta `keywords`** (o Google ignora) e **sem páginas por cidade ou
+   estado** (conteúdo repetido é tratado como spam). A localização aparece uma
+   vez: Curitiba, com atendimento remoto em todo o Brasil.
+4. **Metadata sempre por `pageMetadata`** (`lib/seo/metadata.ts`).
+5. **Dados estruturados em `lib/seo/structured-data.ts`**, como funções puras
+   e testadas.
+   - `WebSite` e `Person` vão no layout, com `@id`.
+   - Cada página acrescenta os próprios nós com `PageJsonLd`, que referenciam a
+     pessoa pelo `@id`.
+   - Toda rota interna tem `BreadcrumbList`.
+6. **Página sem conteúdo não indexa:** `noindex` e fora do sitemap, voltando
+   sozinha quando o conteúdo chega (ex.: `/blog` sem posts).
+7. **Todo conteúdo novo** (post, estudo de caso) leva a uma página relacionada
+   do site: experiência, projeto ou contato.
+8. **Rota renomeada ganha redirect 308** em `next.config.ts`. Redirects não são
+   removidos.
 
 ## Stack
 
@@ -47,6 +83,11 @@ Fonte única de contexto para qualquer agente (Claude Code, Cursor, Codex…).
   `@semantic-release/release-notes-generator` ainda não usa. Rodar
   `bunx semantic-release --dry-run --no-ci --branches develop` antes de subir.
 - **Testes:** `bun:test` (`bun test`), com `test-setup.ts` pré-carregado.
+- **Documentação do Next:** a versão instalada traz a documentação em
+  `node_modules/next/dist/docs/`; consulte-a antes de usar uma API do Next.
+  O bloco `nextjs-agent-rules` no fim deste arquivo é mantido pelo `next dev`
+  (Next 16.3+) e fica versionado para a árvore continuar limpa; não edite
+  dentro dele.
 
 ## Arquitetura
 
@@ -143,3 +184,13 @@ No Cursor, [.cursor/commands/](.cursor/commands/) e
 - PR para `develop`; merge da `develop` na `main` gera release e imagem no GHCR.
 - Antes do PR: `bun run lint`, `bun run format:check`, `bun run typecheck`,
   `bun test` e `bun --bun run build`.
+
+<!-- BEGIN:nextjs-agent-rules -->
+
+# This is NOT the Next.js you know
+
+This version has breaking changes — APIs, conventions, and file structure may all differ from your training data. Read the relevant guide in `node_modules/next/dist/docs/` (resolved from this file's directory; in monorepos the `next` package may not be visible from the repo root) before writing any code. Heed deprecation notices.
+
+This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
+
+<!-- END:nextjs-agent-rules -->

@@ -10,7 +10,10 @@
 export const site = {
   url: "https://elvisea.dev",
   domain: "elvisea.dev",
+  /** Open Graph (`pt_BR`). */
   locale: "pt_BR",
+  /** `lang` do HTML e `inLanguage` dos dados estruturados. */
+  language: "pt-BR",
   person: {
     name: "Elvis Amancio",
     fullName: "Elvis Erison Amancio",
@@ -19,7 +22,7 @@ export const site = {
     location: "Curitiba, Paraná, Brasil",
   },
   description:
-    "Elvis Amancio, desenvolvedor full-stack sênior. TypeScript, NestJS, Next.js, PostgreSQL e Elixir. Experiência profissional, projetos e artigos.",
+    "Elvis Amancio, desenvolvedor full-stack sênior em Curitiba, atendimento remoto em todo o Brasil. Sistemas web, APIs, aplicativos, automação e chatbots com IA.",
   links: {
     linkedin: {
       label: "LinkedIn",
@@ -29,6 +32,12 @@ export const site = {
       label: "GitHub",
       href: "https://github.com/elvisea",
     },
+  },
+  seo: {
+    /** Primeiro item de toda trilha (`BreadcrumbList`). */
+    breadcrumbHome: "Início",
+    /** Perfis que identificam a pessoa nos dados estruturados (`sameAs`), fora da interface. */
+    otherProfiles: ["https://www.youtube.com/@elviseamancio"],
   },
   navigation: [
     { href: "/", label: "Início" },
@@ -46,7 +55,7 @@ export const site = {
   ],
   a11y: {
     skipToContent: "Pular para o conteúdo",
-    homeLink: "Elvis Amancio — página inicial",
+    homeLinkHint: "página inicial",
     mainNav: "Navegação principal",
     mobileNav: "Navegação (mobile)",
     openMenu: "Abrir menu",

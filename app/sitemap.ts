@@ -1,5 +1,6 @@
 /**
- * `/sitemap.xml`: páginas conhecidas e cada post publicado.
+ * `/sitemap.xml`: páginas conhecidas e cada post publicado. `/blog` só entra
+ * quando há posts.
  * `lastModified` dos posts vem do `date` do frontmatter.
  */
 import type { MetadataRoute } from "next";
@@ -30,12 +31,17 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     },
     { url: `${site.url}/curriculo`, changeFrequency: "monthly", priority: 0.7 },
     { url: `${site.url}/contato`, changeFrequency: "yearly", priority: 0.5 },
-    {
-      url: `${site.url}/blog`,
-      lastModified: blogLastModified,
-      changeFrequency: "weekly",
-      priority: 0.8,
-    },
+    // Listagem vazia não entra (tem noindex até o primeiro post).
+    ...(posts.length > 0
+      ? [
+          {
+            url: `${site.url}/blog`,
+            lastModified: blogLastModified,
+            changeFrequency: "weekly" as const,
+            priority: 0.8,
+          },
+        ]
+      : []),
     ...getCaseStudies().map((p) => ({
       url: `${site.url}/projetos/${p.slug}`,
       changeFrequency: "monthly" as const,

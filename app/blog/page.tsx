@@ -7,13 +7,18 @@
  *
  * Layout: cabeçalho da seção + `BlogList` (grid responsivo). Header e
  * rodapé vêm do `app/layout.tsx`. Sem posts publicados, `BlogList`
- * renderiza o estado vazio.
+ * renderiza o estado vazio e a página recebe `noindex` (ver `metadata.ts`).
  */
 import { BlogList } from "@/components/organisms/blog-list";
 import { blogPage } from "@/content/pt-BR/pages/blog";
 import { getAllPosts } from "@/lib/blog";
+import { PageJsonLd } from "@/lib/seo/json-ld";
 
-export { metadata } from "./metadata";
+import { blogIndexMetadata } from "./metadata";
+
+export async function generateMetadata() {
+  return blogIndexMetadata((await getAllPosts()).length);
+}
 
 export const dynamic = "force-static";
 
@@ -22,6 +27,7 @@ export default async function BlogIndexPage() {
 
   return (
     <>
+      <PageJsonLd breadcrumb={[{ name: blogPage.metaTitle, path: "/blog" }]} />
       <section className="border-b border-border bg-background py-20 lg:py-24">
         <div className="mx-auto max-w-6xl space-y-5 px-4 sm:px-6">
           <p className="font-mono text-sm text-highlight">

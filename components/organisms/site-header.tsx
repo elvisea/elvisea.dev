@@ -36,7 +36,6 @@ export function SiteHeader() {
     <header className="sticky top-0 z-[100] border-b border-border bg-background/85 backdrop-blur-md supports-[backdrop-filter]:bg-background/70">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-6 px-4 sm:h-16 sm:px-6">
         <Link
-          aria-label={site.a11y.homeLink}
           className="group flex shrink-0 items-baseline gap-2 rounded-md outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
           href="/"
         >
@@ -46,6 +45,8 @@ export function SiteHeader() {
           <span className="hidden font-mono text-xs text-muted-foreground transition-colors group-hover:text-primary sm:inline">
             {site.domain}
           </span>
+          {/* Complemento só para leitor de tela, depois do texto visível. */}
+          <span className="sr-only"> — {site.a11y.homeLinkHint}</span>
         </Link>
 
         <nav

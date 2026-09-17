@@ -2,6 +2,7 @@ import { SectionHeader } from "@/components/molecules/section-header";
 import { ExperienceTimeline } from "@/components/organisms/experience-timeline";
 import { experienciaPage } from "@/content/pt-BR/pages/profissional";
 import { getExperiences } from "@/lib/content";
+import { PageJsonLd } from "@/lib/seo/json-ld";
 import { pageMetadata } from "@/lib/seo/metadata";
 
 export const metadata = pageMetadata({
@@ -13,6 +14,9 @@ export const metadata = pageMetadata({
 export default function ExperienciaPage() {
   return (
     <div className="mx-auto max-w-6xl space-y-12 px-4 py-16 sm:px-6 lg:py-20">
+      <PageJsonLd
+        breadcrumb={[{ name: experienciaPage.metaTitle, path: "/experiencia" }]}
+      />
       <SectionHeader
         as="h1"
         description={experienciaPage.header.description}
