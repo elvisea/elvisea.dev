@@ -6,6 +6,7 @@ import { buttonVariants } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { contatoPage } from "@/content/pt-BR/pages/contato";
 import { site } from "@/content/pt-BR/site";
+import { PageJsonLd } from "@/lib/seo/json-ld";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { cn } from "cn";
 
@@ -18,6 +19,9 @@ export const metadata = pageMetadata({
 export default function ContatoPage() {
   return (
     <div className="mx-auto max-w-6xl space-y-12 px-4 py-16 sm:px-6 lg:py-20">
+      <PageJsonLd
+        breadcrumb={[{ name: contatoPage.metaTitle, path: "/contato" }]}
+      />
       <SectionHeader
         as="h1"
         description={contatoPage.header.description}

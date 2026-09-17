@@ -7,7 +7,13 @@ import { SiteFooter } from "@/components/organisms/site-footer";
 import { SiteHeader } from "@/components/organisms/site-header";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { site } from "@/content/pt-BR/site";
+import { JsonLd } from "@/lib/seo/json-ld";
 import { rssAlternate, siteTitle } from "@/lib/seo/metadata";
+import {
+  jsonLdGraph,
+  personNode,
+  websiteNode,
+} from "@/lib/seo/structured-data";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -68,10 +74,12 @@ export default function RootLayout({
       // globals.css usa scroll-behavior: smooth; o atributo avisa o Next para
       // não animar a rolagem nas trocas de rota.
       data-scroll-behavior="smooth"
-      lang="pt-BR"
+      lang={site.language}
       suppressHydrationWarning
     >
       <body className="min-h-full">
+        {/* WebSite e Person em todas as páginas: os nós de cada página apontam para eles pelo @id. */}
+        <JsonLd data={jsonLdGraph([websiteNode(), personNode()])} />
         <ThemeProvider>
           <a
             className="sr-only z-[200] rounded-md bg-primary px-4 py-2 text-primary-foreground focus:not-sr-only focus:fixed focus:top-3 focus:left-3"

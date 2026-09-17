@@ -15,7 +15,6 @@ import { homePage, sobrePage } from "@/content/pt-BR/pages/profissional";
 import { projetosPage } from "@/content/pt-BR/pages/projetos";
 import { getHighlightedExperiences } from "@/lib/content";
 import { getFeaturedProjects } from "@/lib/projects";
-import { JsonLd, personJsonLd } from "@/lib/seo/json-ld";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { cn } from "cn";
 
@@ -36,7 +35,6 @@ function MoreLink({ href, label }: { href: string; label: string }) {
 export default function HomePage() {
   return (
     <>
-      <JsonLd data={personJsonLd()} />
       <HeroSection />
 
       <section

@@ -12,7 +12,9 @@ import { StackGrid } from "@/components/organisms/stack-grid";
 import { buttonVariants } from "@/components/ui/button";
 import { perfil } from "@/content/pt-BR/perfil";
 import { sobrePage } from "@/content/pt-BR/pages/profissional";
+import { PageJsonLd } from "@/lib/seo/json-ld";
 import { pageMetadata } from "@/lib/seo/metadata";
+import { profilePageNode } from "@/lib/seo/structured-data";
 import { cn } from "cn";
 
 export const metadata = pageMetadata({
@@ -24,13 +26,19 @@ export const metadata = pageMetadata({
 export default function SobrePage() {
   return (
     <div className="mx-auto max-w-6xl space-y-20 px-4 py-16 sm:px-6 lg:py-20">
+      <PageJsonLd
+        breadcrumb={[{ name: sobrePage.metaTitle, path: "/sobre" }]}
+        nodes={[
+          profilePageNode({ name: sobrePage.header.title, path: "/sobre" }),
+        ]}
+      />
       <section className="space-y-10">
         <SectionHeader
           as="h1"
           eyebrow={sobrePage.header.eyebrow}
           title={sobrePage.header.title}
         />
-        <ProfileSummary atuacaoTitle={sobrePage.atuacao} />
+        <ProfileSummary atuacaoTitle={sobrePage.atuacao} headingLevel="h2" />
         <div className="max-w-3xl space-y-3">
           <h2 className="font-mono text-xs tracking-wide text-highlight uppercase">
             {sobrePage.engenhariaComIa.title}

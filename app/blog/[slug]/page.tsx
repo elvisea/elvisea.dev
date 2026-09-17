@@ -17,8 +17,9 @@ import { Separator } from "@/components/ui/separator";
 import { blogPage } from "@/content/pt-BR/pages/blog";
 import { site } from "@/content/pt-BR/site";
 import { getAllSlugs, getPostBySlug, getPostWithHtml } from "@/lib/blog";
-import { blogPostingJsonLd, JsonLd } from "@/lib/seo/json-ld";
+import { PageJsonLd } from "@/lib/seo/json-ld";
 import { pageMetadata } from "@/lib/seo/metadata";
+import { blogPostingNode } from "@/lib/seo/structured-data";
 
 export const dynamic = "force-static";
 export const dynamicParams = false;
@@ -60,7 +61,13 @@ export default async function BlogPostPage({
 
   return (
     <article className="mx-auto max-w-3xl space-y-10 px-4 py-12 sm:px-6 sm:py-16 lg:py-20">
-      <JsonLd data={blogPostingJsonLd({ slug, ...post.frontmatter })} />
+      <PageJsonLd
+        breadcrumb={[
+          { name: blogPage.metaTitle, path: "/blog" },
+          { name: post.frontmatter.title, path: `/blog/${slug}` },
+        ]}
+        nodes={[blogPostingNode({ slug, ...post.frontmatter })]}
+      />
       <Link
         className="inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-primary underline-offset-4 hover:underline"
         href="/blog"

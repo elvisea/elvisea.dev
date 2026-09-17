@@ -13,6 +13,7 @@ import { PostBody } from "@/components/organisms/post-body";
 import { projetosPage } from "@/content/pt-BR/pages/projetos";
 import { renderContentPage } from "@/lib/content/markdown-page";
 import { getCaseStudies } from "@/lib/projects";
+import { PageJsonLd } from "@/lib/seo/json-ld";
 import { pageMetadata } from "@/lib/seo/metadata";
 
 export const dynamic = "force-static";
@@ -54,6 +55,12 @@ export default async function CaseStudyPage({
 
   return (
     <div className="mx-auto max-w-3xl space-y-10 px-4 py-16 sm:px-6 lg:py-20">
+      <PageJsonLd
+        breadcrumb={[
+          { name: projetosPage.metaTitle, path: "/projetos" },
+          { name: project.title, path: `/projetos/${slug}` },
+        ]}
+      />
       <Link
         className="inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-primary underline-offset-4 hover:underline"
         href="/projetos"
