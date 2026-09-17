@@ -1,14 +1,19 @@
 import { ArrowUpRightIcon } from "lucide-react";
 
-import { buttonVariants } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import {
   Item,
-  ItemActions,
   ItemContent,
   ItemDescription,
   ItemGroup,
-  ItemSeparator,
   ItemTitle,
 } from "@/components/ui/item";
 import { formacao } from "@/content/pt-BR/formacao";
@@ -52,48 +57,74 @@ export function EducationList() {
   );
 }
 
+/**
+ * Certificados em grade de cards, um por certificado. O card inteiro é o link
+ * para a credencial (abre em nova aba).
+ */
 export function CertificateList() {
   const certificates = getVisibleCertificates();
 
   return (
-    <Card className="py-2">
-      <ItemGroup className="gap-0">
-        {certificates.map((cert, index) => (
-          <div key={cert.slug} role="listitem">
-            {index > 0 ? <ItemSeparator className="my-0" /> : null}
-            <Item className="px-5 py-3.5">
-              <ItemContent>
-                <ItemTitle className="text-base text-heading">
-                  {cert.title}
-                </ItemTitle>
-                <ItemDescription>
-                  {cert.issuer} ·{" "}
-                  {cert.issued
-                    ? formatYearMonth(cert.issued)
-                    : sobrePage.certificados.noDate}
-                </ItemDescription>
-              </ItemContent>
+    <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {certificates.map((cert) => {
+        const date = cert.issued
+          ? formatYearMonth(cert.issued)
+          : sobrePage.certificados.noDate;
+
+        const card = (
+          <Card className="h-full transition-shadow group-hover/cert:ring-primary/50">
+            <CardHeader>
+              <CardDescription className="font-mono text-xs tracking-wide uppercase">
+                {cert.issuer}
+              </CardDescription>
+              <CardTitle className="text-base font-semibold text-pretty text-heading">
+                {cert.title}
+              </CardTitle>
               {cert.url ? (
-                <ItemActions>
-                  <a
-                    aria-label={`${sobrePage.certificados.view}: ${cert.title}`}
-                    className={cn(
-                      buttonVariants({ variant: "ghost", size: "sm" }),
-                      "h-11 text-primary sm:h-7",
-                    )}
-                    href={cert.url}
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
-                    {sobrePage.certificados.view}
-                    <ArrowUpRightIcon aria-hidden data-icon="inline-end" />
-                  </a>
-                </ItemActions>
+                <CardAction>
+                  <ArrowUpRightIcon
+                    aria-hidden
+                    className="size-4 text-muted-foreground transition-colors group-hover/cert:text-primary"
+                  />
+                </CardAction>
               ) : null}
-            </Item>
-          </div>
-        ))}
-      </ItemGroup>
-    </Card>
+            </CardHeader>
+            <CardContent className="mt-auto">
+              <Badge
+                className={cn(
+                  "font-mono",
+                  !cert.issued && "text-muted-foreground",
+                )}
+                variant="secondary"
+              >
+                {cert.issued ? (
+                  <time dateTime={cert.issued}>{date}</time>
+                ) : (
+                  date
+                )}
+              </Badge>
+            </CardContent>
+          </Card>
+        );
+
+        return (
+          <li key={cert.slug}>
+            {cert.url ? (
+              <a
+                aria-label={`${sobrePage.certificados.view}: ${cert.title}, ${cert.issuer}, ${date}`}
+                className="group/cert block h-full rounded-xl outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
+                href={cert.url}
+                rel="noopener noreferrer"
+                target="_blank"
+              >
+                {card}
+              </a>
+            ) : (
+              card
+            )}
+          </li>
+        );
+      })}
+    </ul>
   );
 }
