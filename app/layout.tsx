@@ -7,7 +7,7 @@ import { SiteFooter } from "@/components/organisms/site-footer";
 import { SiteHeader } from "@/components/organisms/site-header";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { site } from "@/content/pt-BR/site";
-import { siteTitle } from "@/lib/seo/metadata";
+import { rssAlternate, siteTitle } from "@/lib/seo/metadata";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -54,6 +54,7 @@ export const metadata: Metadata = {
     description: site.description,
   },
   robots: { index: true, follow: true },
+  alternates: { types: rssAlternate },
 };
 
 export default function RootLayout({

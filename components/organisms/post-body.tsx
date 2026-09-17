@@ -26,7 +26,8 @@ export function PostBody({ html }: PostBodyProps) {
         "[&_:is(h1,h2,h3,h4)_a]:text-inherit [&_:is(h1,h2,h3,h4)_a]:no-underline [&_:is(h1,h2,h3,h4)_a:hover]:underline",
         // Código inline como etiqueta, sem as crases do Typography.
         "prose-code:rounded-md prose-code:bg-muted prose-code:px-1.5 prose-code:py-0.5 prose-code:font-normal prose-code:before:content-none prose-code:after:content-none",
-        "[&_pre_code]:bg-transparent [&_pre_code]:p-0",
+        // O CSS do highlight.js fica fora de @layer e venceria as utilities: `!`.
+        "[&_pre_code]:bg-transparent! [&_pre_code]:p-0!",
       ].join(" ")}
       dangerouslySetInnerHTML={{ __html: html }}
     />

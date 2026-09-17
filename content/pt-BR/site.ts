@@ -41,6 +41,7 @@ export const site = {
   footerLinks: [
     { href: "/como-trabalho", label: "Como trabalho" },
     { href: "/curriculo", label: "Currículo" },
+    { href: "/rss.xml", label: "RSS" },
   ],
   a11y: {
     skipToContent: "Pular para o conteúdo",

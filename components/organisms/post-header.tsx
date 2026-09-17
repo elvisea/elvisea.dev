@@ -1,25 +1,16 @@
 /**
- * Cabeçalho semântico do post (`<header>`) com tags, título, descrição,
- * meta (data + autor) e cover opcional.
- *
- * Renderiza dentro do `<article>` da rota `/blog/[slug]/page.tsx` —
- * por isso usa `<header>`, não `<section>`, para manter outline correto.
- *
- * Cover renderizada com `next/image` priority + dimensões fixas (1200×630)
- * para evitar CLS. Imagens em `/public/blog/`.
+ * Cabeçalho do post (`<header>` dentro do `<article>` da rota): tags, título,
+ * descrição, meta e capa opcional.
  */
 import Image from "next/image";
 
 import { PostMeta } from "@/components/molecules/post-meta";
 import { Badge } from "@/components/ui/badge";
-import type { PostFrontmatter } from "@/lib/blog";
+import type { PostSummary } from "@/lib/blog";
 
-interface PostHeaderProps {
-  frontmatter: PostFrontmatter;
-}
-
-export function PostHeader({ frontmatter }: PostHeaderProps) {
-  const { title, description, tags, coverImage, date, author } = frontmatter;
+export function PostHeader({ post }: { post: PostSummary }) {
+  const { title, description, tags, coverImage, date, updated } =
+    post.frontmatter;
 
   return (
     <header className="space-y-6">
@@ -32,13 +23,18 @@ export function PostHeader({ frontmatter }: PostHeaderProps) {
           ))}
         </div>
       ) : null}
-      <h1 className="text-balance text-3xl font-bold tracking-tight text-heading md:text-4xl">
+      <h1 className="text-3xl font-bold tracking-tight text-balance text-heading md:text-4xl">
         {title}
       </h1>
-      <p className="text-pretty text-lg leading-relaxed text-muted-foreground">
+      <p className="text-lg leading-relaxed text-pretty text-muted-foreground">
         {description}
       </p>
-      <PostMeta date={date} author={author} />
+      <PostMeta
+        date={date}
+        readingMinutes={post.readingMinutes}
+        showAuthor
+        updated={updated}
+      />
       {coverImage ? (
         <div className="overflow-hidden rounded-xl border border-border">
           <Image

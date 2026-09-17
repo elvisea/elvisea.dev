@@ -26,6 +26,35 @@ export function personJsonLd() {
   };
 }
 
+export function blogPostingJsonLd(post: {
+  slug: string;
+  title: string;
+  description: string;
+  date: string;
+  updated?: string;
+  tags: readonly string[];
+}) {
+  const url = `${site.url}/blog/${post.slug}`;
+  return {
+    "@context": "https://schema.org",
+    "@type": "BlogPosting",
+    headline: post.title,
+    description: post.description,
+    datePublished: post.date,
+    dateModified: post.updated ?? post.date,
+    inLanguage: "pt-BR",
+    keywords: post.tags.join(", ") || undefined,
+    url,
+    mainEntityOfPage: url,
+    image: `${url}/opengraph-image`,
+    author: {
+      "@type": "Person",
+      name: site.person.fullName,
+      url: site.url,
+    },
+  };
+}
+
 export function JsonLd({ data }: { data: Record<string, unknown> }) {
   return (
     <script

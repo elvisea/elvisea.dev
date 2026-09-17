@@ -2,8 +2,12 @@ import Link from "next/link";
 
 import { site } from "@/content/pt-BR/site";
 
+const linkClass =
+  "text-muted-foreground underline-offset-4 hover:text-heading hover:underline";
+
 export function SiteFooter() {
   const year = new Date().getFullYear();
+  const external = Object.values(site.links);
 
   return (
     <footer className="border-t border-border bg-surface py-10">
@@ -16,28 +20,38 @@ export function SiteFooter() {
         </div>
         <nav
           aria-label={site.a11y.footerNav}
-          className="flex flex-wrap gap-x-6 gap-y-2 text-sm"
+          className="flex flex-col gap-3 text-sm md:items-end"
         >
-          {[...site.navigation, ...site.footerLinks].map((item) => (
-            <Link
-              key={item.href}
-              className="text-muted-foreground underline-offset-4 hover:text-heading hover:underline"
-              href={item.href}
-            >
-              {item.label}
-            </Link>
-          ))}
-          {Object.values(site.links).map((link) => (
-            <a
-              key={link.href}
-              className="text-muted-foreground underline-offset-4 hover:text-heading hover:underline"
-              href={link.href}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              {link.label}
-            </a>
-          ))}
+          <ul className="flex flex-wrap gap-x-5 gap-y-2">
+            {site.navigation.map((item) => (
+              <li key={item.href}>
+                <Link className={linkClass} href={item.href}>
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <ul className="flex flex-wrap gap-x-5 gap-y-2">
+            {site.footerLinks.map((item) => (
+              <li key={item.href}>
+                <Link className={linkClass} href={item.href}>
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+            {external.map((link) => (
+              <li key={link.href}>
+                <a
+                  className={linkClass}
+                  href={link.href}
+                  rel="noopener noreferrer"
+                  target="_blank"
+                >
+                  {link.label}
+                </a>
+              </li>
+            ))}
+          </ul>
         </nav>
       </div>
       <div className="mx-auto mt-8 max-w-6xl px-4 sm:px-6">
