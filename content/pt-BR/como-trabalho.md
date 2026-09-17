@@ -3,15 +3,28 @@
 Desenvolvo com agentes de IA dentro de um fluxo definido em cada repositório:
 
 - **Contexto canonizado.** Um `AGENTS.md` na raiz descreve stack, arquitetura, convenções e regras do projeto. Os arquivos específicos de cada ferramenta apenas apontam para ele, sem duplicar texto, então o mesmo contexto serve a qualquer agente.
-- **Comandos de fluxo.** Branch, commit, review e pull request seguem roteiros versionados no próprio repositório.
-- **Skills de domínio.** Tarefas recorrentes de cada projeto ficam descritas uma vez e são reaproveitadas.
-- **Subagentes revisores.** Antes do pull request, um revisor lê o diff e classifica os achados por severidade (crítico, aviso, sugestão), com arquivo e linha.
+- **Comandos de fluxo.** Issue, branch, commit, review, pull request e merge seguem roteiros versionados no próprio repositório. Um comando encadeia todos eles, e outro gera a estrutura de uma feature nova no padrão de arquitetura do projeto.
+- **Skills.** Tarefas recorrentes ficam descritas uma vez:
+  - acompanhar a CI de um pull request até passar;
+  - percorrer as páginas no navegador nos temas claro e escuro, em celular e desktop;
+  - diagnosticar erros de console e de rede;
+  - auditar SEO, acessibilidade e performance;
+  - verificar a versão antes de publicar.
+- **Subagente revisor.** Antes do pull request, um revisor lê o diff e classifica os achados por severidade (crítico, aviso, sugestão), com arquivo e linha.
+- **Trabalho em paralelo.** Tarefas simultâneas rodam em git worktrees separadas. Cada uma tem branch, dependências e servidor de desenvolvimento próprios, e dois agentes nunca editam os mesmos arquivos.
 
 ## Qualidade antes do merge
 
 - Toda mudança começa por uma issue; a branch leva o número da issue e o pull request a fecha.
-- A CI roda em etapas encadeadas: segurança (auditoria de dependências e varredura de configuração), qualidade (lint, formatação e tipos), testes e build.
+- Antes do pull request, a mudança é validada localmente (lint, formatação, tipos, testes e build) e, quando é visual, conferida no navegador.
+- A CI roda em etapas encadeadas: segurança (auditoria de dependências e varredura de configuração), qualidade (lint, formatação e tipos), testes e build. O pull request é acompanhado até a CI passar, e as falhas são corrigidas na própria branch.
 - Commits seguem Conventional Commits. Versão, changelog e release são gerados automaticamente a partir deles.
+- Antes de cada versão, a branch de integração é verificada numa cópia limpa:
+  - instalação com o lockfile congelado;
+  - testes e auditoria de dependências;
+  - build e imagem Docker saudável;
+  - varredura de segredos no histórico;
+  - simulação da release.
 
 ## Infraestrutura e entrega
 
@@ -22,4 +35,11 @@ Desenvolvo com agentes de IA dentro de um fluxo definido em cada repositório:
 
 ## Exemplo público
 
-O código deste site segue o mesmo fluxo e é aberto: [github.com/elvisea/elvisea.dev](https://github.com/elvisea/elvisea.dev). No repositório estão o `AGENTS.md`, os comandos em `.claude/commands`, o revisor em `.claude/agents`, a CI em `.github/workflows` e o histórico de issues e pull requests.
+O código deste site segue o mesmo fluxo e é aberto: [github.com/elvisea/elvisea.dev](https://github.com/elvisea/elvisea.dev). No repositório estão:
+
+- o `AGENTS.md`;
+- os comandos em `.claude/commands`;
+- as skills em `.claude/skills`;
+- o revisor em `.claude/agents`;
+- a CI em `.github/workflows`;
+- o histórico de issues e pull requests.

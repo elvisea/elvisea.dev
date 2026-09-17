@@ -1,54 +1,71 @@
-# Merge de PR + pós-merge (GitHub)
+---
+description: Mescla o PR verde (merge commit), limpa branch e worktree locais e mantém o PR de release em dia.
+argument-hint: "[número do PR]"
+disable-model-invocation: true
+---
 
-Ajuda a fechar ciclo da PR já **aprovada e verde** (CI). Não faz merge sem
-confirmação humana explícita.
+# Merge e pós-merge
 
-## Repo
+## Quem autoriza
 
-```bash
-REPO="$(gh repo view --json nameWithOwner -q .nameWithOwner)"
-BRANCH="$(git branch --show-current)"
-```
+| PR                           | Merge                                                        |
+| ---------------------------- | ------------------------------------------------------------ |
+| Para `develop`               | autorizado pelo dono do repositório assim que a CI passa     |
+| Release `develop` → `main`   | **só com OK explícito** do dono (gera tag, release e imagem) |
+| Correção urgente para `main` | só com OK explícito                                          |
 
-## Pré-condições
+Sem CI verde ou com conflito, não mesclar em nenhum caso.
 
-- Working tree limpo.
-- PR aberta para a branch atual, `MERGEABLE`, checks OK.
-- Estratégia de merge alinhada com o time (merge commit ou squash — só com
-  confirmação explícita se for algo diferente do padrão).
+## Workflow
 
-## Fluxo principal
+1. **Localizar o PR** (número em `$ARGUMENTS` ou pela branch atual):
 
-### 1) Localizar PR
+   ```bash
+   gh pr list --head "$(git branch --show-current)" \
+     --json number,baseRefName,title,url,mergeable,state
+   gh pr checks <N>
+   ```
 
-```bash
-gh pr list --repo "$REPO" --head "$BRANCH" \
-  --json number,baseRefName,title,url,mergeable,state
-```
+   Abortar se não estiver `MERGEABLE` ou se algum check não passou.
 
-### 2) Confirmar com o usuário
+2. **Confirmar** número, título, base e URL com o usuário quando a tabela acima
+   exigir OK.
 
-Mostrar número, título, base, URL antes de mesclar.
+3. **Mesclar** com merge commit e apagar a branch remota:
 
-### 3) Mesclar (exemplo: merge commit + apagar ramo remoto)
+   ```bash
+   gh pr merge <N> --merge --delete-branch
+   ```
 
-```bash
-gh pr merge <NUM> --repo "$REPO" --merge --delete-branch
-```
+   `--squash`/`--rebase` só se o usuário pedir.
 
-Se for **release ou hotfix** em `main` com tagging manual, repetir apenas o que
-política do time exige (alguns projetos deixam a tag para **semantic-release**).
+4. **Limpeza local:**
 
-### 4) Limpeza local
+   ```bash
+   git checkout develop && git pull --ff-only origin develop
+   git branch -d <branch>             # -d só apaga o que já foi mesclado
+   git worktree remove ../elvisea.dev-<número>   # se o trabalho foi numa worktree
+   git worktree prune
+   ```
 
-```bash
-git checkout develop   # ou a base correta
-git pull origin develop
-git branch -d "$BRANCH"   # só se já estiver totalmente merged; investigar antes de -D
-```
+   `git branch -d` falhou com "not fully merged": investigar antes de pensar
+   em `-D`.
 
-### Regras
+5. **PR de release:** acrescentar `Closes #<issue>` do PR mesclado na descrição
+   do PR de release aberto (`develop` → `main`), se ainda não estiver lá. A
+   issue só fecha quando a release chega na `main`.
 
-- ❌ Sem merge se houver pendências não resolvidas ou sem OK explícito.
-- ❌ Sem `push --force` em `main` / `develop`.
-- ✅ Preferir `-d` (minúsculo) para apagar ramo local; investigar antes de `-D`.
+6. **Relatar:** branch atual, commit de merge, branch e worktree removidas.
+
+## Merge de release (`develop` → `main`)
+
+Antes de pedir o OK, rodar a skill [`release-check`](../skills/release-check/SKILL.md)
+na `develop` e registrar o resultado na descrição do PR de release. O merge
+dispara o semantic-release (tag, `CHANGELOG.md`, release no GitHub) e a
+publicação da imagem no GHCR. Não há deploy automático.
+
+## Regras
+
+- ❌ Nunca `push --force` em `develop` ou `main`, nem commit direto nelas.
+- ❌ Nunca mesclar release sem OK explícito.
+- ✅ Sempre `--delete-branch`.

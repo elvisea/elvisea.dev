@@ -1,92 +1,82 @@
-# Criar branch (Gitflow enxuto)
+---
+description: Garante a issue no GitHub e cria a branch tipo/<número> a partir da develop (na pasta atual ou numa worktree).
+argument-hint: "[número da issue ou resumo do trabalho]"
+---
 
-Cria ramo a partir de **`develop`** ou **`main`** conforme tipo, sempre
-**associado ao número da issue no GitHub** (rastreio + PR).
+# Branch
 
-## Repo e variáveis
+Toda mudança começa por uma **issue**; a branch leva o número dela. Não há PR
+sem issue.
 
-Sempre usar o GitHub remoto atual. Antes dos exemplos:
+## Convenção
 
-```bash
-REPO="$(gh repo view --json nameWithOwner -q .nameWithOwner)"
-echo "$REPO"
-```
+Formato: **`tipo/<número-da-issue>`**, sem slug.
 
-Opcionalmente defina um assignee padrão (`ASSIGNEE`) quando o projeto tiver política definida.
+| Tipo       | Uso                                    |
+| ---------- | -------------------------------------- |
+| `feat`     | funcionalidade nova                    |
+| `fix`      | correção de bug                        |
+| `refactor` | reorganização sem mudar comportamento  |
+| `docs`     | documentação                           |
+| `test`     | testes                                 |
+| `perf`     | desempenho                             |
+| `chore`    | manutenção, dependências, configuração |
 
-## Convenção de nome da branch
+- ✅ `feat/33`, `chore/35`
+- ❌ `feature/pagina-servicos`, `feat/33-servicos`
 
-**Forma principal (preferida neste projeto):** só tipo + número da issue GitHub —
-**sem obrigatoriedade de slug.**
+O tipo da branch define o tipo dos commits (`feat/33` → `feat(...)`).
 
-```
-<tipo>/<número>
-```
+## Base
 
-Ex.: `feat/12`, `chore/87`, `fix/3`.
+| Situação                     | Parte de  | PR para                             |
+| ---------------------------- | --------- | ----------------------------------- |
+| Trabalho normal              | `develop` | `develop`                           |
+| Correção urgente em produção | `main`    | `main`, depois sincroniza `develop` |
 
-`número` é **somente os dígitos** retornados ao criar ou listar issues (ex.: issue `#87` → `87`).
-
-**Forma opcional** (discrimina trabalhos paralelos na mesma issue ou legibilidade no remoto):
-
-```
-<tipo>/<número>-<slug-kebab-case>
-```
-
-Ex.: `chore/87-dev-tooling-docker`.
-
-Tipos típicos: `feat`, `fix`, `chore`, `docs`, `refactor`, `test`, `perf`,
-`hotfix`, `release`.
-
-## Issue antes da branch — obrigatório sem issue
-
-Quando **não** existir issue para o trabalho:
-
-1. Criar a issue primeiro (capturar o **número** retornado pelo GitHub).
-2. Só depois criar a branch **`tipo/<número>`** (mais slug opcional, se quiser).
-
-Exemplo criar issue:
-
-```bash
-gh issue create --repo "$REPO" \
-  --title "chore(config): toolchain, CI e Docker baseline" \
-  --body "Contexto objetivo para o trabalho atual."
-```
-
-Markdown com várias linhas: use **`--body "$(cat <<'EOF' … EOF)"`** ou **`--body-file ficheiro.md`**. Evite o literal `\n` dentro de `"…"` — o GitHub mostra-o como texto, não como quebra.
-
-Registrar o **`#N`** exibido no output ou com `gh issue view <url> --json number -q .number`.
-
-## Branch de origem
-
-| Prefixo típico            | Checkout a partir de | Merge alvo habitual                   |
-| ------------------------- | -------------------- | ------------------------------------- |
-| feat, fix, chore, docs, … | `develop`            | `develop`                             |
-| hotfix/\*                 | `main`               | `main` + sincroniza `develop` depois  |
-| release/vX.Y.Z            | `develop`            | `main` (+ tag) + sincroniza `develop` |
+Release não usa branch própria: é um PR de `develop` para `main`.
 
 ## Workflow
 
-1. **Issue garantida:** se não houver número, usar seção anterior e criar issue.
-2. Escolher `tipo`, confirmar **`número`**; slug opcional; apresentar o nome ao usuário.
+1. **Issue.** Se não existir, criar com contexto, escopo e critério de aceite.
+   Registrar o número devolvido; **nunca inventar número**.
 
-3. Atualizar a base antes de criar branch:
+   ```bash
+   gh issue create --assignee @me \
+     --title "feat(escopo): descrição curta" \
+     --body "$(cat <<'EOF'
+   ## Contexto
+   …
+   ## Escopo
+   …
+   ## Aceite
+   …
+   EOF
+   )"
+   ```
 
-```bash
-git checkout develop && git pull origin develop
-# ou para hotfix: git checkout main && git pull origin main
-```
+   Corpo com várias linhas sempre por heredoc ou `--body-file`; `\n` dentro de
+   aspas aparece literal no GitHub.
 
-4. Criar: `git checkout -b tipo/numero` (ou `tipo/numero-descricao-kebab` se optar pelo sufixo).
+2. **Confirmar** o nome `tipo/<número>` com o usuário quando o tipo não for
+   óbvio pela issue.
 
-5. (Opcional) `gh issue develop <numero> --repo "$REPO" -n tipo/numero …`
-   se o fluxo da equipe usar desenvolvimento vinculado no GitHub.
+3. **Onde trabalhar:**
+   - Na pasta atual (uma tarefa por vez):
 
-6. Push quando houver trabalho inicial: `git push -u origin <branch>`.
+     ```bash
+     git checkout develop && git pull origin develop
+     git checkout -b feat/<número>
+     ```
+
+   - Em paralelo a outro trabalho ou a outro agente: numa worktree
+     (ver [`worktree.md`](./worktree.md)).
+
+4. **Publicar** quando houver o primeiro commit:
+   `git push -u origin feat/<número>`.
 
 ## Regras
 
-- Preferir sempre **nome curto**, sem acentos, só `[a-z0-9/-]`.
-- **Não inventar número** — sempre o da issue criada/consultada.
-- Hotfix sempre de `main` atualizado — não partir de `develop` defasada.
-- Não trabalhar commits diretos em `main`/`develop` quando o fluxo usar PRs.
+- Nome só com `[a-z0-9/]`.
+- Nada de commit direto em `develop` ou `main`.
+- Hotfix parte de `main` atualizada, nunca de `develop`.

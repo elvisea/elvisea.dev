@@ -1,75 +1,86 @@
-# Commit inteligente (Conventional Commits)
+---
+description: Agrupa as mudanças por contexto, valida localmente e propõe commits em Conventional Commits antes de gravar.
+---
 
-Commits agrupados por contexto funcional e alinhados a **Semantic Release**
-(preset `conventionalcommits` em `main`).
+# Commit
 
-## Contexto do projeto
+Commits agrupados por incremento revisável, em **Conventional Commits**. A
+`main` usa semantic-release (preset `conventionalcommits`): as mensagens viram
+versão e changelog.
 
-- Fluxo habitual: trabalho integra em **`develop`**; **`main`** recebe merges
-  que acionam release e versão (`semantic-release`).
-- Preferir commits que **fecha um incremento revisável**: um grupo lógico de
-  arquivos por commit.
-- Convenção da branch segue **`tipo/<número>`** (com slug opcional; ver comando
-  `branch`). **O tipo do commit** deve ser coerente com o prefixo da branch
-  (`feat/12` → commits `feat`).
+## Convenção
 
-## Convenção (Conventional Commits)
+Formato: `tipo(escopo): descrição` (até ~72 caracteres, em português, sem ponto
+final).
 
-Formato: `tipo(escopo opcional): descrição`
+| Tipo       | Uso                                    |
+| ---------- | -------------------------------------- |
+| `feat`     | funcionalidade nova (versão minor)     |
+| `fix`      | correção de bug (versão patch)         |
+| `refactor` | reorganização sem mudar comportamento  |
+| `perf`     | desempenho                             |
+| `test`     | testes                                 |
+| `docs`     | documentação                           |
+| `style`    | formatação sem mudança de lógica       |
+| `chore`    | manutenção, dependências, configuração |
 
-| Tipo       | Uso                                     |
-| ---------- | --------------------------------------- |
-| `feat`     | Nova funcionalidade                     |
-| `fix`      | Correção de bug                         |
-| `chore`    | Manutenção, dependências, configuração  |
-| `docs`     | Documentação                            |
-| `style`    | Formatação sem mudança de lógica        |
-| `refactor` | Refatoração sem nova feature ou bug fix |
-| `test`     | Adição ou correção de testes            |
-| `perf`     | Melhorias de performance                |
+Quebra de compatibilidade: `feat!:` ou rodapé `BREAKING CHANGE:` (versão major).
 
-**Escopo** é opcional. Exemplo: `feat(ui): timeline de experiências`.
+**Corpo** quando o título não basta: o porquê, o que muda para quem usa, a
+decisão tomada. Termina com a linha de coautoria quando o commit vem de um
+agente.
 
-**Corpo** — quando o título não basta:
+### Escopos do projeto
 
-```
-fix(ci): corrige ordenação das etapas no workflow
-
-Evita corrida entre jobs que compartilham cache.
-```
-
-## Escopos comuns neste projeto
-
-- `content` — textos e dados em `content/pt-BR/` (seguir as regras de conteúdo do `AGENTS.md`).
-- `blog` — posts e sistema de blog (`lib/blog`, `app/blog`).
-- `ui` — componentes fora da camada shadcn pura (`components/*`).
-- `actions` — Server Actions e boundaries de entrada.
-- `route` — Route Handlers (`app/api/**/route.ts`).
-- `claude` — `AGENTS.md`, `CLAUDE.md`, `.claude/*` compartilhado.
-- `config` — shadcn, Tailwind, Bun, ESLint, Prettier, TypeScript.
-- `ci` — GitHub Actions, Trivy, gates de segurança.
-- `deploy` — Docker, compose, `.dockerignore`.
+| Escopo     | Área                                                      |
+| ---------- | --------------------------------------------------------- |
+| `content`  | textos e dados em `content/pt-BR/` (regras de conteúdo)   |
+| `home`     | página inicial                                            |
+| `services` | `features/services`, `/servicos`                          |
+| `projects` | `/projetos`, snapshot do GitHub, curadoria                |
+| `blog`     | posts, `lib/blog`, `app/blog`, RSS                        |
+| `contact`  | formulário, Server Action, e-mail                         |
+| `seo`      | metadata, JSON-LD, sitemap, robots, redirects             |
+| `logs`     | `lib/log`                                                 |
+| `ui`       | componentes e estilos                                     |
+| `a11y`     | acessibilidade                                            |
+| `claude`   | `AGENTS.md`, `CLAUDE.md`, `.claude/`, `.cursor/`          |
+| `config`   | Next, Tailwind, shadcn, ESLint, Prettier, TypeScript, Bun |
+| `deps`     | dependências e `bun.lock`                                 |
+| `ci`       | GitHub Actions                                            |
+| `docker`   | `Dockerfile`, compose                                     |
+| `release`  | semantic-release                                          |
 
 ## Workflow
 
-1. `git status` e `git diff` / `git diff --cached` para entender o escopo.
-2. Agrupar arquivos por feature/módulo.
-3. Sugerir **um conjunto de commits** (mensagens Conventional) antes de gravar.
-4. Só gravar após **confirmação explícita** do usuário.
-5. `git add …` + `git commit -m "…"` (ou commit com corpo quando necessário).
+1. **Entender o escopo:** `git status`, `git diff`, `git diff --cached`.
+2. **Validar** (o mesmo que a CI roda):
 
-## Regras de agrupamento
+   ```bash
+   bun run format:check && bun run lint && bun run typecheck && bun test
+   ```
 
-- Mesmo módulo/feature → mesmo commit quando fizer sentido.
-- Testes `*.test.ts` do mesmo módulo → junto ao código quando pequenos.
-- Só mudanças de dependência ou lock (`package.json`, `bun.lock`) → `chore(deps)`
-  ou `chore` dedicado.
-- Alterações apenas em tooling local (`.claude/`, comandos docs) → `docs(claude)`
-  ou `chore(claude)`.
+   Mudança que afeta rotas, build ou dependências: `bun --bun run build` também.
+   Falhou: corrigir antes de commitar.
 
-## Checklist antes de commitar
+3. **Agrupar** por contexto e **propor** os commits (arquivos + mensagem).
+4. **Confirmação:** gravar só depois do OK explícito do usuário, a menos que ele
+   já tenha autorizado o fluxo completo nesta tarefa.
+5. **Gravar:** `git add <arquivos>` + `git commit`. Nunca `git add -A` sem
+   conferir o que entra.
 
-- [ ] Título dentro do limite prático (~72 caracteres).
-- [ ] Mensagem compatível com o que será versionado na `main` (Breaking changes
-      documentados quando aplicável — `feat!:` ou BREAKING CHANGE no footer).
-- [ ] Nada de `.env*`, secrets ou dados sensíveis no stage.
+## Agrupamento
+
+- Código e o teste dele → mesmo commit.
+- Conteúdo público (`content/pt-BR/`) → commit próprio, para revisão do texto.
+- Dependências e lockfile → `chore(deps)` separado.
+- `.claude/`, `.cursor/`, `AGENTS.md` → `chore(claude)` ou `docs(claude)`
+  separado.
+- Cada commit deve compilar e passar nos testes sozinho quando possível.
+
+## Checklist
+
+- [ ] Tipo coerente com a branch e com o efeito na versão.
+- [ ] Nenhum `.env*`, segredo, dado pessoal ou detalhe interno de empregador no
+      stage ou na mensagem (o histórico é público).
+- [ ] Nenhuma mudança sem relação com o commit.

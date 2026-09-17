@@ -1,110 +1,205 @@
+---
+description: Revisa o diff contra o checklist do projeto (conteúdo público, SEO, shadcn, MVVM, Next 16, Bun, Docker) e classifica os achados por severidade.
+argument-hint: "[base do diff, padrão develop]"
+---
+
 # Review de código (elvisea.dev)
 
-Revisão **antes de commit**, **antes de PR** ou quando solicitado. Alinhar com
-[`AGENTS.md`](../../AGENTS.md) (regras de conteúdo, stack, paleta,
-design atômico).
+Revisão **antes de commit**, **antes de PR** ou quando pedida. O checklist
+aplica o [`AGENTS.md`](../../AGENTS.md); em caso de dúvida, o `AGENTS.md` vale.
 
-## Rastreabilidade (quando usar issues/PR)
+O agente [`code-reviewer`](../agents/code-reviewer.md) usa este checklist.
+Prefira o agente em diffs grandes: a leitura fica fora do contexto principal.
 
-- Preferir ramos `tipo/numero-descricao` e PR com impacto revisável na `develop`.
-- `Closes #N` na descrição quando fechar issue automaticamente fizer parte do fluxo da equipe.
+## Workflow
 
-## Quando usar
-
-- Fluxo paralelo aos comandos de commit ou PR (“rodar revisão rápida”).
-- Antes do merge quando alguém pedir segunda opinião.
-
-## Workflow de saída
-
-1. **`git diff` + `git diff --cached`** (ou diff contra branch base combinada).
-2. Listar categorias tocadas (`app`, `components`, Docker, `.github`).
-3. Aplicar checklist abaixo (itens marcados onde **não** aplicáveis são “NA”).
-4. Reportar findings com arquivo e linha; severidade uniforme ao agent
-   **`code-reviewer`**.
+1. **Coletar o diff:** `git diff` + `git diff --cached`, ou
+   `git diff develop...HEAD` para a branch inteira (outra base se vier em
+   `$ARGUMENTS`).
+2. **Mapear o risco** dos arquivos tocados, do maior para o menor:
+   - `app/actions/` (entrada do usuário, e-mail, logs);
+   - `content/pt-BR/` e textos públicos (regras de conteúdo);
+   - `lib/`, `features/`, `app/**/page.tsx` e metadata;
+   - `components/`, estilos;
+   - Docker, CI, dependências;
+   - documentação.
+3. **Aplicar o checklist.** Categoria que não se aplica fica como "NA".
+4. **Reportar** com arquivo, linha e severidade, com a correção sugerida.
+5. **Bloquear** commit/PR enquanto houver crítico, salvo exceção aceita pelo
+   usuário.
 
 ### Severidades
 
-| Nível        | Critério breve                                                |
-| ------------ | ------------------------------------------------------------- |
-| **Crítico**  | segurança, bug provável, quebra CI/contratos, dados sensíveis |
-| **Aviso**    | inconsistência forte, regressão técnica de manutenibilidade   |
-| **Sugestão** | polimento opcional                                            |
+| Nível        | Critério                                                                                      |
+| ------------ | --------------------------------------------------------------------------------------------- |
+| **Crítico**  | segurança, dado pessoal ou interno exposto, bug provável, quebra de CI ou de contrato público |
+| **Aviso**    | desvio claro de padrão do `AGENTS.md`, regressão de manutenção, teste faltando em regra nova  |
+| **Sugestão** | polimento opcional                                                                            |
 
 ---
 
 ## Checklist
 
-### TypeScript
+### Repositório público e conteúdo (AGENTS.md § Regras de conteúdo)
 
-- Sem `any` solto sem justificativa; preferir tipo explícito ou `unknown` + narrowing.
-- Componentes props tipadas (`Readonly<{…}>` em exports quando faz sentido).
-- Funções assíncronas com retorno (`Promise<T>`) explícito nas fronteiras públicas quando útil ao time.
+Tudo que entra no diff fica público: código, texto, mensagem de commit, issue e
+PR.
 
-### Next.js 16 — App Router
+- **Crítico:**
+  - frase de efeito, slogan ou promessa em texto público;
+  - telefone, salário/pretensão ou licitação;
+  - detalhe interno de empregador (topologia, repositórios, clientes, rotas
+    internas);
+  - link para a página da Trio;
+  - nome ou link de projeto de nicho sensível (só a capacidade, sem nome);
+  - segredo ou `.env` versionado.
+- **Aviso:**
+  - fato sem fonte (`presenca-digital`, `experiencias.ts`, código conferido);
+  - número inventado;
+  - preço, prazo ou garantia em página de serviço;
+  - integração de WhatsApp sem dizer que não usa a API oficial.
+- Texto de interface fica em `content/pt-BR/`, nunca fixo em componente.
 
-- `"use client"` só onde há hooks de cliente / estado browser.
-- Server Components não puxando módulos **só cliente** inadvertidamente.
-- `params` / `searchParams` modelados conforme modelo do projeto (**Promise** onde o Next assim expõe tipos/helpers).
-- `next/image` para assets otimizados quando não for SVG inline deliberado / ícone já componente.
-- Metadados nas rotas públicas relevantes (`metadata` ou `generateMetadata`).
-- Handlers em `app/api/*/route.ts` com status corretos, erros tratados, sem expor stacks em produção.
-- Preferir validação estrutural no boundary (ex.: **Zod**) para inputs externos — quando o projeto já adota Zod ou equivalente.
+### SEO (AGENTS.md § SEO)
 
-### shadcn (stack `@base-ui/react` neste repo)
+- Metadata sempre por `pageMetadata` (`lib/seo/metadata.ts`): `openGraph` e
+  `alternates` escritos à mão na página apagam os do layout.
+- Título final (com ` · Elvis Amancio`) com até 60 caracteres; descrição entre
+  70 e 160. Página nova entra nos testes de conteúdo que conferem isso.
+- Um `h1` por página, descritivo; ordem de títulos sem saltos.
+- Rota interna nova com `PageJsonLd` (trilha) e nós de
+  `lib/seo/structured-data.ts`. Nada de JSON-LD montado à mão.
+- Sem meta `keywords` e sem página por cidade.
+- Página sem conteúdo com `noindex` e fora do sitemap; rota nova entra no
+  `app/sitemap.ts`.
+- Rota renomeada ou removida ganha redirect 308 em `next.config.ts`.
 
-- Não usar padrões de Radix obsoletos para este preset: **sem** `asChild` nos
-  mesmos lugares esperados pela doc antiga; seguir instalador (`bunx --bun shadcn add …`).
-- Tokens CSS e cores de marca (**AGENTS.md**):
+### Componentes (AGENTS.md § Componentes de interface)
 
-  | Token semântico | Diretriz rápida                        |
-  | --------------- | -------------------------------------- |
-  | Texto e fundo   | contraste AA nos dois temas            |
-  | `primary`       | `#0F766E` (claro) / `#2DD4BF` (escuro) |
-  | `highlight`     | `#4F46E5` (claro) / `#818CF8` (escuro) |
-  | Cores fixas     | proibidas em componentes; usar tokens  |
-
-- Manter **`components/ui/`** dominado pelo output estável da CLI onde possível — evitar “fork” grande sem razão documentada.
-- **Crítico:** elemento de interface recriado à mão quando existe componente
-  shadcn (Base UI) equivalente, ex.: `<select>`/`native-select` em vez de
-  `Select`, `<button>` em vez de `Button`/`ToggleGroup`, `div` com borda em vez
-  de `Card`, chip manual em vez de `Badge`, caixa de erro manual em vez de
-  `Alert`. Ver a tabela em `AGENTS.md` § Componentes de interface.
-- Link com aparência de botão usa `buttonVariants` em `<a>`/`Link`, não
+- **Crítico:** elemento recriado à mão quando existe componente shadcn (Base UI)
+  equivalente. Exemplos:
+  - `<select>`/`native-select` em vez de `Select`;
+  - `<button>` em vez de `Button`/`ToggleGroup`;
+  - `div` com borda em vez de `Card`;
+  - chip manual em vez de `Badge`;
+  - caixa de erro manual em vez de `Alert`;
+  - lista expansível manual em vez de `Accordion`.
+- Componente que falta entra pela CLI (`bunx --bun shadcn@latest add <nome>`);
+  `components/ui/` não é editado à mão.
+- Link com aparência de botão usa `buttonVariants` em `<a>`/`Link`, nunca
   `<Button render={<a />}>` (o Base UI força `role="button"`).
+- Preset Base UI: prop `render`, sem `asChild` de exemplos Radix.
+- Cores só por token (`primary`, `highlight`, `surface`, `heading`…); nada de
+  paleta Tailwind crua (`bg-sky-500`) nem cor fixa em `style`.
 
-### Design atômico (AGENTS.md)
+### Arquitetura: MVVM e design atômico (AGENTS.md § Arquitetura)
 
-Camadas esperadas átomo → página; checar que:
+Modelo: `features/services`.
 
-- organismos grandes não ficam dentro de átomos;
-- data-fetch e efeitos de rota ficam nos níveis mais altos (páginas / organismos) sem poluir primitives.
+- **Aviso:** feature nova fora de `features/<feature>/`:
+  - `repository/`: acesso ao conteúdo, com tipos;
+  - `<fluxo>/view-model/`: função pura (`get-*-view-model.ts`) ou hook de
+    cliente (`use-*-view-model.ts`), com teste;
+  - `<fluxo>/view/`: só renderiza o view-model, sem ler conteúdo nem montar
+    link;
+  - `components/{molecules,organisms}/`.
+- `app/**/page.tsx` só declara metadata e `generateStaticParams` e renderiza a
+  View.
+- Átomo ou molécula nunca importa organismo. Leitura de dados só em página,
+  view-model ou organismo.
+- **Estado na URL** (`useSearchParams`):
+  - parser puro e testado, como `lib/contact/prefill.ts`, que ignora valores
+    desconhecidos;
+  - o componente fica dentro de `Suspense` para a página seguir estática.
 
-### Mobile-first / Tailwind
+### Next.js 16 (App Router, tudo estático)
 
-- Breakpoints típicos: base mobile → `sm` → `md` → …
-- Áreas clicáveis alvo **≥ ~44×44 px** onde houver gestos tocáveis densos em mobile.
-- Evitar layouts que cortem fluxo só em viewport pequena sem fallback.
+- Antes de usar uma API do Next, conferir a documentação da versão instalada em
+  `node_modules/next/dist/docs/`.
+- `"use client"` só onde há estado, efeito ou API do navegador.
+- Rotas dinâmicas com `dynamic = "force-static"`, `dynamicParams = false` e
+  `generateStaticParams`. Sem `cacheComponents`, sem leitura de filesystem em
+  runtime e sem `force-dynamic`.
+- `params`/`searchParams` são `Promise`.
+- Arquivo lido em build (Markdown) entra em `outputFileTracingIncludes`.
+- Imagens com `next/image` (exceto SVG inline e ícones).
+
+### Server Action, e-mail e logs (`app/actions/contact`)
+
+- Validação com zod antes de qualquer outra checagem; honeypot e tempo mínimo
+  mantidos.
+- Rate limit por IP com o header confiável (`TRUSTED_IP_HEADER`).
+- Constante exportada de arquivo `"use server"` quebra o build: vai para
+  `schema.ts`.
+- Logs só pelo `logger` (`lib/log/logger.ts`), com evento nomeado:
+  - sem nome, texto da mensagem, e-mail completo ou IP completo (`maskEmail`,
+    `ipPrefix`);
+  - nunca `console.log` solto em código de servidor.
+- HTML de e-mail com escape de todo valor digitado.
+
+### Acessibilidade
+
+- Nome acessível contém o texto visível: complemento em `sr-only` depois do
+  texto, não `aria-label` que o substitui.
+- Ícone decorativo com `aria-hidden`; link externo com
+  `rel="noopener noreferrer"`.
+- Alvos de toque com pelo menos ~44 px (`min-h-11`/`h-11`).
+- Formulário com `FieldLabel`, `FieldError` e `aria-invalid`.
+
+### Mobile first e temas
+
+- Classes base descrevem o mobile; `sm:`/`md:`/`lg:` só acrescentam.
+- Sem largura fixa que gere rolagem horizontal em 400 px.
+- Tema claro e escuro conferidos quando houver mudança visual (skill
+  `smoke-test`).
 
 ### Testes (`bun test`)
 
-- Novas regras de negócio em `lib/**` devem ter **onde fizer sentido** testes de unidade próximos.
-- Não remover teste só para “silenciar” a CI.
+- Regra nova em `lib/**`, `features/**/view-model`, `features/**/repository`
+  ou `app/actions/**` vem com teste ao lado, com dependências injetadas em vez
+  de módulos reais.
+- Conteúdo novo com invariantes (slugs, limites de SEO, termos proibidos) no
+  teste do conteúdo.
+- Não remover nem enfraquecer teste para passar na CI.
+- Testes de render de componente ainda não têm infraestrutura (#23).
 
-### Segurança
+### Dependências novas
 
-- Secrets só via env; **`NEXT_PUBLIC_`** apenas para valores realmente públicos.
-- Inputs validados antes de persistência ou redirects confiados.
-- `rel="noopener noreferrer"` em `<a target="_blank">`.
+Acionar sempre que o diff tocar `package.json` ou `bun.lock`.
 
-### Docker / CI (quando o diff afeta infra)
+- **Necessidade:**
+  - não existe solução no projeto (dependência atual, helper em `lib/`, API
+    nativa do Node, da Web ou do Next);
+  - componente de interface vem do shadcn, não de outra biblioteca.
+- **Versão atual:** entra a versão estável mais recente; pin em versão antiga
+  só com o motivo registrado (como TypeScript 6 e o preset `conventionalcommits`
+  9.x no `AGENTS.md`).
+- **Binário nativo** (`.node`, `.so`, pacotes opcionais por plataforma):
+  - existe variante **musl**? A imagem é `oven/bun` Alpine;
+  - o `output: "standalone"` rastreia a dependência, ou é preciso
+    `serverExternalPackages` ou `COPY` no `Dockerfile`;
+  - validar com `docker build` e o container rodando, não só na máquina local.
+- **Peso** no bundle do cliente e na imagem. Dependência de servidor importada
+  só em código de servidor (`server-only`).
+- **Saúde:**
+  - `bun run security:check` sem alta ou crítica;
+  - licença compatível;
+  - projeto mantido.
+- **Lockfile:** `bun.lock` atualizado pelo Bun (nunca npm, yarn ou pnpm).
 
-- `Dockerfile` multi-stage compatível com `output: standalone`.
-- Compose com healthcheck / portas esperadas quando alterados.
-- Workflows Actions: segurança (audit/Trivy) e jobs de lint/format/build/test coerentes com `package.json`.
+### Docker e CI (quando o diff tocar infra)
 
-### Conteúdo (regras do AGENTS.md)
+- `Dockerfile` multi-stage compatível com `output: "standalone"`; versão do Bun
+  igual ao `.bun-version`.
+- Healthcheck com `127.0.0.1` (no Alpine, `localhost` resolve para `::1`).
+- Actions fixadas por SHA; jobs de segurança (`bun audit`, Trivy) e qualidade
+  (lint, formatação, tipos, testes, build) coerentes com `package.json`.
+- Diagnóstico temporário de workflow nunca entra em PR para `develop`: usar
+  `ACTIONS_STEP_DEBUG` ou uma branch descartável.
 
-- **Crítico:** frase de efeito, slogan ou promessa em texto público; telefone,
-  salário, licitação ou detalhe interno de empregador; link para a página da Trio.
-- **Aviso:** fato sem fonte no `presenca-digital` ou número inventado.
-- Texto de interface fica em `content/pt-BR/`, não fixo em componente.
+### Commits e release
+
+- Conventional Commits, com o tipo coerente com a branch (`feat/12` → `feat`).
+  O semantic-release gera versão e changelog a partir deles.
+- `feat!:` ou `BREAKING CHANGE:` só para quebra real.
+- Mensagem sem dado sensível (o histórico é público).
