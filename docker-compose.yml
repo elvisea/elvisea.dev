@@ -1,0 +1,27 @@
+# Produção: roda a imagem publicada pela release no GHCR.
+# A hospedagem ainda não foi definida; a porta fica presa ao localhost
+# para ser exposta por um proxy (NPM, túnel etc.).
+services:
+  web:
+    image: ${REGISTRY:-ghcr.io}/${IMAGE_NAME:-elvisea/elvisea.dev}:${TAG:-latest}
+    container_name: ${CONTAINER_NAME_APP:-elvisea-dev}
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${PORT:-3000}:3000"
+    environment:
+      NODE_ENV: production
+      NEXT_TELEMETRY_DISABLED: 1
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--quiet",
+          "--tries=1",
+          "--spider",
+          "http://127.0.0.1:3000/",
+        ]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
