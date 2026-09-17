@@ -41,12 +41,14 @@ export async function submitContact(
 ): Promise<ContactActionState> {
   const { values, honeypot, startedAt } = readContactFormData(formData);
 
-  // Robôs: responde sucesso sem enviar, para não ensinar o que foi detectado.
-  const tooFast = startedAt === null || Date.now() - startedAt < MIN_FILL_MS;
-  if (honeypot || tooFast) {
+  // Campo isca preenchido: robô. Sucesso falso, sem enviar, para não ensinar
+  // o que foi detectado.
+  if (honeypot) {
     return { ok: true };
   }
 
+  // Validação antes da checagem de tempo: envio vazio ou inválido sempre
+  // mostra os erros, nunca a confirmação.
   const parsed = contactSchema.safeParse(values);
   if (!parsed.success) {
     return {
@@ -55,6 +57,13 @@ export async function submitContact(
       fieldErrors: fieldErrorsFromIssues(parsed.error.issues),
       values,
     };
+  }
+
+  // Formulário válido preenchido mais rápido do que uma pessoa conseguiria:
+  // robô, sucesso falso. Sem `startedAt` (JavaScript não carregou) não bloqueia,
+  // para não descartar em silêncio a mensagem de alguém real.
+  if (startedAt !== null && Date.now() - startedAt < MIN_FILL_MS) {
+    return { ok: true };
   }
 
   try {
