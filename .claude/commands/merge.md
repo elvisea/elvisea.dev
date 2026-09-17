@@ -56,7 +56,9 @@ Sem CI verde ou com conflito, não mesclar em nenhum caso.
    `Closes #N` do PR (em geral o número da branch: `chore/37` → #37):
 
    ```bash
-   gh pr view <N> --json body -q .body | grep -oE 'Closes #[0-9]+'
+   # Palavras de fechamento do GitHub: close(s/d), fix(es/ed), resolve(s/d)
+   gh pr view <N> --json body -q .body \
+     | grep -oiE '\b(close[sd]?|fix(es|ed)?|resolve[sd]?) #[0-9]+'
    gh issue view <issue> --json state -q .state
    gh issue close <issue> --reason completed \
      --comment "Concluída no PR #<N>, mesclado na \`develop\`. Chega à \`main\` com a próxima release."

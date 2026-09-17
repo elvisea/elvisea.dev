@@ -199,7 +199,7 @@ chamados por quem está trabalhando.
 | `commit`           | validação local e commits em Conventional Commits                        |
 | `review`           | checklist de revisão do diff (o mesmo do agente `code-reviewer`)         |
 | `pr`               | pull request para a `develop` com resumo, verificação e `Closes #N`      |
-| `merge`            | merge, fechamento da issue, limpeza de branch e worktree, PR de release  |
+| `merge`            | merge, limpeza de branch e worktree, fechamento da issue, PR de release  |
 | `complete-flow`    | encadeia todos os passos acima                                           |
 | `scaffold-feature` | esqueleto de feature MVVM a partir de `features/services`                |
 
@@ -230,8 +230,8 @@ rodado antes de todo PR.
   changelog, release e imagem no GHCR.
 - A branch padrão do GitHub é `main`, então o `Closes #N` de um PR para
   `develop` não fecha a issue sozinho. O `merge` fecha a issue como concluída
-  logo depois do merge, e só o que falta fazer fica aberto. O PR de release
-  repete os `Closes` do ciclo para rastreabilidade.
+  logo depois do merge, para que as issues abertas sejam só as pendentes. O PR
+  de release repete os `Closes` do ciclo para rastreabilidade.
 - Mudanças só em `.claude/**`, `.cursor/**`, `AGENTS.md` ou `CLAUDE.md` não
   disparam a CI.
 
