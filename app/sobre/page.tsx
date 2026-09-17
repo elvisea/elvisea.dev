@@ -54,7 +54,7 @@ export default function SobrePage() {
         </Link>
       </section>
 
-      <section className="space-y-8" id="stack">
+      <section className="scroll-mt-20 space-y-8" id="stack">
         <SectionHeader
           eyebrow={sobrePage.stack.eyebrow}
           title={sobrePage.stack.title}
@@ -62,7 +62,7 @@ export default function SobrePage() {
         <StackGrid />
       </section>
 
-      <section className="space-y-8" id="formacao">
+      <section className="scroll-mt-20 space-y-8" id="formacao">
         <SectionHeader
           eyebrow={sobrePage.formacao.eyebrow}
           title={sobrePage.formacao.title}
@@ -70,7 +70,7 @@ export default function SobrePage() {
         <EducationList />
       </section>
 
-      <section className="space-y-8" id="certificados">
+      <section className="scroll-mt-20 space-y-8" id="certificados">
         <SectionHeader
           eyebrow={sobrePage.certificados.eyebrow}
           title={sobrePage.certificados.title}

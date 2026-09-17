@@ -1,4 +1,5 @@
 import { TechIcon } from "@/components/atoms/tech-icon";
+import { Badge } from "@/components/ui/badge";
 import { getStackItem } from "@/lib/content";
 
 interface StackBadgesProps {
@@ -13,12 +14,11 @@ export function StackBadges({ keys, label }: StackBadgesProps) {
       {keys.map((key) => {
         const item = getStackItem(key);
         return (
-          <li
-            key={key}
-            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-2.5 py-1 font-mono text-xs text-foreground"
-          >
-            <TechIcon className="size-3.5" name={item?.icon} />
-            {item?.label ?? key}
+          <li key={key}>
+            <Badge className="h-6 px-2.5 font-mono" variant="outline">
+              <TechIcon data-icon="inline-start" name={item?.icon} />
+              {item?.label ?? key}
+            </Badge>
           </li>
         );
       })}

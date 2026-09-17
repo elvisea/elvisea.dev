@@ -1,34 +1,54 @@
 import { ArrowUpRightIcon } from "lucide-react";
 
+import { buttonVariants } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemGroup,
+  ItemSeparator,
+  ItemTitle,
+} from "@/components/ui/item";
 import { formacao } from "@/content/pt-BR/formacao";
 import { sobrePage } from "@/content/pt-BR/pages/profissional";
 import { getVisibleCertificates } from "@/lib/content";
 import { formatYearMonth } from "@/lib/content/dates";
+import { cn } from "cn";
 
 export function EducationList() {
   return (
-    <ul className="grid gap-4 md:grid-cols-2">
+    <ItemGroup className="grid gap-4 md:grid-cols-2">
       {formacao.map((item) => {
         const years =
           item.startYear && item.endYear
             ? `${item.startYear} – ${item.endYear}`
             : null;
         return (
-          <li
+          <Item
             key={item.institution}
-            className="space-y-1 rounded-xl border border-border bg-card p-5"
+            className="bg-card p-5"
+            role="listitem"
+            variant="outline"
           >
-            <p className="font-semibold text-heading">{item.institution}</p>
-            <p className="text-foreground">
-              {item.degree} em {item.field}
-            </p>
-            {years ? (
-              <p className="font-mono text-xs text-muted-foreground">{years}</p>
-            ) : null}
-          </li>
+            <ItemContent>
+              <ItemTitle className="text-base text-heading">
+                {item.institution}
+              </ItemTitle>
+              <ItemDescription className="text-foreground">
+                {item.degree} em {item.field}
+              </ItemDescription>
+              {years ? (
+                <ItemDescription className="font-mono text-xs">
+                  {years}
+                </ItemDescription>
+              ) : null}
+            </ItemContent>
+          </Item>
         );
       })}
-    </ul>
+    </ItemGroup>
   );
 }
 
@@ -36,35 +56,44 @@ export function CertificateList() {
   const certificates = getVisibleCertificates();
 
   return (
-    <ul className="divide-y divide-border rounded-xl border border-border bg-card">
-      {certificates.map((cert) => (
-        <li
-          key={cert.slug}
-          className="flex flex-col gap-1 px-5 py-3.5 sm:flex-row sm:items-center sm:justify-between sm:gap-4"
-        >
-          <div>
-            <p className="font-medium text-heading">{cert.title}</p>
-            <p className="text-sm text-muted-foreground">
-              {cert.issuer} ·{" "}
-              {cert.issued
-                ? formatYearMonth(cert.issued)
-                : sobrePage.certificados.noDate}
-            </p>
+    <Card className="py-2">
+      <ItemGroup className="gap-0">
+        {certificates.map((cert, index) => (
+          <div key={cert.slug} role="listitem">
+            {index > 0 ? <ItemSeparator className="my-0" /> : null}
+            <Item className="px-5 py-3.5">
+              <ItemContent>
+                <ItemTitle className="text-base text-heading">
+                  {cert.title}
+                </ItemTitle>
+                <ItemDescription>
+                  {cert.issuer} ·{" "}
+                  {cert.issued
+                    ? formatYearMonth(cert.issued)
+                    : sobrePage.certificados.noDate}
+                </ItemDescription>
+              </ItemContent>
+              {cert.url ? (
+                <ItemActions>
+                  <a
+                    aria-label={`${sobrePage.certificados.view}: ${cert.title}`}
+                    className={cn(
+                      buttonVariants({ variant: "ghost", size: "sm" }),
+                      "h-11 text-primary sm:h-7",
+                    )}
+                    href={cert.url}
+                    rel="noopener noreferrer"
+                    target="_blank"
+                  >
+                    {sobrePage.certificados.view}
+                    <ArrowUpRightIcon aria-hidden data-icon="inline-end" />
+                  </a>
+                </ItemActions>
+              ) : null}
+            </Item>
           </div>
-          {cert.url ? (
-            <a
-              aria-label={`${sobrePage.certificados.view}: ${cert.title}`}
-              className="inline-flex min-h-11 items-center gap-1 text-sm font-medium text-primary underline-offset-4 hover:underline sm:min-h-0"
-              href={cert.url}
-              rel="noopener noreferrer"
-              target="_blank"
-            >
-              {sobrePage.certificados.view}
-              <ArrowUpRightIcon aria-hidden className="size-4" />
-            </a>
-          ) : null}
-        </li>
-      ))}
-    </ul>
+        ))}
+      </ItemGroup>
+    </Card>
   );
 }

@@ -1,15 +1,17 @@
 "use client";
 
 /**
- * Lista de projetos com filtro por linguagem. Os dados chegam prontos do
- * servidor (estáticos); o filtro só troca o que é exibido, sem nova busca.
+ * Lista de projetos com filtro por linguagem (ToggleGroup de seleção única).
+ * Os dados chegam prontos do servidor; o filtro só troca o que é exibido.
  */
 import { useMemo, useState } from "react";
 
 import { ProjectCard } from "@/components/molecules/project-card";
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import { projetosPage } from "@/content/pt-BR/pages/projetos";
 import type { Project } from "@/lib/projects/types";
-import { cn } from "cn";
+
+const ALL = "__todas__";
 
 interface ProjectExplorerProps {
   projects: readonly Project[];
@@ -17,17 +19,19 @@ interface ProjectExplorerProps {
 }
 
 export function ProjectExplorer({ projects, languages }: ProjectExplorerProps) {
-  const [language, setLanguage] = useState<string | null>(null);
+  const [language, setLanguage] = useState<string>(ALL);
   const { filter } = projetosPage;
 
   const visible = useMemo(
     () =>
-      language ? projects.filter((p) => p.language === language) : projects,
+      language === ALL
+        ? projects
+        : projects.filter((p) => p.language === language),
     [projects, language],
   );
 
   const options = [
-    { value: null, label: filter.all, count: projects.length },
+    { value: ALL, label: filter.all, count: projects.length },
     ...languages.map((l) => ({
       value: l.language,
       label: l.language,
@@ -37,39 +41,27 @@ export function ProjectExplorer({ projects, languages }: ProjectExplorerProps) {
 
   return (
     <div className="space-y-8">
-      <div
+      <ToggleGroup
         aria-label={filter.label}
-        className="flex flex-wrap gap-2"
-        role="group"
+        className="w-full flex-wrap"
+        value={[language]}
+        variant="outline"
+        onValueChange={(value) => {
+          // Seleção única e sempre com uma opção ativa: clicar na ativa não desmarca.
+          if (value[0]) setLanguage(value[0]);
+        }}
       >
-        {options.map((option) => {
-          const active = option.value === language;
-          return (
-            <button
-              key={option.label}
-              aria-pressed={active}
-              className={cn(
-                "inline-flex min-h-10 items-center gap-2 rounded-full border px-3.5 text-sm transition-colors outline-none focus-visible:ring-3 focus-visible:ring-ring/50",
-                active
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border bg-card text-foreground hover:bg-muted",
-              )}
-              type="button"
-              onClick={() => setLanguage(option.value)}
-            >
-              {option.label}
-              <span
-                className={cn(
-                  "font-mono text-xs",
-                  active ? "opacity-80" : "text-muted-foreground",
-                )}
-              >
-                {option.count}
-              </span>
-            </button>
-          );
-        })}
-      </div>
+        {options.map((option) => (
+          <ToggleGroupItem
+            key={option.value}
+            className="h-10 gap-2 rounded-full px-3.5 aria-pressed:border-primary aria-pressed:bg-primary aria-pressed:text-primary-foreground"
+            value={option.value}
+          >
+            {option.label}
+            <span className="font-mono text-xs opacity-70">{option.count}</span>
+          </ToggleGroupItem>
+        ))}
+      </ToggleGroup>
 
       <p aria-live="polite" className="font-mono text-sm text-muted-foreground">
         {filter.count(visible.length)}

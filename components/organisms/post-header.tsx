@@ -6,6 +6,7 @@ import Image from "next/image";
 
 import { PostMeta } from "@/components/molecules/post-meta";
 import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
 import type { PostSummary } from "@/lib/blog";
 
 export function PostHeader({ post }: { post: PostSummary }) {
@@ -36,7 +37,7 @@ export function PostHeader({ post }: { post: PostSummary }) {
         updated={updated}
       />
       {coverImage ? (
-        <div className="overflow-hidden rounded-xl border border-border">
+        <Card className="py-0">
           <Image
             alt={title}
             className="h-auto w-full"
@@ -45,7 +46,7 @@ export function PostHeader({ post }: { post: PostSummary }) {
             src={coverImage}
             width={1200}
           />
-        </div>
+        </Card>
       ) : null}
     </header>
   );
