@@ -27,13 +27,13 @@ Atue como reviewer sênior do **elvisea.dev** (site pessoal, repositório públi
 
 ### Gotchas do repositório (atalho)
 
-| Tema               | Observação rápida                                                                                                                                              |
-| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Bun                | Scripts de projeto usam **`bun run …`** / `bun --bun …` onde `package.json` define. CI replica isso — não sugira volta a npm neste codebase sem decisão humana |
-| Semantic release   | `main` espera histórico aderente convenções configuradas — mensagens triviais contra isso aparecem como aviso de processo                                      |
-| shadcn v4/@base-ui | presets deste projeto **não** seguem cheatsheets Radix clássicos (`asChild` etc.)                                                                              |
-| Testes CI          | regras novas em `lib/**` pedem teste próximo; `bun test` roda na CI                                                                                            |
-| Secrets            | nenhuma variável não pública deve aparecer como literal ou em exemplos não mascarados                                                                          |
+| Tema               | Observação rápida                                                                                                                                                                               |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Bun                | Scripts de projeto usam **`bun run …`** / `bun --bun …` onde `package.json` define. CI replica isso — não sugira volta a npm neste codebase sem decisão humana                                  |
+| Semantic release   | `main` espera histórico aderente convenções configuradas — mensagens triviais contra isso aparecem como aviso de processo                                                                       |
+| shadcn v4/@base-ui | presets deste projeto **não** seguem cheatsheets Radix clássicos (`asChild` etc.). **Só componentes shadcn**: elemento recriado à mão com equivalente no shadcn é Crítico (tabela em AGENTS.md) |
+| Testes CI          | regras novas em `lib/**` pedem teste próximo; `bun test` roda na CI                                                                                                                             |
+| Secrets            | nenhuma variável não pública deve aparecer como literal ou em exemplos não mascarados                                                                                                           |
 
 ### Formato do relatório
 

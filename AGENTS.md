@@ -66,6 +66,41 @@ Fonte única de contexto para qualquer agente (Claude Code, Cursor, Codex…).
   metadata, sitemap, robots e imagens OG.
 - Imagens OG com `next/og` usam as TTF de `assets/fonts` (satori não lê woff2).
 
+## Componentes de interface (regra canônica)
+
+**Usar somente componentes do shadcn/ui no estilo Base UI** (`components.json`:
+`base-nova`), instalados pela CLI (`bunx --bun shadcn@latest add <nome>`) em
+`components/ui/`. Documentação: <https://ui.shadcn.com/docs/components/base>.
+
+- Antes de criar qualquer elemento de interface, procurar o componente
+  equivalente na documentação e instalá-lo. Não recriar com `div`/`span` e
+  classes o que o shadcn já oferece.
+- Mapeamento usado neste projeto:
+
+  | Necessidade                   | Componente                                               |
+  | ----------------------------- | -------------------------------------------------------- |
+  | Botão                         | `Button`                                                 |
+  | Link com aparência de botão   | `buttonVariants` num `<a>`/`Link` (ver abaixo)           |
+  | Seleção de uma opção          | `Select` (nunca `native-select` ou `<select>`)           |
+  | Campo de formulário           | `Field`, `FieldLabel`, `FieldError`, `Input`, `Textarea` |
+  | Filtro com opções alternáveis | `ToggleGroup`                                            |
+  | Caixa com conteúdo            | `Card` (`CardHeader`, `CardContent`, `CardFooter`)       |
+  | Etiqueta, tag, chip           | `Badge`                                                  |
+  | Mensagem de erro/sucesso      | `Alert`                                                  |
+  | Lista de itens com ação       | `Item`, `ItemGroup`, `ItemSeparator`                     |
+  | Estado vazio                  | `Empty`                                                  |
+  | Linha divisória               | `Separator`                                              |
+  | Menu lateral (mobile)         | `Sheet`                                                  |
+
+- **Links com cara de botão:** `buttonVariants` num `<a>` ou `Link`. É a
+  recomendação do shadcn para Base UI: `<Button render={<a />}>` força
+  `role="button"` e apaga a semântica de link.
+- Componentes gerados não são editados à mão; ajustes visuais vão por
+  `className` no uso. Se for preciso mudar o componente, registrar o motivo.
+- **Exceções aceitas** (com comentário no código): campos ocultos do
+  anti-spam do formulário (inputs nativos), elementos decorativos sem
+  equivalente (pontos da timeline) e bordas de layout entre regiões da página.
+
 ## Estilo visual
 
 Paleta derivada do banner do LinkedIn, com contraste AA medido (detalhes e
@@ -85,12 +120,12 @@ valores em `app/globals.css`):
 
 ## Componentização — design atômico
 
-| Camada         | Papel                            | Exemplos                                          |
-| -------------- | -------------------------------- | ------------------------------------------------- |
-| **Átomos**     | Blocos mínimos                   | `components/ui/*` (shadcn) e `components/atoms/*` |
-| **Moléculas**  | Combinações simples de átomos    | `PostCard`, `PostMeta`, `ThemeToggle`             |
-| **Organismos** | Seções completas                 | `SiteHeader`, `HeroSection`, `BlogList`           |
-| **Páginas**    | Rota + dados (`app/**/page.tsx`) | Home, `/blog`, `/blog/[slug]`                     |
+| Camada         | Papel                            | Exemplos                                                                                                               |
+| -------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| **Átomos**     | Blocos mínimos                   | `components/ui/*` (shadcn, obrigatório quando existir) e `components/atoms/*` (só o que o shadcn não tem, ex.: ícones) |
+| **Moléculas**  | Combinações simples de átomos    | `PostCard`, `PostMeta`, `ThemeToggle`                                                                                  |
+| **Organismos** | Seções completas                 | `SiteHeader`, `HeroSection`, `BlogList`                                                                                |
+| **Páginas**    | Rota + dados (`app/**/page.tsx`) | Home, `/blog`, `/blog/[slug]`                                                                                          |
 
 - Busca de dados e efeitos ficam em páginas e organismos, nunca em átomos.
 - TypeScript estrito, sem `any`. Responsivo do mobile ao desktop.
