@@ -3,6 +3,9 @@
 /**
  * Formulário de contato (Server Action `submitContact`).
  *
+ * Vindo de uma página de serviço, `prefill` pré-seleciona o assunto e envia o
+ * serviço num campo oculto (ver `lib/contact/prefill.ts`).
+ *
  * Anti-spam sem captcha: campo isca invisível (`website`) e `startedAt`
  * preenchido no navegador ao montar; a action descarta envios com isca
  * preenchida ou feitos rápido demais.
@@ -36,6 +39,7 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { contatoPage } from "@/content/pt-BR/pages/contato";
+import type { ContactPrefill } from "@/lib/contact/prefill";
 
 const { fields } = contatoPage;
 
@@ -44,7 +48,7 @@ function errorsOf(state: ContactActionState | null, name: string) {
   return state.fieldErrors?.[name]?.map((message) => ({ message }));
 }
 
-export function ContactForm() {
+export function ContactForm({ prefill }: { prefill?: ContactPrefill }) {
   const [state, formAction, pending] = useActionState(submitContact, null);
   const startedAtRef = useRef<HTMLInputElement>(null);
 
@@ -157,7 +161,7 @@ export function ContactForm() {
                   {fields.reason.label}
                 </FieldLabel>
                 <Select
-                  defaultValue={values?.reason || null}
+                  defaultValue={values?.reason || prefill?.reason || null}
                   items={fields.reason.options}
                   name="reason"
                   required
@@ -179,6 +183,11 @@ export function ContactForm() {
                     </SelectGroup>
                   </SelectContent>
                 </Select>
+                {prefill?.service ? (
+                  <FieldDescription>
+                    {fields.service.label}: {prefill.service.title}
+                  </FieldDescription>
+                ) : null}
                 <FieldError errors={errorsOf(state, "reason")} />
               </Field>
             </div>
@@ -219,6 +228,11 @@ export function ContactForm() {
             />
           </div>
           <input ref={startedAtRef} name="startedAt" type="hidden" />
+          <input
+            name="service"
+            type="hidden"
+            value={prefill?.service?.slug ?? ""}
+          />
 
           <Button
             className="h-11 w-full px-6 sm:w-auto"

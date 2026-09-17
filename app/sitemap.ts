@@ -6,6 +6,8 @@
 import type { MetadataRoute } from "next";
 
 import { site } from "@/content/pt-BR/site";
+import { getServiceSlugs } from "@/features/services/detail/view-model/get-service-detail-view-model";
+import { SERVICES_PATH, servicePath } from "@/features/services/routes";
 import { getAllPosts } from "@/lib/blog";
 import { getCaseStudies } from "@/lib/projects";
 
@@ -22,6 +24,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: "monthly",
       priority: 0.9,
     },
+    {
+      url: `${site.url}${SERVICES_PATH}`,
+      changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    ...getServiceSlugs().map((slug) => ({
+      url: `${site.url}${servicePath(slug)}`,
+      changeFrequency: "monthly" as const,
+      priority: 0.8,
+    })),
     { url: `${site.url}/projetos`, changeFrequency: "weekly", priority: 0.8 },
     { url: `${site.url}/sobre`, changeFrequency: "monthly", priority: 0.8 },
     {

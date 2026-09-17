@@ -11,8 +11,11 @@ import { ProfileSummary } from "@/components/organisms/profile-summary";
 import { StackGrid } from "@/components/organisms/stack-grid";
 import { buttonVariants } from "@/components/ui/button";
 import { contatoPage } from "@/content/pt-BR/pages/contato";
+import { servicosPage } from "@/content/pt-BR/pages/servicos";
 import { homePage, sobrePage } from "@/content/pt-BR/pages/profissional";
 import { projetosPage } from "@/content/pt-BR/pages/projetos";
+import { getServicesCatalogViewModel } from "@/features/services/catalog/view-model/get-services-catalog-view-model";
+import { ServicesSection } from "@/features/services/components/organisms/services-section";
 import { getHighlightedExperiences } from "@/lib/content";
 import { getFeaturedProjects } from "@/lib/projects";
 import { pageMetadata } from "@/lib/seo/metadata";
@@ -51,8 +54,16 @@ export default function HomePage() {
         </div>
       </section>
 
+      <ServicesSection
+        allLabel={servicosPage.home.all}
+        description={servicosPage.home.description}
+        eyebrow={servicosPage.home.eyebrow}
+        model={getServicesCatalogViewModel()}
+        title={servicosPage.home.title}
+      />
+
       <section
-        className="scroll-mt-20 border-b border-border bg-surface py-20"
+        className="scroll-mt-20 border-b border-border py-20"
         id="experiencia"
       >
         <div className="mx-auto max-w-6xl space-y-10 px-4 sm:px-6">
@@ -71,7 +82,7 @@ export default function HomePage() {
       </section>
 
       <section
-        className="scroll-mt-20 border-b border-border py-20"
+        className="scroll-mt-20 border-b border-border bg-surface py-20"
         id="projetos"
       >
         <div className="mx-auto max-w-6xl space-y-10 px-4 sm:px-6">
@@ -90,10 +101,7 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section
-        className="scroll-mt-20 border-b border-border bg-surface py-20"
-        id="stack"
-      >
+      <section className="scroll-mt-20 border-b border-border py-20" id="stack">
         <div className="mx-auto max-w-6xl space-y-10 px-4 sm:px-6">
           <SectionHeader
             eyebrow={homePage.stack.eyebrow}
@@ -105,7 +113,7 @@ export default function HomePage() {
 
       <BlogPreviewSection />
 
-      <section className="scroll-mt-20 py-20" id="contato">
+      <section className="scroll-mt-20 bg-surface py-20" id="contato">
         <div className="mx-auto flex max-w-6xl flex-col items-start gap-6 px-4 sm:px-6 md:flex-row md:items-end md:justify-between">
           <SectionHeader
             description={contatoPage.home.description}

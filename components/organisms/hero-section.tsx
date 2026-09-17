@@ -3,12 +3,15 @@ import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { homePage } from "@/content/pt-BR/pages/profissional";
+import { servicosPage } from "@/content/pt-BR/pages/servicos";
 import { site } from "@/content/pt-BR/site";
+import { SERVICES_PATH } from "@/features/services/routes";
 import { cn } from "cn";
 
 /**
  * Hero da home: nome, cargo, stack e links. Sem slogan (ver AGENTS.md).
- * Currículo é o botão principal (público prioritário: quem contrata).
+ * Ordem dos botões segue os públicos (AGENTS.md): currículo para quem
+ * contrata, serviços para empresas, depois LinkedIn e GitHub.
  */
 export function HeroSection() {
   return (
@@ -53,6 +56,15 @@ export function HeroSection() {
             href="/curriculo"
           >
             {homePage.hero.resume}
+          </Link>
+          <Link
+            className={cn(
+              buttonVariants({ variant: "outline", size: "lg" }),
+              "h-11 w-full px-5 sm:w-auto",
+            )}
+            href={SERVICES_PATH}
+          >
+            {servicosPage.home.heroCta}
           </Link>
           <a
             className={cn(

@@ -78,6 +78,7 @@ export async function sendContactMessage(
     transport,
     durationMs: durationMs(),
     reason: input.reason,
+    service: input.service,
     email: maskEmail(input.email),
     messageLength: input.message.length,
     hasCompany: Boolean(input.company),

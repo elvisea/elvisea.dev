@@ -60,7 +60,7 @@ Mapa de termos, modelo de página e checklist de lançamento em
 6. **Página sem conteúdo não indexa:** `noindex` e fora do sitemap, voltando
    sozinha quando o conteúdo chega (ex.: `/blog` sem posts).
 7. **Todo conteúdo novo** (post, estudo de caso) leva a uma página relacionada
-   do site: experiência, projeto ou contato.
+   do site: serviço, experiência, projeto ou contato.
 8. **Rota renomeada ganha redirect 308** em `next.config.ts`. Redirects não são
    removidos.
 
@@ -103,6 +103,17 @@ Mapa de termos, modelo de página e checklist de lançamento em
 - `content/pt-BR/` guarda conteúdo e textos de interface (`site.ts`, `pages/*`,
   `blog/posts/*.md`). Componentes não têm texto fixo.
 - Header e rodapé ficam em `app/layout.tsx`; páginas renderizam só o conteúdo.
+- **Features novas seguem MVVM** em `features/<feature>/`:
+  - `repository/`: acesso ao conteúdo, com tipos;
+  - `<fluxo>/view-model/`: funções puras e testadas que montam o que a tela
+    mostra (`get-*-view-model.ts` no servidor, `use-*-view-model.ts` no
+    cliente);
+  - `<fluxo>/view/`: só renderiza o view-model;
+  - `components/{molecules,organisms}/`: componentes da feature.
+
+  A rota em `app/` só declara metadata e renderiza a View. `features/services`
+  é o modelo; o restante do site migra pelas issues #22 e #24.
+
 - URL do site é a constante `site.url` (`content/pt-BR/site.ts`), usada em
   metadata, sitemap, robots e imagens OG.
 - Imagens OG com `next/og` usam as TTF de `assets/fonts` (satori não lê woff2).

@@ -30,6 +30,8 @@ export const contatoPage = {
       ],
     },
     message: { label: "Mensagem" },
+    /** Serviço de origem, mostrado quando o contato vem de `/servicos/<slug>`. */
+    service: { label: "Serviço" },
     /** Campo isca (honeypot): invisível para pessoas, preenchido por robôs. */
     honeypot: { label: "Site (deixe em branco)" },
   },

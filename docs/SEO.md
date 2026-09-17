@@ -49,7 +49,7 @@ reforço, não como aposta principal.
 
 ### Público 2 — serviços
 
-| Serviço (página futura)   | Comercial                                                           | Comercial com modificador                        | Informacional (blog → serviço)                |
+| Serviço (página)          | Comercial                                                           | Comercial com modificador                        | Informacional (blog → serviço)                |
 | ------------------------- | ------------------------------------------------------------------- | ------------------------------------------------ | --------------------------------------------- |
 | Chatbot com IA e WhatsApp | desenvolvimento de chatbot com IA · chatbot para whatsapp com IA    | chatbot com IA para clínica · … para atendimento | como funciona um chatbot com IA no whatsapp   |
 | Automação e integração    | automação de processos empresariais · integração de sistemas        | integração com ERP · automação com IA            | como integrar sistemas legados                |
@@ -107,12 +107,13 @@ Não criar página nem conteúdo para atrair:
 
 ## Dados estruturados em uso
 
-| Página          | Nós                                                              |
-| --------------- | ---------------------------------------------------------------- |
-| Todas (layout)  | `WebSite` (`/#website`), `Person` (`/#person`)                   |
-| `/sobre`        | `ProfilePage` (entidade principal: `/#person`), `BreadcrumbList` |
-| Demais internas | `BreadcrumbList`                                                 |
-| `/blog/<slug>`  | `BlogPosting` (autor e editor: `/#person`), `BreadcrumbList`     |
+| Página             | Nós                                                               |
+| ------------------ | ----------------------------------------------------------------- |
+| Todas (layout)     | `WebSite` (`/#website`), `Person` (`/#person`)                    |
+| `/sobre`           | `ProfilePage` (entidade principal: `/#person`), `BreadcrumbList`  |
+| Demais internas    | `BreadcrumbList`                                                  |
+| `/servicos/<slug>` | `Service` (prestador: `/#person`, área: Brasil), `BreadcrumbList` |
+| `/blog/<slug>`     | `BlogPosting` (autor e editor: `/#person`), `BreadcrumbList`      |
 
 Builders em `lib/seo/structured-data.ts`, componente em `lib/seo/json-ld.tsx`.
 
@@ -136,7 +137,8 @@ Quando o domínio apontar para o site novo:
 - [ ] Enviar `https://elvisea.dev/sitemap.xml` no Search Console.
 - [ ] **Bing Webmaster Tools:** importar a propriedade do Search Console.
 - [ ] Inspecionar a URL da home e pedir indexação.
-- [ ] Rich Results Test em `/`, `/sobre` e no primeiro post.
+- [ ] Rich Results Test em `/`, `/sobre`, numa página de serviço e no primeiro
+      post.
 - [ ] `curl -I` nas rotas antigas: todas com 308.
 - [ ] `/blog` com `noindex` enquanto não houver post.
 - [ ] Lighthouse (SEO e acessibilidade) nas páginas principais.

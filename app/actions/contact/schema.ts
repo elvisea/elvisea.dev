@@ -10,8 +10,14 @@ import {
   contatoMessages as m,
   contatoPage,
 } from "@/content/pt-BR/pages/contato";
+import { servicesRepository } from "@/features/services/repository/services-repository";
 
 const reasons = contatoPage.fields.reason.options.map((o) => o.value) as [
+  string,
+  ...string[],
+];
+
+const serviceSlugs = servicesRepository.list().map((s) => s.slug) as [
   string,
   ...string[],
 ];
@@ -33,6 +39,14 @@ export const contactSchema = z.object({
     .trim()
     .min(20, m.messageTooShort)
     .max(4000, m.messageTooLong),
+  // Serviço de origem (campo oculto, vem de /servicos/<slug>). Valor
+  // desconhecido é descartado em silêncio: não é erro de quem preenche.
+  service: z
+    .preprocess(
+      (v) => (v === "" ? undefined : v),
+      z.enum(serviceSlugs).optional(),
+    )
+    .catch(undefined),
 });
 
 export type ContactInput = z.infer<typeof contactSchema>;
@@ -44,6 +58,8 @@ export interface ContactFormValues {
   company: string;
   reason: string;
   message: string;
+  /** Slug do serviço de origem; vazio quando o contato não veio de um serviço. */
+  service: string;
 }
 
 export interface ContactFormData {
@@ -66,6 +82,7 @@ export function readContactFormData(formData: FormData): ContactFormData {
       company: text(formData, "company"),
       reason: text(formData, "reason"),
       message: text(formData, "message"),
+      service: text(formData, "service"),
     },
     honeypot: text(formData, "website"),
     startedAt: Number.isFinite(startedAt) && startedAt > 0 ? startedAt : null,

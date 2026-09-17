@@ -22,9 +22,8 @@ import {
 import { site, type NavItem } from "@/content/pt-BR/site";
 import { cn } from "cn";
 
-/** Rota ativa: `/` só na home; demais por prefixo (ex.: `/blog/post` ativa `/blog`). */
+/** Rota ativa por prefixo (ex.: `/blog/post` ativa `/blog`). A home não está no menu. */
 function isActive(item: NavItem, pathname: string): boolean {
-  if (item.href === "/") return pathname === "/";
   return pathname === item.href || pathname.startsWith(`${item.href}/`);
 }
 
