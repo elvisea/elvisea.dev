@@ -15,12 +15,14 @@
  * 7. `rehype-stringify` — HAST → HTML.
  *
  * O HTML resultante é injetado via `dangerouslySetInnerHTML` em
- * `<PostBody>` — seguro porque o passo 3 não permite HTML inline.
+ * `<PostBody>`, seguro porque o passo 3 não permite HTML inline.
  *
  * Trocou-se `rehype-pretty-code` (Shiki) por `rehype-highlight` para
  * eliminar dynamic imports incompatíveis com o Turbopack de `next dev`.
  *
- * @module lib/blog/markdown
+ * Usado pelo blog e pelas páginas de conteúdo em Markdown.
+ *
+ * @module lib/markdown/render
  */
 import "server-only";
 

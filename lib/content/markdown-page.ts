@@ -7,7 +7,7 @@ import "server-only";
 import { readFile } from "node:fs/promises";
 import path from "node:path";
 
-import { renderMarkdown } from "@/lib/blog/markdown";
+import { renderMarkdown } from "@/lib/markdown/render";
 
 export async function renderContentPage(name: string): Promise<string> {
   const file = path.join(process.cwd(), "content", "pt-BR", `${name}.md`);

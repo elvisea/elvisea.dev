@@ -3,8 +3,6 @@ import fs from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 
-import { site } from "@/content/pt-BR/site";
-
 import { loadPostsFromDir } from "./source";
 
 let tmp: string;
@@ -35,15 +33,14 @@ describe("loadPostsFromDir", () => {
   it("ordena por date desc e aplica defaults do schema", async () => {
     await write(
       "antigo.md",
-      "---\ntitle: Antigo\ndescription: A\ndate: 2025-01-01\n---\nbody",
+      "---\ntitle: Antigo\ndescription: Descrição com tamanho suficiente para passar no schema do blog.\ndate: 2025-01-01\n---\nbody",
     );
     await write(
       "novo.md",
-      "---\ntitle: Novo\ndescription: N\ndate: 2026-04-01\n---\nbody",
+      "---\ntitle: Novo\ndescription: Descrição com tamanho suficiente para passar no schema do blog.\ndate: 2026-04-01\n---\nbody",
     );
     const posts = await loadPostsFromDir(tmp);
     expect(posts.map((p) => p.slug)).toEqual(["novo", "antigo"]);
-    expect(posts[0].frontmatter.author).toBe(site.person.name);
     expect(posts[0].frontmatter.tags).toEqual([]);
     expect(posts[0].frontmatter.draft).toBe(false);
   });
@@ -51,7 +48,7 @@ describe("loadPostsFromDir", () => {
   it("normaliza date YAML (Date) para string ISO YYYY-MM-DD", async () => {
     await write(
       "yaml-date.md",
-      "---\ntitle: T\ndescription: D\ndate: 2026-05-03\n---\nx",
+      "---\ntitle: T\ndescription: Descrição com tamanho suficiente para passar no schema do blog.\ndate: 2026-05-03\n---\nx",
     );
     const posts = await loadPostsFromDir(tmp);
     expect(posts[0].frontmatter.date).toBe("2026-05-03");
@@ -60,7 +57,7 @@ describe("loadPostsFromDir", () => {
   it("preserva date como string ISO quoted", async () => {
     await write(
       "quoted.md",
-      `---\ntitle: T\ndescription: D\ndate: "2026-05-03"\n---\nx`,
+      `---\ntitle: T\ndescription: Descrição com tamanho suficiente para passar no schema do blog.\ndate: "2026-05-03"\n---\nx`,
     );
     const posts = await loadPostsFromDir(tmp);
     expect(posts[0].frontmatter.date).toBe("2026-05-03");
@@ -69,7 +66,7 @@ describe("loadPostsFromDir", () => {
   it("inclui draft: true (filtragem fica na fachada)", async () => {
     await write(
       "draft.md",
-      "---\ntitle: D\ndescription: x\ndate: 2026-05-01\ndraft: true\n---\nx",
+      "---\ntitle: D\ndescription: Descrição com tamanho suficiente para passar no schema do blog.\ndate: 2026-05-01\ndraft: true\n---\nx",
     );
     const posts = await loadPostsFromDir(tmp);
     expect(posts).toHaveLength(1);
@@ -94,7 +91,7 @@ describe("loadPostsFromDir", () => {
   it("coverImage ausente → undefined", async () => {
     await write(
       "no-cover.md",
-      "---\ntitle: T\ndescription: D\ndate: 2026-05-01\n---\nx",
+      "---\ntitle: T\ndescription: Descrição com tamanho suficiente para passar no schema do blog.\ndate: 2026-05-01\n---\nx",
     );
     const posts = await loadPostsFromDir(tmp);
     expect(posts[0].frontmatter.coverImage).toBeUndefined();
@@ -103,10 +100,26 @@ describe("loadPostsFromDir", () => {
   it("preserva tags e coverImage quando informados", async () => {
     await write(
       "rich.md",
-      `---\ntitle: T\ndescription: D\ndate: 2026-05-01\ntags: [a, b]\ncoverImage: /blog/x.png\n---\nx`,
+      `---\ntitle: T\ndescription: Descrição com tamanho suficiente para passar no schema do blog.\ndate: 2026-05-01\ntags: [a, b]\ncoverImage: /blog/x.png\n---\nx`,
     );
     const posts = await loadPostsFromDir(tmp);
     expect(posts[0].frontmatter.tags).toEqual(["a", "b"]);
     expect(posts[0].frontmatter.coverImage).toBe("/blog/x.png");
+  });
+
+  it("rejeita campo desconhecido (schema estrito)", async () => {
+    await write(
+      "typo.md",
+      "---\ntitle: T\ndescription: Descrição com tamanho suficiente para passar no schema do blog.\ndate: 2026-05-01\nautor: Fulano\n---\nx",
+    );
+    await expect(loadPostsFromDir(tmp)).rejects.toThrow(/autor/);
+  });
+
+  it("rejeita descrição curta demais", async () => {
+    await write(
+      "short.md",
+      "---\ntitle: T\ndescription: curta\ndate: 2026-05-01\n---\nx",
+    );
+    await expect(loadPostsFromDir(tmp)).rejects.toThrow(/description/);
   });
 });
