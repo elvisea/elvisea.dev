@@ -20,6 +20,8 @@ services:
       SMTP_USER: ${SMTP_USER:-}
       SMTP_PASSWORD: ${SMTP_PASSWORD:-}
       TRUSTED_IP_HEADER: ${TRUSTED_IP_HEADER:-}
+      # Logs: `json` (padrão em produção) ou `pretty`.
+      LOG_FORMAT: ${LOG_FORMAT:-}
     healthcheck:
       test:
         [

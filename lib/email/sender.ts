@@ -10,6 +10,9 @@
  */
 import "server-only";
 
+import { logger } from "@/lib/log/logger";
+import { maskEmail } from "@/lib/log/redact";
+
 export interface EmailMessage {
   from: string;
   to: string;
@@ -40,11 +43,14 @@ export async function getEmailSender(
     return sendViaSmtp;
   }
   return async (message) => {
-    console.info("[email:console]", {
+    // Assunto e texto trazem nome e mensagem: só fora de produção.
+    const production = process.env.NODE_ENV === "production";
+    logger.info("email.console", {
       to: message.to,
-      replyTo: message.replyTo,
-      subject: message.subject,
-      text: message.text,
+      replyTo: message.replyTo ? maskEmail(message.replyTo) : undefined,
+      ...(production
+        ? { textLength: message.text.length }
+        : { subject: message.subject, text: message.text }),
     });
   };
 }

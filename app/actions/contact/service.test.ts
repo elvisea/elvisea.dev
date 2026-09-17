@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, spyOn } from "bun:test";
 
 import { contatoMessages } from "@/content/pt-BR/pages/contato";
+import { logger } from "@/lib/log/logger";
 import { resetRateLimitForTests } from "@/lib/rate-limit";
 
 import { ContactError } from "./errors";
@@ -26,6 +27,11 @@ const saved: Record<string, string | undefined> = {};
 // process.env tipa NODE_ENV como somente leitura; nos testes precisamos trocá-lo.
 const env = process.env as Record<string, string | undefined>;
 
+/** Nomes dos eventos registrados por um spy do logger. */
+function events(spy: { mock: { calls: unknown[][] } }): unknown[] {
+  return spy.mock.calls.map((call) => call[0]);
+}
+
 beforeEach(() => {
   for (const key of ENV_KEYS) saved[key] = env[key];
   resetRateLimitForTests();
@@ -39,33 +45,65 @@ afterEach(() => {
 });
 
 describe("sendContactMessage", () => {
-  it("com transporte console, registra no log sem erro", async () => {
-    process.env.EMAIL_TRANSPORT = "console";
-    const info = spyOn(console, "info").mockImplementation(() => {});
+  it("com transporte console, registra email.console e contact.sent sem dados pessoais", async () => {
+    env.EMAIL_TRANSPORT = "console";
+    const info = spyOn(logger, "info").mockImplementation(() => {});
     await sendContactMessage(input, "1.1.1.1");
-    expect(info).toHaveBeenCalledTimes(1);
-    const [, payload] = info.mock.calls[0] as [string, { replyTo: string }];
-    expect(payload.replyTo).toBe(input.email);
+
+    expect(events(info)).toEqual(["email.console", "contact.sent"]);
+    const [, emailFields] = info.mock.calls[0] as [string, { replyTo: string }];
+    expect(emailFields.replyTo).toBe("m***@example.com");
+    const [, sent] = info.mock.calls[1] as [string, Record<string, unknown>];
+    expect(sent).toMatchObject({
+      transport: "console",
+      reason: "vaga",
+      email: "m***@example.com",
+      messageLength: input.message.length,
+      hasCompany: false,
+    });
+    expect(JSON.stringify(sent)).not.toContain("Maria");
     info.mockRestore();
   });
 
-  it("aplica rate limit por IP (3 envios)", async () => {
-    process.env.EMAIL_TRANSPORT = "console";
-    const info = spyOn(console, "info").mockImplementation(() => {});
+  it("em produção, email.console não registra assunto nem texto", async () => {
+    env.EMAIL_TRANSPORT = "console";
+    env.NODE_ENV = "production";
+    const info = spyOn(logger, "info").mockImplementation(() => {});
+    await sendContactMessage(input, "1.1.1.9");
+    const [, emailFields] = info.mock.calls[0] as [
+      string,
+      Record<string, unknown>,
+    ];
+    expect(emailFields).not.toHaveProperty("text");
+    expect(emailFields).not.toHaveProperty("subject");
+    expect(emailFields.textLength).toBeNumber();
+    info.mockRestore();
+  });
+
+  it("aplica rate limit por IP (3 envios) e registra o prefixo do IP", async () => {
+    env.EMAIL_TRANSPORT = "console";
+    const info = spyOn(logger, "info").mockImplementation(() => {});
+    const warn = spyOn(logger, "warn").mockImplementation(() => {});
     for (let i = 0; i < 3; i++) await sendContactMessage(input, "2.2.2.2");
     await expect(sendContactMessage(input, "2.2.2.2")).rejects.toMatchObject({
       code: "RATE_LIMITED",
       message: contatoMessages.rateLimited,
     });
+    expect(warn).toHaveBeenCalledWith(
+      "contact.rate_limited",
+      expect.objectContaining({ ipPrefix: "2.2.2.0/24" }),
+    );
     await sendContactMessage(input, "3.3.3.3");
     info.mockRestore();
+    warn.mockRestore();
   });
 
-  it("smtp sem configuração: NOT_CONFIGURED", async () => {
-    process.env.EMAIL_TRANSPORT = "smtp";
-    delete process.env.SMTP_HOST;
-    delete process.env.EMAIL_TO;
-    const error = spyOn(console, "error").mockImplementation(() => {});
+  it("smtp sem configuração: NOT_CONFIGURED com os nomes das variáveis que faltam", async () => {
+    env.EMAIL_TRANSPORT = "smtp";
+    delete env.SMTP_HOST;
+    delete env.EMAIL_TO;
+    env.EMAIL_FROM = "site@example.com";
+    const error = spyOn(logger, "error").mockImplementation(() => {});
     let err: unknown;
     try {
       await sendContactMessage(input, "4.4.4.4");
@@ -74,6 +112,10 @@ describe("sendContactMessage", () => {
     }
     expect(err).toBeInstanceOf(ContactError);
     expect((err as ContactError).code).toBe("NOT_CONFIGURED");
+    expect(error).toHaveBeenCalledWith("contact.not_configured", {
+      transport: "smtp",
+      missing: ["EMAIL_TO", "SMTP_HOST"],
+    });
     error.mockRestore();
   });
 });

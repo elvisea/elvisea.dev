@@ -20,6 +20,15 @@ const nextConfig: NextConfig = {
    * Só vale em development.
    */
   allowedDevOrigins: ["192.168.*.*", "10.*.*.*", "172.*.*.*", "100.*.*.*"],
+
+  /**
+   * Desliga a linha `└─ ƒ submitContact(...)` do `next dev`: ela trunca os
+   * argumentos e expõe dados digitados. Os eventos do formulário saem pelo
+   * logger estruturado (`lib/log/logger.ts`). Só afeta desenvolvimento.
+   */
+  logging: {
+    serverFunctions: false,
+  },
 };
 
 export default nextConfig;
