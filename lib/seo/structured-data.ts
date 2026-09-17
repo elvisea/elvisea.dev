@@ -2,7 +2,8 @@
  * Dados estruturados (schema.org) como funções puras.
  *
  * `WebSite` e `Person` têm `@id` fixo e vão no layout, em todas as páginas.
- * Os nós de cada página (`ProfilePage`, `BreadcrumbList`, `BlogPosting`)
+ * Os nós de cada página (`ProfilePage`, `BreadcrumbList`, `BlogPosting`,
+ * `Service`)
  * apontam para a pessoa e o site pelo `@id`, sem repetir os dados.
  */
 import { formacao } from "@/content/pt-BR/formacao";
@@ -123,5 +124,24 @@ export function blogPostingNode(post: {
     isPartOf: websiteRef,
     author: personRef,
     publisher: personRef,
+  };
+}
+
+export function serviceNode(service: {
+  slug: string;
+  title: string;
+  shortTitle: string;
+  summary: string;
+}): JsonLdNode {
+  const url = absoluteUrl(`/servicos/${service.slug}`);
+  return {
+    "@type": "Service",
+    "@id": `${url}#service`,
+    name: service.title,
+    serviceType: service.shortTitle,
+    description: service.summary,
+    url,
+    provider: personRef,
+    areaServed: { "@type": "Country", name: "Brasil" },
   };
 }

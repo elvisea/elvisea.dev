@@ -9,6 +9,7 @@ import {
   personNode,
   profilePageNode,
   schemaIds,
+  serviceNode,
   websiteNode,
 } from "./structured-data";
 
@@ -121,5 +122,25 @@ describe("nós de página", () => {
     });
     expect(node.keywords).toBeUndefined();
     expect(node.dateModified).toBe("2026-09-01");
+  });
+});
+
+describe("Service", () => {
+  it("aponta o prestador pelo @id e atende o Brasil", () => {
+    const node = serviceNode({
+      slug: "exemplo",
+      title: "Serviço de exemplo",
+      shortTitle: "Exemplo",
+      summary: "Resumo.",
+    });
+    expect(node).toMatchObject({
+      "@type": "Service",
+      "@id": `${site.url}/servicos/exemplo#service`,
+      url: `${site.url}/servicos/exemplo`,
+      name: "Serviço de exemplo",
+      serviceType: "Exemplo",
+      provider: { "@id": schemaIds.person },
+      areaServed: { "@type": "Country", name: "Brasil" },
+    });
   });
 });
