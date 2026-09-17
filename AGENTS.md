@@ -42,6 +42,10 @@ Fonte única de contexto para qualquer agente (Claude Code, Cursor, Codex…).
 - **Componentes:** shadcn/ui estilo `base-nova` sobre `@base-ui/react` (usa a
   prop `render`, não `asChild`). Ícones: `lucide-react`.
 - **Validação:** zod 4 para dados externos (frontmatter, APIs, formulários).
+- **Release:** semantic-release com preset `conventionalcommits` na linha 9.x.
+  A 10 exige `conventional-changelog-writer` 9, que o
+  `@semantic-release/release-notes-generator` ainda não usa. Rodar
+  `bunx semantic-release --dry-run --no-ci --branches develop` antes de subir.
 - **Testes:** `bun:test` (`bun test`), com `test-setup.ts` pré-carregado.
 
 ## Arquitetura
