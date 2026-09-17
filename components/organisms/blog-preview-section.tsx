@@ -14,7 +14,7 @@ import { PostCard } from "@/components/molecules/post-card";
 import { buttonVariants } from "@/components/ui/button";
 import { blogPage } from "@/content/pt-BR/pages/blog";
 import { getRecentPosts } from "@/lib/blog";
-import { cn } from "@/lib/utils";
+import { cn } from "cn";
 
 export async function BlogPreviewSection() {
   const posts = await getRecentPosts(3);

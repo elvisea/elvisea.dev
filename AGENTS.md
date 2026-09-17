@@ -32,7 +32,12 @@ Fonte única de contexto para qualquer agente (Claude Code, Cursor, Codex…).
 
 - **Runtime e pacotes:** Bun (`bun install`, `bun run …`). Versão em
   `.bun-version` (a mesma no `Dockerfile` e na CI). Não usar npm/yarn/pnpm.
-- **Framework:** Next.js 16 (App Router), React 19, TypeScript estrito.
+- **Framework:** Next.js 16 (App Router), React 19, TypeScript 6 estrito.
+  TypeScript 7 fica para quando o typescript-eslint (usado pelo
+  `eslint-config-next`) suportá-lo.
+- **Lint:** ESLint 10 (flat config). `settings.react.version` é explícito no
+  `eslint.config.mjs` porque o eslint-plugin-react 7 não detecta a versão no
+  ESLint 10; atualizar junto com o React.
 - **Estilo:** Tailwind CSS 4 (configuração só em `app/globals.css`).
 - **Componentes:** shadcn/ui estilo `base-nova` sobre `@base-ui/react` (usa a
   prop `render`, não `asChild`). Ícones: `lucide-react`.

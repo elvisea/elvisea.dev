@@ -1,6 +1,6 @@
 import { buttonVariants } from "@/components/ui/button";
 import { site } from "@/content/pt-BR/site";
-import { cn } from "@/lib/utils";
+import { cn } from "cn";
 
 /** Hero da home: nome, cargo, stack e links. Sem slogan (ver AGENTS.md). */
 export function HeroSection() {

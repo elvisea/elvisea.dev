@@ -6,6 +6,12 @@ import prettier from "eslint-config-prettier";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
+  {
+    // eslint-plugin-react 7.x detecta a versão do React com uma API que o
+    // ESLint 10 removeu (context.getFilename). Com a versão explícita, a
+    // detecção não roda. Manter igual à major/minor do React no package.json.
+    settings: { react: { version: "19.3" } },
+  },
   globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),
   prettier,
 ]);

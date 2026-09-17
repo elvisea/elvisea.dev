@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { buttonVariants } from "@/components/ui/button";
 import { site } from "@/content/pt-BR/site";
-import { cn } from "@/lib/utils";
+import { cn } from "cn";
 
 export default function NotFound() {
   return (

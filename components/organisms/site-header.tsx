@@ -20,7 +20,7 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { site, type NavItem } from "@/content/pt-BR/site";
-import { cn } from "@/lib/utils";
+import { cn } from "cn";
 
 /** Rota ativa: `/` só na home; demais por prefixo (ex.: `/blog/post` ativa `/blog`). */
 function isActive(item: NavItem, pathname: string): boolean {

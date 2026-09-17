@@ -7,7 +7,7 @@
  * para preservar semântica e SEO.
  */
 import { blogPage } from "@/content/pt-BR/pages/blog";
-import { cn } from "@/lib/utils";
+import { cn } from "cn";
 
 const dateFormatter = new Intl.DateTimeFormat("pt-BR", {
   dateStyle: "long",

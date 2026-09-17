@@ -5,8 +5,8 @@ profissional, projetos, artigos e contato.
 
 ## Stack
 
-- [Next.js 16](https://nextjs.org) (App Router) e React 19
-- [Bun](https://bun.com) como runtime e gerenciador de pacotes
+- [Next.js 16](https://nextjs.org) (App Router), React 19 e TypeScript 6
+- [Bun](https://bun.com) 1.4 como runtime e gerenciador de pacotes (versão em `.bun-version`)
 - [Tailwind CSS 4](https://tailwindcss.com) e [shadcn/ui](https://ui.shadcn.com) sobre Base UI
 - Blog em Markdown (remark/rehype), imagens OG com `next/og`
 - Testes com `bun:test`; release com semantic-release; imagem Docker no GHCR

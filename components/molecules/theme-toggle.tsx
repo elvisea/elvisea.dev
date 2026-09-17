@@ -10,7 +10,7 @@ import { useTheme } from "next-themes";
 
 import { Button, buttonVariants } from "@/components/ui/button";
 import { site } from "@/content/pt-BR/site";
-import { cn } from "@/lib/utils";
+import { cn } from "cn";
 
 function useClientMounted(): boolean {
   return React.useSyncExternalStore(

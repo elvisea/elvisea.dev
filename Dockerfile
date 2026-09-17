@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 # Mesma versão do `.bun-version` (usada pela CI e pelo ambiente local).
-FROM oven/bun:1.3.6-alpine AS base
+FROM oven/bun:1.4.2-alpine AS base
 WORKDIR /app
 
 FROM base AS deps
