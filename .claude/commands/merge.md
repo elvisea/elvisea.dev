@@ -8,13 +8,15 @@ disable-model-invocation: true
 
 ## Quem autoriza
 
-| PR                           | Merge                                                        |
-| ---------------------------- | ------------------------------------------------------------ |
-| Para `develop`               | autorizado pelo dono do repositório assim que a CI passa     |
-| Release `develop` → `main`   | **só com OK explícito** do dono (gera tag, release e imagem) |
-| Correção urgente para `main` | só com OK explícito                                          |
+| PR                                              | Merge                                                                                                             |
+| ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Branch de trabalho para `develop`               | autorizado pelo dono do repositório assim que a CI passa                                                          |
+| Sincronização `main` → `develop` (após release) | autorizado com a validação local registrada no PR, porque o `[skip ci]` impede a CI (§ Merge de release, passo 4) |
+| Release `develop` → `main`                      | **só com OK explícito** do dono (gera tag, release e imagem)                                                      |
+| Correção urgente para `main`                    | só com OK explícito                                                                                               |
 
-Sem CI verde ou com conflito, não mesclar em nenhum caso.
+Sem CI verde (ou validação local, no caso da sincronização) ou com conflito,
+não mesclar em nenhum caso.
 
 ## Workflow
 
@@ -37,7 +39,10 @@ Sem CI verde ou com conflito, não mesclar em nenhum caso.
    gh pr merge <N> --merge --delete-branch
    ```
 
-   `--squash`/`--rebase` só se o usuário pedir.
+   - `--squash`/`--rebase` só se o usuário pedir.
+   - **Origem `develop` ou `main`** (release ou sincronização): **sem**
+     `--delete-branch`. Seguir a seção [Merge de release](#merge-de-release-develop--main)
+     em vez deste workflow.
 
 4. **Limpeza local:**
 
@@ -104,13 +109,81 @@ Sem CI verde ou com conflito, não mesclar em nenhum caso.
 
 ## Merge de release (`develop` → `main`)
 
-Antes de pedir o OK, rodar a skill [`release-check`](../skills/release-check/SKILL.md)
-na `develop` e registrar o resultado na descrição do PR de release. O merge
-dispara o semantic-release (tag, `CHANGELOG.md`, release no GitHub) e a
-publicação da imagem no GHCR. Não há deploy automático.
+1. **Antes de pedir o OK:** rodar a skill
+   [`release-check`](../skills/release-check/SKILL.md) na `develop` e registrar
+   o resultado na descrição do PR de release. Se a `develop` mudar depois,
+   refazer a checagem, ou registrar que o diff novo não toca código, build nem
+   dependências (`git diff --stat <commit verificado> origin/develop`).
+
+2. **Com o OK explícito, mesclar sem `--delete-branch`** (apagaria a `develop`):
+
+   ```bash
+   gh pr merge <N> --merge
+   git ls-remote --heads origin develop   # a develop continua lá
+   ```
+
+3. **Acompanhar o workflow Release** até terminar:
+   - semantic-release: tag, `CHANGELOG.md`, release no GitHub e commit
+     `chore(release): <versão> [skip ci]` na `main`;
+   - imagem Docker no GHCR.
+
+   Não há deploy automático.
+
+   ```bash
+   # Espera o run do commit de merge (não o de uma release anterior)
+   MERGE=$(gh pr view <N> --json mergeCommit -q .mergeCommit.oid)
+   until RUN=$(gh run list --workflow release.yml --branch main --limit 5 --json databaseId,headSha \
+       -q ".[] | select(.headSha == \"$MERGE\") | .databaseId") && [ -n "$RUN" ]; do sleep 5; done
+   gh run watch "$RUN" --exit-status
+   git fetch origin --tags && git tag -l 'v*'
+   gh release view v<versão>
+   JOB=$(gh run view "$RUN" --json jobs -q '.jobs[] | select(.name | test("Docker")) | .databaseId')
+   gh run view --job "$JOB" --log | grep -oE 'ghcr.io/[^ ]+:(<versão>|latest)@sha256:[0-9a-f]{12}' | sort -u
+   ```
+
+   A imagem é conferida pelo log do job: o token local do `gh` não tem
+   `read:packages` para listar o pacote.
+
+4. **Sincronizar a `develop`** com a `main`, que ficou à frente com o merge e o
+   `chore(release)`. Sem isso, a próxima release parte de versão e changelog
+   desatualizados.
+   1. **Abrir o PR:**
+
+      ```bash
+      git rev-list --left-right --count origin/develop...origin/main   # "0 N": develop só atrás
+      gh pr create --base develop --head main --assignee @me \
+        --title "chore(release): sincroniza develop com a main após a v<versão>"
+      ```
+
+   2. **Validar localmente:** o topo da `main` tem `[skip ci]`, então **a CI não
+      roda neste PR**. Rodar numa worktree destacada da `main` os mesmos passos
+      da CI e registrar o resultado num comentário do PR:
+
+      ```bash
+      W="$(mktemp -d)/sync"; git worktree add --detach "$W" origin/main && cd "$W"
+      bun install --frozen-lockfile && bun run security:check && bun run lint \
+        && bun run format:check && bun run typecheck && bun test && bun --bun run build
+      cd - && git worktree remove --force "$W"
+      ```
+
+   3. **Mesclar sem `--delete-branch`** (apagaria a `main`) e atualizar a
+      `develop` local:
+
+      ```bash
+      gh pr merge <N> --merge
+      git checkout develop && git pull --ff-only origin develop
+      ```
+
+   4. **Conferir:** `git rev-list --left-right --count origin/develop...origin/main`
+      deve mostrar `1 0` (a `develop` só tem o merge a mais).
+
+   O merge para a `develop` já está autorizado pela tabela do início; a
+   validação local substitui a CI só neste caso.
 
 ## Regras
 
 - ❌ Nunca `push --force` em `develop` ou `main`, nem commit direto nelas.
 - ❌ Nunca mesclar release sem OK explícito.
-- ✅ Sempre `--delete-branch`.
+- ✅ `--delete-branch` em todo PR de branch de trabalho (`tipo/<número>`).
+- ❌ **Nunca** `--delete-branch` quando a origem do PR é `develop` (release) ou
+  `main` (sincronização).
