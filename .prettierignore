@@ -1,0 +1,14 @@
+.next
+out
+build
+coverage
+node_modules
+pnpm-lock.yaml
+package-lock.yaml
+.yarn
+dist
+CHANGELOG.md
+
+.env*
+
+bunfig.toml

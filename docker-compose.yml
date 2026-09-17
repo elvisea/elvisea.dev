@@ -1,0 +1,38 @@
+# Produção: roda a imagem publicada pela release no GHCR.
+# A hospedagem ainda não foi definida; a porta fica presa ao localhost
+# para ser exposta por um proxy (NPM, túnel etc.).
+services:
+  web:
+    image: ${REGISTRY:-ghcr.io}/${IMAGE_NAME:-elvisea/elvisea.dev}:${TAG:-latest}
+    container_name: ${CONTAINER_NAME_APP:-elvisea-dev}
+    restart: unless-stopped
+    ports:
+      - "127.0.0.1:${PORT:-3000}:3000"
+    environment:
+      NODE_ENV: production
+      NEXT_TELEMETRY_DISABLED: 1
+      # Formulário de contato (ver .env.example).
+      EMAIL_TRANSPORT: ${EMAIL_TRANSPORT:-}
+      EMAIL_TO: ${EMAIL_TO:-}
+      EMAIL_FROM: ${EMAIL_FROM:-}
+      SMTP_HOST: ${SMTP_HOST:-}
+      SMTP_PORT: ${SMTP_PORT:-465}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      TRUSTED_IP_HEADER: ${TRUSTED_IP_HEADER:-}
+      # Logs: `json` (padrão em produção) ou `pretty`.
+      LOG_FORMAT: ${LOG_FORMAT:-}
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--quiet",
+          "--tries=1",
+          "--spider",
+          "http://127.0.0.1:3000/",
+        ]
+      interval: 30s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
