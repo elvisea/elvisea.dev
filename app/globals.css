@@ -1,0 +1,180 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "highlight.js/styles/github-dark.css";
+
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  /* next/font define --font-geist-* no <html>; evitar var(--font-sans) autorreferente. */
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, monospace;
+  --font-heading: var(--font-sans);
+  --color-ring: var(--ring);
+  --color-input: var(--input);
+  --color-border: var(--border);
+  --color-destructive: var(--destructive);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent: var(--accent);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-muted: var(--muted);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-secondary: var(--secondary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary: var(--primary);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-popover: var(--popover);
+  --color-card-foreground: var(--card-foreground);
+  --color-card: var(--card);
+  --color-heading: var(--heading);
+  --color-highlight: var(--highlight);
+  --color-surface: var(--surface);
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/*
+ * Paleta derivada do banner do LinkedIn (fundo #0A0F1C, teal e indigo).
+ * Contraste AA medido contra o fundo de cada tema:
+ *   claro:  primary #0F766E 5,2:1 · highlight #4F46E5 6,0:1 · muted-fg #475569 7,2:1
+ *   escuro: primary #2DD4BF 10,3:1 · highlight #818CF8 6,4:1 · muted-fg #94A3B8 7,5:1
+ * Teal claro (#2DD4BF) e indigo-500 (#6366F1) sobre fundo claro: só decoração.
+ */
+
+:root {
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --heading: #0a0f1c;
+  --surface: #f1f5f9;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --primary: #0f766e;
+  --primary-foreground: #ffffff;
+  --secondary: #e2e8f0;
+  --secondary-foreground: #0f172a;
+  --muted: #eef2f6;
+  --muted-foreground: #475569;
+  --accent: #eef2ff;
+  --accent-foreground: #3730a3;
+  --highlight: #4f46e5;
+  --destructive: oklch(0.577 0.245 27.325);
+  --border: #e2e8f0;
+  --input: #cbd5e1;
+  --ring: #0d9488;
+  --radius: 0.625rem;
+  /* Decoração (hero, OG): gradientes do banner */
+  --glow-teal: rgb(45 212 191 / 0.16);
+  --glow-indigo: rgb(99 102 241 / 0.12);
+  --grid-line: rgb(15 23 42 / 0.05);
+  /* Tailwind Typography */
+  --tw-prose-body: var(--foreground);
+  --tw-prose-headings: var(--heading);
+  --tw-prose-lead: var(--muted-foreground);
+  --tw-prose-links: var(--primary);
+  --tw-prose-bold: var(--heading);
+  --tw-prose-counters: var(--muted-foreground);
+  --tw-prose-bullets: var(--muted-foreground);
+  --tw-prose-hr: var(--border);
+  --tw-prose-quotes: var(--heading);
+  --tw-prose-quote-borders: var(--primary);
+  --tw-prose-captions: var(--muted-foreground);
+  --tw-prose-code: var(--heading);
+  --tw-prose-pre-code: #e2e8f0;
+  --tw-prose-pre-bg: #0f172a;
+  --tw-prose-th-borders: var(--border);
+  --tw-prose-td-borders: var(--border);
+}
+
+.dark {
+  --background: #0a0f1c;
+  --foreground: #e2e8f0;
+  --heading: #f8fafc;
+  --surface: #0d1424;
+  --card: #111a2e;
+  --card-foreground: #e2e8f0;
+  --popover: #111a2e;
+  --popover-foreground: #e2e8f0;
+  --primary: #2dd4bf;
+  --primary-foreground: #042f2e;
+  --secondary: #1e293b;
+  --secondary-foreground: #e2e8f0;
+  --muted: #162033;
+  --muted-foreground: #94a3b8;
+  --accent: #1e1b4b;
+  --accent-foreground: #c7d2fe;
+  --highlight: #818cf8;
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: #1e293b;
+  --input: #334155;
+  --ring: #2dd4bf;
+  --glow-teal: rgb(45 212 191 / 0.14);
+  --glow-indigo: rgb(99 102 241 / 0.16);
+  --grid-line: rgb(148 163 184 / 0.06);
+  --tw-prose-body: var(--foreground);
+  --tw-prose-headings: var(--heading);
+  --tw-prose-lead: var(--muted-foreground);
+  --tw-prose-links: var(--primary);
+  --tw-prose-bold: var(--heading);
+  --tw-prose-counters: var(--muted-foreground);
+  --tw-prose-bullets: var(--muted-foreground);
+  --tw-prose-hr: var(--border);
+  --tw-prose-quotes: var(--heading);
+  --tw-prose-quote-borders: var(--primary);
+  --tw-prose-captions: var(--muted-foreground);
+  --tw-prose-code: var(--heading);
+  --tw-prose-pre-code: #e2e8f0;
+  --tw-prose-pre-bg: #060a14;
+  --tw-prose-th-borders: var(--border);
+  --tw-prose-td-borders: var(--border);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+  }
+  html {
+    color-scheme: light;
+    @apply scroll-smooth font-sans;
+  }
+  html.dark {
+    color-scheme: dark;
+  }
+}
+
+@layer components {
+  /* Fundo decorativo do hero: brilho teal/indigo + grade sutil, como no banner. */
+  .bg-hero-decor {
+    background-image:
+      radial-gradient(
+        60rem 30rem at 85% -10%,
+        var(--glow-indigo),
+        transparent 60%
+      ),
+      radial-gradient(
+        50rem 28rem at -10% 110%,
+        var(--glow-teal),
+        transparent 60%
+      ),
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size:
+      auto,
+      auto,
+      48px 48px,
+      48px 48px;
+  }
+}
