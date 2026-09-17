@@ -8,13 +8,15 @@ disable-model-invocation: true
 
 ## Quem autoriza
 
-| PR                           | Merge                                                        |
-| ---------------------------- | ------------------------------------------------------------ |
-| Para `develop`               | autorizado pelo dono do repositório assim que a CI passa     |
-| Release `develop` → `main`   | **só com OK explícito** do dono (gera tag, release e imagem) |
-| Correção urgente para `main` | só com OK explícito                                          |
+| PR                                              | Merge                                                                                                             |
+| ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| Branch de trabalho para `develop`               | autorizado pelo dono do repositório assim que a CI passa                                                          |
+| Sincronização `main` → `develop` (após release) | autorizado com a validação local registrada no PR, porque o `[skip ci]` impede a CI (§ Merge de release, passo 4) |
+| Release `develop` → `main`                      | **só com OK explícito** do dono (gera tag, release e imagem)                                                      |
+| Correção urgente para `main`                    | só com OK explícito                                                                                               |
 
-Sem CI verde ou com conflito, não mesclar em nenhum caso.
+Sem CI verde (ou validação local, no caso da sincronização) ou com conflito,
+não mesclar em nenhum caso.
 
 ## Workflow
 
@@ -37,7 +39,10 @@ Sem CI verde ou com conflito, não mesclar em nenhum caso.
    gh pr merge <N> --merge --delete-branch
    ```
 
-   `--squash`/`--rebase` só se o usuário pedir.
+   - `--squash`/`--rebase` só se o usuário pedir.
+   - **Origem `develop` ou `main`** (release ou sincronização): **sem**
+     `--delete-branch`. Seguir a seção [Merge de release](#merge-de-release-develop--main)
+     em vez deste workflow.
 
 4. **Limpeza local:**
 
@@ -125,7 +130,10 @@ Sem CI verde ou com conflito, não mesclar em nenhum caso.
    Não há deploy automático.
 
    ```bash
-   RUN=$(gh run list --workflow release.yml --branch main --limit 1 --json databaseId -q '.[0].databaseId')
+   # Espera o run do commit de merge (não o de uma release anterior)
+   MERGE=$(gh pr view <N> --json mergeCommit -q .mergeCommit.oid)
+   until RUN=$(gh run list --workflow release.yml --branch main --limit 5 --json databaseId,headSha \
+       -q ".[] | select(.headSha == \"$MERGE\") | .databaseId") && [ -n "$RUN" ]; do sleep 5; done
    gh run watch "$RUN" --exit-status
    git fetch origin --tags && git tag -l 'v*'
    gh release view v<versão>
