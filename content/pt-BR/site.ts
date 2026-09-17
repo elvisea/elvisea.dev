@@ -33,6 +33,7 @@ export const site = {
   navigation: [
     { href: "/", label: "Início" },
     { href: "/experiencia", label: "Experiência" },
+    { href: "/projetos", label: "Projetos" },
     { href: "/sobre", label: "Sobre" },
     { href: "/blog", label: "Blog" },
   ],

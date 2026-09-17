@@ -4,12 +4,15 @@ import { ArrowRightIcon } from "lucide-react";
 
 import { SectionHeader } from "@/components/molecules/section-header";
 import { BlogPreviewSection } from "@/components/organisms/blog-preview-section";
+import { ProjectCard } from "@/components/molecules/project-card";
 import { ExperienceTimeline } from "@/components/organisms/experience-timeline";
 import { HeroSection } from "@/components/organisms/hero-section";
 import { ProfileSummary } from "@/components/organisms/profile-summary";
 import { StackGrid } from "@/components/organisms/stack-grid";
 import { homePage, sobrePage } from "@/content/pt-BR/pages/profissional";
+import { projetosPage } from "@/content/pt-BR/pages/projetos";
 import { getHighlightedExperiences } from "@/lib/content";
+import { getFeaturedProjects } from "@/lib/projects";
 import { JsonLd, personJsonLd } from "@/lib/seo/json-ld";
 import { pageMetadata } from "@/lib/seo/metadata";
 
@@ -63,7 +66,24 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="border-b border-border py-20" id="stack">
+      <section className="border-b border-border py-20" id="projetos">
+        <div className="mx-auto max-w-6xl space-y-10 px-4 sm:px-6">
+          <SectionHeader
+            eyebrow={projetosPage.preview.eyebrow}
+            title={projetosPage.preview.title}
+          />
+          <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            {getFeaturedProjects(6).map((project) => (
+              <li key={project.slug}>
+                <ProjectCard project={project} />
+              </li>
+            ))}
+          </ul>
+          <MoreLink href="/projetos" label={projetosPage.preview.all} />
+        </div>
+      </section>
+
+      <section className="border-b border-border bg-surface py-20" id="stack">
         <div className="mx-auto max-w-6xl space-y-10 px-4 sm:px-6">
           <SectionHeader
             eyebrow={homePage.stack.eyebrow}
