@@ -64,6 +64,9 @@ export default function RootLayout({
   return (
     <html
       className={`${geistSans.variable} ${geistMono.variable}`}
+      // globals.css usa scroll-behavior: smooth; o atributo avisa o Next para
+      // não animar a rolagem nas trocas de rota.
+      data-scroll-behavior="smooth"
       lang="pt-BR"
       suppressHydrationWarning
     >
