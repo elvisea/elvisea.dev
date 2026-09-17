@@ -9,12 +9,15 @@ import { ExperienceTimeline } from "@/components/organisms/experience-timeline";
 import { HeroSection } from "@/components/organisms/hero-section";
 import { ProfileSummary } from "@/components/organisms/profile-summary";
 import { StackGrid } from "@/components/organisms/stack-grid";
+import { buttonVariants } from "@/components/ui/button";
+import { contatoPage } from "@/content/pt-BR/pages/contato";
 import { homePage, sobrePage } from "@/content/pt-BR/pages/profissional";
 import { projetosPage } from "@/content/pt-BR/pages/projetos";
 import { getHighlightedExperiences } from "@/lib/content";
 import { getFeaturedProjects } from "@/lib/projects";
 import { JsonLd, personJsonLd } from "@/lib/seo/json-ld";
 import { pageMetadata } from "@/lib/seo/metadata";
+import { cn } from "cn";
 
 export const metadata = pageMetadata({ path: "/" });
 
@@ -94,6 +97,22 @@ export default function HomePage() {
       </section>
 
       <BlogPreviewSection />
+
+      <section className="py-20" id="contato">
+        <div className="mx-auto flex max-w-6xl flex-col items-start gap-6 px-4 sm:px-6 md:flex-row md:items-end md:justify-between">
+          <SectionHeader
+            description={contatoPage.home.description}
+            eyebrow={contatoPage.home.eyebrow}
+            title={contatoPage.home.title}
+          />
+          <Link
+            className={cn(buttonVariants({ size: "lg" }), "h-11 px-6")}
+            href="/contato"
+          >
+            {contatoPage.home.cta}
+          </Link>
+        </div>
+      </section>
     </>
   );
 }
