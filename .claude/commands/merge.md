@@ -52,20 +52,45 @@ Sem CI verde ou com conflito, não mesclar em nenhum caso.
    em `-D`.
 
 5. **Fechar a issue.** A branch padrão do GitHub é `main`, então o `Closes #N`
-   de um PR para `develop` não fecha a issue sozinho. Fechar aqui cada issue do
-   `Closes #N` do PR (em geral o número da branch: `chore/37` → #37):
+   de um PR para `develop` não fecha a issue sozinho. Fechar aqui as issues do
+   PR, e **só** elas:
+
+   - **De onde vêm os números:**
+     - o número da branch (`fix/39` → #39);
+     - as linhas **inteiras** `Closes #N` (ou `Fixes`/`Resolves` e variações)
+       do corpo.
+
+     Menção no meio do texto, como um exemplo citado, não conta.
+
+   - **O que fecha:** só **issue aberta**. Issues e PRs compartilham a
+     numeração, e `#12` pode ser um PR.
 
    ```bash
-   # Palavras de fechamento do GitHub: close(s/d), fix(es/ed), resolve(s/d)
-   gh pr view <N> --json body -q .body \
-     | grep -oiE '\b(close[sd]?|fix(es|ed)?|resolve[sd]?) #[0-9]+'
-   gh issue view <issue> --json state -q .state
-   gh issue close <issue> --reason completed \
-     --comment "Concluída no PR #<N>, mesclado na \`develop\`. Chega à \`main\` com a próxima release."
+   N=<número do PR>
+   BRANCH=$(gh pr view "$N" --json headRefName -q .headRefName)
+   { case "${BRANCH##*/}" in (''|*[!0-9]*) ;; (*) echo "${BRANCH##*/}" ;; esac
+     gh pr view "$N" --json body -q .body \
+       | grep -oiE '^(close[sd]?|fix(es|ed)?|resolve[sd]?) #[0-9]+[[:space:]]*$' \
+       | grep -oE '[0-9]+'
+   } | sort -u | while read -r i; do
+     kind=$(gh api "repos/{owner}/{repo}/issues/$i" --jq 'if .pull_request then "pr" else "issue" end')
+     state=$(gh api "repos/{owner}/{repo}/issues/$i" --jq .state)
+     if [ "$kind" = issue ] && [ "$state" = open ]; then
+       gh issue close "$i" --reason completed \
+         --comment "Concluída no PR #$N, mesclado na \`develop\`. Chega à \`main\` com a próxima release."
+     else
+       echo "#$i ignorada ($kind, $state)"
+     fi
+   done
+   gh api "repos/{owner}/{repo}/issues/<issue>" --jq '.state + " " + .state_reason'   # conferir
    ```
 
-   Issue já `CLOSED`: nada a fazer. PR de release (`develop` → `main`) não
-   precisa deste passo, porque o merge na branch padrão fecha as issues.
+   - O laço usa `while read` porque o zsh não separa em palavras uma variável
+     sem aspas num `for`.
+   - O `gh issue view` desta versão não expõe o motivo do fechamento; conferir
+     pelo `gh api`.
+   - PR de release (`develop` → `main`) não precisa deste passo, porque o merge
+     na branch padrão fecha as issues.
 
 6. **PR de release:** acrescentar o PR mesclado à lista e o `Closes #<issue>` na
    descrição do PR de release aberto (`develop` → `main`), para rastreabilidade.
