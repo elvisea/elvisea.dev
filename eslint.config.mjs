@@ -78,6 +78,16 @@ const layerRules = [
     ["features/*/*/view/**"],
     [forbid.content, forbid.dataLib, forbid.repository, forbid.app],
   ),
+  layer(
+    ["lib/**"],
+    [
+      {
+        group: ["@/app/*", "@/features/*", "@/components/*"],
+        message:
+          "`lib/` só tem utilitários transversais: nunca importa app/, features/ nem components/.",
+      },
+    ],
+  ),
 ];
 
 const eslintConfig = defineConfig([
