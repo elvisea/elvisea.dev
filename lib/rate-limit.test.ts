@@ -30,10 +30,10 @@ describe("isRateLimited", () => {
     expect(isRateLimited("k2", 1, 60_000)).toBe(false);
   });
 
-  it("libera depois da janela expirar", async () => {
-    isRateLimited("k1", 1, 50);
-    expect(isRateLimited("k1", 1, 50)).toBe(true);
-    await new Promise((r) => setTimeout(r, 70));
-    expect(isRateLimited("k1", 1, 50)).toBe(false);
+  it("libera depois da janela expirar", () => {
+    const start = 1_000_000;
+    isRateLimited("k1", 1, 60_000, start);
+    expect(isRateLimited("k1", 1, 60_000, start + 59_999)).toBe(true);
+    expect(isRateLimited("k1", 1, 60_000, start + 60_000)).toBe(false);
   });
 });

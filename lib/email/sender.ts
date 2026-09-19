@@ -37,14 +37,15 @@ export function resolveTransport(
 
 export async function getEmailSender(
   transport: EmailTransport,
+  env: Record<string, string | undefined> = process.env,
 ): Promise<EmailSender> {
   if (transport === "smtp") {
-    const { sendViaSmtp } = await import("./smtp");
-    return sendViaSmtp;
+    const { createSmtpSender, smtpConfigFromEnv } = await import("./smtp");
+    return createSmtpSender(smtpConfigFromEnv(env));
   }
   return async (message) => {
     // Assunto e texto trazem nome e mensagem: só fora de produção.
-    const production = process.env.NODE_ENV === "production";
+    const production = env.NODE_ENV === "production";
     logger.info("email.console", {
       to: message.to,
       replyTo: message.replyTo ? maskEmail(message.replyTo) : undefined,
