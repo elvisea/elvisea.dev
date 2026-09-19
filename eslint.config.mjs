@@ -11,8 +11,11 @@ const forbid = {
     group: ["@/content/*"],
     message: "Textos e dados chegam por props, vindos do view-model.",
   },
+  // Só as fachadas que consultam dados e as leituras de arquivo. Utilitários
+  // puros de `lib/content` (datas, registro de ícones) seguem liberados.
   dataLib: {
-    regex: "^@/lib/(blog|projects|content)$",
+    regex:
+      "^@/lib/(blog|projects|content)(/index)?$|^@/lib/blog/source$|^@/lib/content/markdown-page$",
     message: "Consulta de dados fica no repository, chamado pelo view-model.",
   },
   repository: {
