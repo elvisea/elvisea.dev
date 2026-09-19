@@ -103,8 +103,9 @@ Mapa de termos, modelo de página e checklist de lançamento em
   entra por `import` (TS/JSON) ou é lido em build (Markdown). Assim o site roda
   igual em Docker standalone ou em Cloudflare Workers.
 - **Única parte em runtime:** a Server Action do formulário de contato
-  (`app/actions/contact`). O envio de e-mail é plugável (`lib/email/sender.ts`,
-  `EMAIL_TRANSPORT`), para trocar SMTP por API HTTP se a hospedagem exigir.
+  (`features/contact/repository/submit-contact-action.ts`). O envio de e-mail é
+  plugável (`lib/email/sender.ts`, `EMAIL_TRANSPORT`), para trocar SMTP por API
+  HTTP se a hospedagem exigir.
   Não há confirmação por e-mail ao visitante (evita abuso do formulário).
 - **Não ligar `cacheComponents`** do Next 16: as rotas usam `dynamic =
 "force-static"` e `dynamicParams = false`, que ele proíbe.
@@ -125,7 +126,7 @@ Mapa de termos, modelo de página e checklist de lançamento em
   | `components/{atoms,molecules,organisms}/` | componentes da feature                                                                                              |
 
   As áreas que ainda não estão em `features/` migram pelas sub-issues de #24
-  (#45 a #50).
+  (#46 a #50).
 
 - **Rota fina:** `app/**/page.tsx` declara a metadata
   (`pageMetadata(model.metadata)`) e o `generateStaticParams` e renderiza

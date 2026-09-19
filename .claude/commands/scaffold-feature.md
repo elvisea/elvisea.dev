@@ -52,7 +52,7 @@ app/<rota>/page.tsx                           metadata + <View model={getXViewMo
 Fluxo interativo no cliente: `view-model/use-<feature>-<fluxo>-view-model.ts`
 (hook), com a lógica pura em funções testáveis ao lado e teste com
 `renderHook`. Estado lido da URL passa por um parser puro, como
-`lib/contact/prefill.ts`.
+`features/contact/form/prefill.ts`.
 
 ## Convenções
 
