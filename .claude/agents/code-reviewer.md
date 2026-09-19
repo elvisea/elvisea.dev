@@ -18,7 +18,7 @@ público).
    `git diff develop...HEAD`. Com mudanças ainda não commitadas, inclua
    `git diff` e `git diff --cached`.
 2. **Mapear os arquivos tocados por risco:**
-   - `app/actions/`;
+   - `features/contact/repository/` (Server Action);
    - `content/pt-BR/` e textos públicos;
    - `lib/`, `features/`, `app/**/page.tsx`;
    - `components/`;

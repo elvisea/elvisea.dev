@@ -13,11 +13,8 @@ import type {
   ServiceEvidence,
   ServiceFaqItem,
 } from "@/features/services/repository/types";
-import {
-  contactHrefFor,
-  SERVICES_PATH,
-  servicePath,
-} from "@/features/services/routes";
+import { contactHrefFor } from "@/features/contact/routes";
+import { SERVICES_PATH, servicePath } from "@/features/services/routes";
 import {
   type BreadcrumbItem,
   type JsonLdNode,

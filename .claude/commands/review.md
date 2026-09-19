@@ -17,7 +17,8 @@ Prefira o agente em diffs grandes: a leitura fica fora do contexto principal.
    `git diff develop...HEAD` para a branch inteira (outra base se vier em
    `$ARGUMENTS`).
 2. **Mapear o risco** dos arquivos tocados, do maior para o menor:
-   - `app/actions/` (entrada do usuário, e-mail, logs);
+   - `features/contact/repository/` (Server Action: entrada do usuário, e-mail,
+     logs);
    - `content/pt-BR/` e textos públicos (regras de conteúdo);
    - `lib/`, `features/`, `app/**/page.tsx` e metadata;
    - `components/`, estilos;
@@ -128,7 +129,7 @@ destes itens; o review cobre o que ele não enxerga.
     em vez de receber por parâmetro;
   - efeito colateral no import de módulo (validação, leitura de arquivo).
 - **Estado na URL** (`useSearchParams`):
-  - parser puro e testado, como `lib/contact/prefill.ts`, que ignora valores
+  - parser puro e testado, como `features/contact/form/prefill.ts`, que ignora valores
     desconhecidos;
   - o componente fica dentro de `Suspense` para a página seguir estática.
 
@@ -144,13 +145,15 @@ destes itens; o review cobre o que ele não enxerga.
 - Arquivo lido em build (Markdown) entra em `outputFileTracingIncludes`.
 - Imagens com `next/image` (exceto SVG inline e ícones).
 
-### Server Action, e-mail e logs (`app/actions/contact`)
+### Server Action, e-mail e logs (`features/contact/repository`)
 
-- Validação com zod antes de qualquer outra checagem; honeypot e tempo mínimo
-  mantidos.
+- A action (`submit-contact-action.ts`) só lê a requisição e chama
+  `processContactSubmission`; regra nova entra numa função pura testada.
+- Ordem dos sinais de robô: isca antes da validação, tempo mínimo depois dela
+  (envio inválido sempre mostra os erros); os dois mantidos.
 - Rate limit por IP com o header confiável (`TRUSTED_IP_HEADER`).
-- Constante exportada de arquivo `"use server"` quebra o build: vai para
-  `schema.ts`.
+- Constante ou tipo exportado de arquivo `"use server"` quebra o build: vai
+  para `types.ts` ou para `form/`.
 - Logs só pelo `logger` (`lib/log/logger.ts`), com evento nomeado:
   - sem nome, texto da mensagem, e-mail completo ou IP completo (`maskEmail`,
     `ipPrefix`);
@@ -176,8 +179,8 @@ destes itens; o review cobre o que ele não enxerga.
 ### Testes (`bun test`)
 
 - Regra nova em `lib/**`, `features/**/view-model`, `features/**/repository`
-  ou `app/actions/**` vem com teste ao lado, com dependências injetadas em vez
-  de módulos reais.
+  ou `features/**/form` vem com teste ao lado, com dependências injetadas em
+  vez de módulos reais.
 - Conteúdo novo com invariantes (slugs, limites de SEO, termos proibidos) no
   teste do conteúdo.
 - Não remover nem enfraquecer teste para passar na CI.

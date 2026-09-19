@@ -1,8 +1,8 @@
 /**
  * Validação do formulário de contato.
  *
- * `website` é o honeypot e `startedAt` o momento em que o formulário foi
- * montado; os dois ficam fora do schema e são checados na action.
+ * `website` (isca) e `startedAt` (início do preenchimento) ficam fora do
+ * schema: são sinais de robô, checados em `anti-spam.ts`.
  */
 import { z } from "zod";
 
@@ -10,20 +10,17 @@ import {
   contatoMessages as m,
   contatoPage,
 } from "@/content/pt-BR/pages/contato";
-import { servicesRepository } from "@/features/services/repository/services-repository";
+import { listServiceOptions } from "@/features/services/repository/services-repository";
 
 const reasons = contatoPage.fields.reason.options.map((o) => o.value) as [
   string,
   ...string[],
 ];
 
-const serviceSlugs = servicesRepository.list().map((s) => s.slug) as [
+const serviceSlugs = listServiceOptions().map((s) => s.slug) as [
   string,
   ...string[],
 ];
-
-/** Envio mais rápido que isso depois de abrir o formulário é tratado como robô. */
-export const MIN_FILL_MS = 3_000;
 
 export const contactSchema = z.object({
   name: z.string().trim().min(2, m.nameRequired).max(80, m.nameTooLong),
@@ -60,33 +57,6 @@ export interface ContactFormValues {
   message: string;
   /** Slug do serviço de origem; vazio quando o contato não veio de um serviço. */
   service: string;
-}
-
-export interface ContactFormData {
-  values: ContactFormValues;
-  honeypot: string;
-  startedAt: number | null;
-}
-
-function text(formData: FormData, key: string): string {
-  const value = formData.get(key);
-  return typeof value === "string" ? value : "";
-}
-
-export function readContactFormData(formData: FormData): ContactFormData {
-  const startedAt = Number(text(formData, "startedAt"));
-  return {
-    values: {
-      name: text(formData, "name"),
-      email: text(formData, "email"),
-      company: text(formData, "company"),
-      reason: text(formData, "reason"),
-      message: text(formData, "message"),
-      service: text(formData, "service"),
-    },
-    honeypot: text(formData, "website"),
-    startedAt: Number.isFinite(startedAt) && startedAt > 0 ? startedAt : null,
-  };
 }
 
 /** Erros por campo a partir das issues do zod (primeiro nível do path). */

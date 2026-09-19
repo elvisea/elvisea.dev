@@ -12,6 +12,9 @@
  * 2. Registra o DOM do happy-dom para os testes de render. Precisa rodar
  *    antes de qualquer import do Testing Library (feito em `test-dom.ts`),
  *    senão as consultas de `screen` falham.
+ * 3. `next/navigation`: fora do roteador do Next, `useSearchParams` e
+ *    `usePathname` devolvem `null`. O stub lê a URL do happy-dom; cada teste
+ *    escolhe a rota com `window.history.pushState({}, "", "/contato?…")`.
  */
 import { mock } from "bun:test";
 
@@ -25,4 +28,11 @@ mock.module("next/headers", () => ({
   }),
 }));
 
-GlobalRegistrator.register();
+GlobalRegistrator.register({ url: "http://localhost:3000/" });
+
+const navigation = await import("next/navigation");
+mock.module("next/navigation", () => ({
+  ...navigation,
+  useSearchParams: () => new URLSearchParams(window.location.search),
+  usePathname: () => window.location.pathname,
+}));

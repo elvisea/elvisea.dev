@@ -1,7 +1,7 @@
 /** E-mail que chega para o Elvis quando alguém usa o formulário. */
-import type { ContactInput } from "@/app/actions/contact/schema";
 import { contatoPage } from "@/content/pt-BR/pages/contato";
 import { site } from "@/content/pt-BR/site";
+import type { ContactInput } from "@/features/contact/form/validations";
 import { servicesRepository } from "@/features/services/repository/services-repository";
 
 function escapeHtml(value: string): string {
