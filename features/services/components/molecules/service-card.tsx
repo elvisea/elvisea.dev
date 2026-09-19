@@ -1,7 +1,6 @@
 import Link from "next/link";
 
-import { ArrowRightIcon } from "lucide-react";
-
+import { ArrowLink } from "@/components/atoms/arrow-link";
 import { StackBadges } from "@/components/molecules/stack-badges";
 import {
   Card,
@@ -11,12 +10,13 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { servicosPage } from "@/content/pt-BR/pages/servicos";
 import type { ServiceCardModel } from "@/features/services/catalog/view-model/get-services-catalog-view-model";
 
 interface ServiceCardProps {
   service: ServiceCardModel;
   moreLabel: string;
+  /** Nome acessível da lista de tecnologias. */
+  stackLabel: string;
   /** `h2` no catálogo (abaixo do H1); `h3` dentro de uma seção da home. */
   headingLevel?: "h2" | "h3";
 }
@@ -25,6 +25,7 @@ interface ServiceCardProps {
 export function ServiceCard({
   service,
   moreLabel,
+  stackLabel,
   headingLevel: Heading = "h3",
 }: ServiceCardProps) {
   return (
@@ -45,18 +46,12 @@ export function ServiceCard({
         </CardDescription>
       </CardHeader>
       <CardContent className="mt-auto">
-        <StackBadges keys={service.stack} label={servicosPage.detail.stack} />
+        <StackBadges keys={service.stack} label={stackLabel} />
       </CardContent>
       <CardFooter className="py-2">
-        <Link
-          aria-hidden
-          className="inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-primary underline-offset-4 hover:underline"
-          href={service.href}
-          tabIndex={-1}
-        >
+        <ArrowLink aria-hidden href={service.href} size="sm" tabIndex={-1}>
           {moreLabel}
-          <ArrowRightIcon aria-hidden className="size-4" />
-        </Link>
+        </ArrowLink>
       </CardFooter>
     </Card>
   );

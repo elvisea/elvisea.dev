@@ -12,7 +12,7 @@
 import { BlogList } from "@/components/organisms/blog-list";
 import { blogPage } from "@/content/pt-BR/pages/blog";
 import { getAllPosts } from "@/lib/blog";
-import { PageJsonLd } from "@/lib/seo/json-ld";
+import { PageJsonLd } from "@/components/molecules/page-json-ld";
 
 import { blogIndexMetadata } from "./metadata";
 

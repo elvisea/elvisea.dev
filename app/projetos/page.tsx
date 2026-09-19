@@ -2,7 +2,7 @@ import { SectionHeader } from "@/components/molecules/section-header";
 import { ProjectExplorer } from "@/components/organisms/project-explorer";
 import { projetosPage } from "@/content/pt-BR/pages/projetos";
 import { getProjectLanguages, getProjects } from "@/lib/projects";
-import { PageJsonLd } from "@/lib/seo/json-ld";
+import { PageJsonLd } from "@/components/molecules/page-json-ld";
 import { pageMetadata } from "@/lib/seo/metadata";
 
 export const metadata = pageMetadata({

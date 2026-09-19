@@ -92,21 +92,41 @@ PR.
 - Cores só por token (`primary`, `highlight`, `surface`, `heading`…); nada de
   paleta Tailwind crua (`bg-sky-500`) nem cor fixa em `style`.
 
-### Arquitetura: MVVM e design atômico (AGENTS.md § Arquitetura)
+### Arquitetura: MVVM, design atômico e SRP (AGENTS.md § Arquitetura e § Componentização)
 
-Modelo: `features/services`.
+Modelo: `features/services`. O lint (`no-restricted-imports`) já barra parte
+destes itens; o review cobre o que ele não enxerga.
 
-- **Aviso:** feature nova fora de `features/<feature>/`:
-  - `repository/`: acesso ao conteúdo, com tipos;
+- **Aviso:** área do site fora de `features/<feature>/`:
+  - `repository/`: acesso a dados, com tipos, fonte injetável e sem estado;
+  - `<fluxo>/validations.ts`: schema zod do fluxo, quando há formulário;
   - `<fluxo>/view-model/`: função pura (`get-*-view-model.ts`) ou hook de
     cliente (`use-*-view-model.ts`), com teste;
-  - `<fluxo>/view/`: só renderiza o view-model, sem ler conteúdo nem montar
-    link;
-  - `components/{molecules,organisms}/`.
-- `app/**/page.tsx` só declara metadata e `generateStaticParams` e renderiza a
-  View.
-- Átomo ou molécula nunca importa organismo. Leitura de dados só em página,
-  view-model ou organismo.
+  - `<fluxo>/view/`: só renderiza o `model`, sem ler conteúdo nem montar link;
+  - `components/{atoms,molecules,organisms}/`.
+- `app/**/page.tsx` só declara metadata e `generateStaticParams` e renderiza
+  a View. Layout, busca de dados ou lógica na rota é aviso.
+- **Direção das dependências:** `app/` → `features/` → `components/` → `lib/`.
+  - `lib/` importando `app/`, `features/` ou `components/` é aviso.
+  - Feature importando `view/` ou `view-model/` de outra é aviso (só
+    `repository/`, `routes.ts` e `components/`).
+- **Design atômico:**
+  - dependência só para baixo: view → template → organismo → molécula → átomo;
+  - átomo ou molécula lendo `content/`, repository ou consulta de dados de
+    `lib/`, ou importando organismo, é aviso;
+  - organismo buscando os próprios dados em vez de recebê-los por props;
+  - casco de página ou seção copiado em vez de `PageTemplate` ou
+    `SectionTemplate`;
+  - padrão visual repetido (link com seta, eyebrow, rótulo mono, card de
+    chamada) copiado em vez de usar `ArrowLink`, `Eyebrow`, `MonoLabel` ou
+    `CtaCard`;
+  - mais de um componente exportado no mesmo arquivo.
+- **Responsabilidade única:**
+  - Server Action e route handler com regra de negócio própria (devem ler a
+    entrada e delegar);
+  - serviço que lê `process.env`, `Date.now()`, `fetch` ou filesystem direto
+    em vez de receber por parâmetro;
+  - efeito colateral no import de módulo (validação, leitura de arquivo).
 - **Estado na URL** (`useSearchParams`):
   - parser puro e testado, como `lib/contact/prefill.ts`, que ignora valores
     desconhecidos;
@@ -161,7 +181,12 @@ Modelo: `features/services`.
 - Conteúdo novo com invariantes (slugs, limites de SEO, termos proibidos) no
   teste do conteúdo.
 - Não remover nem enfraquecer teste para passar na CI.
-- Testes de render de componente ainda não têm infraestrutura (#23).
+- Hook view-model testado com `renderHook`.
+- View e componente com estado ou lógica condicional vêm com
+  `*.render.test.tsx` cobrindo os estados visíveis (vazio, erro, sucesso,
+  filtro), com consultas por papel e nome acessível.
+- Teste com mock global de módulo (`mock.module`) onde uma dependência
+  injetada resolveria é aviso.
 
 ### Dependências novas
 

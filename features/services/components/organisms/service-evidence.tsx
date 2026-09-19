@@ -1,7 +1,4 @@
-import Link from "next/link";
-
-import { ArrowRightIcon, ArrowUpRightIcon } from "lucide-react";
-
+import { ArrowLink } from "@/components/atoms/arrow-link";
 import { Badge } from "@/components/ui/badge";
 import {
   Card,
@@ -12,9 +9,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import type { EvidenceModel } from "@/features/services/detail/view-model/get-service-detail-view-model";
-
-const linkClass =
-  "inline-flex min-h-11 items-center gap-1.5 text-sm font-medium text-primary underline-offset-4 hover:underline";
 
 /** Evidências de um serviço: experiência, projeto próprio ou código aberto. */
 export function ServiceEvidence({
@@ -42,24 +36,14 @@ export function ServiceEvidence({
             </CardHeader>
             {item.href ? (
               <CardFooter className="mt-auto py-2">
-                {item.external ? (
-                  <a
-                    className={linkClass}
-                    href={item.href}
-                    rel="noopener noreferrer"
-                    target="_blank"
-                  >
-                    {linkLabel}
-                    <span className="sr-only">: {item.title}</span>
-                    <ArrowUpRightIcon aria-hidden className="size-4" />
-                  </a>
-                ) : (
-                  <Link className={linkClass} href={item.href}>
-                    {linkLabel}
-                    <span className="sr-only">: {item.title}</span>
-                    <ArrowRightIcon aria-hidden className="size-4" />
-                  </Link>
-                )}
+                <ArrowLink
+                  direction={item.external ? "external" : "forward"}
+                  href={item.href}
+                  size="sm"
+                >
+                  {linkLabel}
+                  <span className="sr-only">: {item.title}</span>
+                </ArrowLink>
               </CardFooter>
             ) : (
               <CardContent className="mt-auto" />

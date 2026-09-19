@@ -1,18 +1,27 @@
 /**
  * Layout base das imagens OG (1200×630): fundo e brilhos do banner do
- * LinkedIn, título grande, linha de apoio e rodapé com o domínio.
+ * LinkedIn, título grande, linha de apoio e rodapé com autor e domínio.
+ *
+ * Renderizado pelo `ImageResponse` de `next/og` (satori): só estilo inline e
+ * `display: flex`.
  */
-import { site } from "@/content/pt-BR/site";
-
 export const OG_SIZE = { width: 1200, height: 630 };
 
-interface OgCardProps {
+interface OgCardTemplateProps {
   eyebrow: string;
   title: string;
   subtitle?: string;
+  author: string;
+  domain: string;
 }
 
-export function OgCard({ eyebrow, title, subtitle }: OgCardProps) {
+export function OgCardTemplate({
+  eyebrow,
+  title,
+  subtitle,
+  author,
+  domain,
+}: OgCardTemplateProps) {
   return (
     <div
       style={{
@@ -59,8 +68,8 @@ export function OgCard({ eyebrow, title, subtitle }: OgCardProps) {
           color: "#94A3B8",
         }}
       >
-        <span>{site.person.fullName}</span>
-        <span style={{ color: "#818CF8" }}>{site.domain}</span>
+        <span>{author}</span>
+        <span style={{ color: "#818CF8" }}>{domain}</span>
       </div>
     </div>
   );

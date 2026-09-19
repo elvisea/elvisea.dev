@@ -17,7 +17,7 @@ import { Separator } from "@/components/ui/separator";
 import { blogPage } from "@/content/pt-BR/pages/blog";
 import { site } from "@/content/pt-BR/site";
 import { getAllSlugs, getPostBySlug, getPostWithHtml } from "@/lib/blog";
-import { PageJsonLd } from "@/lib/seo/json-ld";
+import { PageJsonLd } from "@/components/molecules/page-json-ld";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { blogPostingNode } from "@/lib/seo/structured-data";
 

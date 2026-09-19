@@ -30,6 +30,17 @@ describe("getServicesCatalogViewModel", () => {
     ]);
   });
 
+  it("traz os rótulos dos cards e a metadata do catálogo", () => {
+    const model = getServicesCatalogViewModel(repository);
+    expect(model.cardMore).toBe(servicosPage.card.more);
+    expect(model.cardStackLabel).toBe(servicosPage.detail.stack);
+    expect(model.metadata).toEqual({
+      title: servicosPage.metaTitle,
+      description: servicosPage.metaDescription,
+      path: "/servicos",
+    });
+  });
+
   it("leva ao contato com assunto de projeto e tem trilha própria", () => {
     const model = getServicesCatalogViewModel(repository);
     expect(model.contact.href).toBe("/contato?assunto=projeto");
