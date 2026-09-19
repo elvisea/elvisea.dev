@@ -7,7 +7,7 @@ import { SiteFooter } from "@/components/organisms/site-footer";
 import { SiteHeader } from "@/components/organisms/site-header";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { site } from "@/content/pt-BR/site";
-import { JsonLd } from "@/lib/seo/json-ld";
+import { JsonLd } from "@/components/atoms/json-ld";
 import { rssAlternate, siteTitle } from "@/lib/seo/metadata";
 import {
   jsonLdGraph,

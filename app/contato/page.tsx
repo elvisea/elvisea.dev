@@ -10,7 +10,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { contatoPage } from "@/content/pt-BR/pages/contato";
 import { site } from "@/content/pt-BR/site";
 import { listServiceOptions } from "@/features/services/repository/services-repository";
-import { PageJsonLd } from "@/lib/seo/json-ld";
+import { PageJsonLd } from "@/components/molecules/page-json-ld";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { cn } from "cn";
 

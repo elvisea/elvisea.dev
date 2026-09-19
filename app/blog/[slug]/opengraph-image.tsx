@@ -4,9 +4,13 @@
  */
 import { ImageResponse } from "next/og";
 
+import {
+  OG_SIZE,
+  OgCardTemplate,
+} from "@/components/templates/og-card-template";
 import { blogPage } from "@/content/pt-BR/pages/blog";
+import { site } from "@/content/pt-BR/site";
 import { getAllSlugs, getPostBySlug } from "@/lib/blog";
-import { OgCard, OG_SIZE } from "@/lib/og/card";
 import { loadOgFonts } from "@/lib/og/fonts";
 
 export const size = OG_SIZE;
@@ -27,7 +31,9 @@ export default async function PostOpengraphImage({
   const title = post?.frontmatter.title ?? blogPage.metaTitle;
 
   return new ImageResponse(
-    <OgCard
+    <OgCardTemplate
+      author={site.person.fullName}
+      domain={site.domain}
       eyebrow={`${blogPage.header.eyebrow} · ${blogPage.meta.readingTime(post?.readingMinutes ?? 1)}`}
       title={title}
     />,

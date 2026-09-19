@@ -2,7 +2,7 @@ import { SectionHeader } from "@/components/molecules/section-header";
 import { ExperienceTimeline } from "@/components/organisms/experience-timeline";
 import { experienciaPage } from "@/content/pt-BR/pages/profissional";
 import { getExperiences } from "@/lib/content";
-import { PageJsonLd } from "@/lib/seo/json-ld";
+import { PageJsonLd } from "@/components/molecules/page-json-ld";
 import { pageMetadata } from "@/lib/seo/metadata";
 
 export const metadata = pageMetadata({

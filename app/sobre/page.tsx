@@ -12,7 +12,7 @@ import { StackGrid } from "@/components/organisms/stack-grid";
 import { buttonVariants } from "@/components/ui/button";
 import { perfil } from "@/content/pt-BR/perfil";
 import { sobrePage } from "@/content/pt-BR/pages/profissional";
-import { PageJsonLd } from "@/lib/seo/json-ld";
+import { PageJsonLd } from "@/components/molecules/page-json-ld";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { profilePageNode } from "@/lib/seo/structured-data";
 import { cn } from "cn";

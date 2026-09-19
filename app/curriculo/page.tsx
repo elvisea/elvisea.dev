@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { curriculoPage } from "@/content/pt-BR/pages/profissional";
-import { PageJsonLd } from "@/lib/seo/json-ld";
+import { PageJsonLd } from "@/components/molecules/page-json-ld";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { cn } from "cn";
 

@@ -1,9 +1,14 @@
+import { Eyebrow } from "@/components/atoms/eyebrow";
 import { cn } from "cn";
 
-interface SectionHeaderProps {
+/** Textos do cabeçalho de uma página ou seção. */
+export interface SectionHeaderContent {
   eyebrow: string;
   title: string;
   description?: string;
+}
+
+interface SectionHeaderProps extends SectionHeaderContent {
   /** `h1` no topo de páginas internas; `h2` em seções. */
   as?: "h1" | "h2";
   className?: string;
@@ -18,7 +23,7 @@ export function SectionHeader({
 }: SectionHeaderProps) {
   return (
     <div className={cn("max-w-3xl space-y-3", className)}>
-      <p className="font-mono text-sm text-highlight">{eyebrow}</p>
+      <Eyebrow>{eyebrow}</Eyebrow>
       <Heading
         className={cn(
           "font-bold tracking-tight text-balance text-heading",

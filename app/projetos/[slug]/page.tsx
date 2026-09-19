@@ -13,7 +13,7 @@ import { PostBody } from "@/components/organisms/post-body";
 import { projetosPage } from "@/content/pt-BR/pages/projetos";
 import { renderContentPage } from "@/lib/content/markdown-page";
 import { getCaseStudies } from "@/lib/projects";
-import { PageJsonLd } from "@/lib/seo/json-ld";
+import { PageJsonLd } from "@/components/molecules/page-json-ld";
 import { pageMetadata } from "@/lib/seo/metadata";
 
 export const dynamic = "force-static";

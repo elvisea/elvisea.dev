@@ -26,6 +26,8 @@ export interface ServicesCatalogViewModel {
   header: typeof servicosPage.header;
   services: readonly ServiceCardModel[];
   cardMore: string;
+  /** Nome acessível da lista de tecnologias de cada card. */
+  cardStackLabel: string;
   contact: {
     title: string;
     description: string;
@@ -33,6 +35,7 @@ export interface ServicesCatalogViewModel {
     href: string;
   };
   breadcrumb: readonly BreadcrumbItem[];
+  metadata: { title: string; description: string; path: string };
 }
 
 export function getServicesCatalogViewModel(
@@ -48,7 +51,13 @@ export function getServicesCatalogViewModel(
       stack: service.stack,
     })),
     cardMore: servicosPage.card.more,
+    cardStackLabel: servicosPage.detail.stack,
     contact: { ...servicosPage.catalogContact, href: contactHrefFor() },
     breadcrumb: [{ name: servicosPage.label, path: SERVICES_PATH }],
+    metadata: {
+      title: servicosPage.metaTitle,
+      description: servicosPage.metaDescription,
+      path: SERVICES_PATH,
+    },
   };
 }

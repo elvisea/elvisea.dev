@@ -2,7 +2,7 @@ import { SectionHeader } from "@/components/molecules/section-header";
 import { PostBody } from "@/components/organisms/post-body";
 import { comoTrabalhoPage } from "@/content/pt-BR/pages/profissional";
 import { renderContentPage } from "@/lib/content/markdown-page";
-import { PageJsonLd } from "@/lib/seo/json-ld";
+import { PageJsonLd } from "@/components/molecules/page-json-ld";
 import { pageMetadata } from "@/lib/seo/metadata";
 
 export const dynamic = "force-static";
