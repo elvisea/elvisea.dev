@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
 
-import { contactSchema, readContactFormData } from "./schema";
+import { contactSchema, fieldErrorsFromIssues } from "./validations";
 
 const valid = {
   name: "Maria Silva",
@@ -32,26 +32,6 @@ describe("contactSchema", () => {
   });
 });
 
-describe("readContactFormData", () => {
-  it("lê valores, honeypot e startedAt", () => {
-    const fd = new FormData();
-    fd.set("name", "Ana");
-    fd.set("website", "http://spam");
-    fd.set("startedAt", "1700000000000");
-    const data = readContactFormData(fd);
-    expect(data.values.name).toBe("Ana");
-    expect(data.values.email).toBe("");
-    expect(data.honeypot).toBe("http://spam");
-    expect(data.startedAt).toBe(1700000000000);
-  });
-
-  it("startedAt inválido vira null", () => {
-    const fd = new FormData();
-    fd.set("startedAt", "abc");
-    expect(readContactFormData(fd).startedAt).toBeNull();
-  });
-});
-
 describe("serviço de origem", () => {
   it("aceita slug existente e descarta vazio ou desconhecido", () => {
     expect(
@@ -67,10 +47,22 @@ describe("serviço de origem", () => {
     expect(unknown.success).toBe(true);
     expect(unknown.data?.service).toBeUndefined();
   });
+});
 
-  it("readContactFormData lê o campo oculto", () => {
-    const fd = new FormData();
-    fd.set("service", "pagamentos-pix");
-    expect(readContactFormData(fd).values.service).toBe("pagamentos-pix");
+describe("fieldErrorsFromIssues", () => {
+  it("agrupa as mensagens pelo primeiro nível do caminho", () => {
+    expect(
+      fieldErrorsFromIssues([
+        { path: ["email"], message: "a" },
+        { path: ["email"], message: "b" },
+        { path: ["message"], message: "c" },
+      ]),
+    ).toEqual({ email: ["a", "b"], message: ["c"] });
+  });
+
+  it("erro sem campo vai para `form`", () => {
+    expect(fieldErrorsFromIssues([{ path: [], message: "x" }])).toEqual({
+      form: ["x"],
+    });
   });
 });

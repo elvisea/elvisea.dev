@@ -7,11 +7,8 @@ import {
   servicesRepository,
   type ServicesRepository,
 } from "@/features/services/repository/services-repository";
-import {
-  contactHrefFor,
-  SERVICES_PATH,
-  servicePath,
-} from "@/features/services/routes";
+import { contactHrefFor } from "@/features/contact/routes";
+import { SERVICES_PATH, servicePath } from "@/features/services/routes";
 import type { BreadcrumbItem } from "@/lib/seo/structured-data";
 
 export interface ServiceCardModel {

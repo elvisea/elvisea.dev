@@ -9,7 +9,11 @@ interface MonoLabelProps extends ComponentProps<"p"> {
   as?: Tag;
 }
 
-/** Rótulo de grupo em mono, caixa alta e cor de destaque. */
+/**
+ * Rótulo de grupo em mono, caixa alta e cor de destaque. `leading-4` fixa a
+ * altura da linha do `text-xs` mesmo dentro de um `CardTitle`, que define
+ * outra altura de linha.
+ */
 export function MonoLabel({
   as: Tag = "p",
   className,
@@ -18,7 +22,7 @@ export function MonoLabel({
   return (
     <Tag
       className={cn(
-        "font-mono text-xs tracking-wide text-highlight uppercase",
+        "font-mono text-xs leading-4 tracking-wide text-highlight uppercase",
         className,
       )}
       {...props}

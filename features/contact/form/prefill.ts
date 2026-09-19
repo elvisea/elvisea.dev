@@ -3,7 +3,7 @@
  * (`/contato?assunto=projeto&servico=<slug>`), usado pelos botões das páginas
  * de serviço. Função pura: valores desconhecidos são ignorados.
  */
-import { contatoPage } from "@/content/pt-BR/pages/contato";
+import { PROJECT_REASON } from "@/features/contact/routes";
 import type { ServiceOption } from "@/features/services/repository/services-repository";
 
 export interface ContactPrefill {
@@ -11,18 +11,19 @@ export interface ContactPrefill {
   service: ServiceOption | null;
 }
 
-const reasons = new Set<string>(
-  contatoPage.fields.reason.options.map((option) => option.value),
-);
-
 export function parseContactPrefill(
   params: Pick<URLSearchParams, "get">,
-  services: readonly ServiceOption[],
+  options: { reasons: readonly string[]; services: readonly ServiceOption[] },
 ): ContactPrefill {
   const service =
-    services.find((option) => option.slug === params.get("servico")) ?? null;
+    options.services.find((option) => option.slug === params.get("servico")) ??
+    null;
   const assunto = params.get("assunto");
   const reason =
-    assunto && reasons.has(assunto) ? assunto : service ? "projeto" : null;
+    assunto && options.reasons.includes(assunto)
+      ? assunto
+      : service
+        ? PROJECT_REASON
+        : null;
   return { reason, service };
 }

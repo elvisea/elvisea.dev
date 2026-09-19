@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
 
-import { buildContactEmail } from "./contact-template";
+import { buildContactEmail } from "./contact-email";
 
 const input = {
   name: "Maria Silva",
