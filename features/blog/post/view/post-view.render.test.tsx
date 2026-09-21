@@ -34,7 +34,6 @@ const model: PostViewModel = {
     { name: "Meu post", path: "/blog/meu-post" },
   ],
   jsonLd: [],
-  metadata: {},
 };
 
 describe("PostView", () => {

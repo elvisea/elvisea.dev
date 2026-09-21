@@ -34,7 +34,7 @@ function repository(deps = {}, source = posts) {
   const loadPosts = mock(async () => source);
   return {
     loadPosts,
-    repo: createBlogRepository(loadPosts, deps),
+    repo: createBlogRepository(loadPosts, { cacheReads: true, ...deps }),
   };
 }
 
@@ -45,6 +45,14 @@ describe("createBlogRepository", () => {
     expect(list.map((p) => p.slug)).toEqual(["recente", "antigo"]);
     expect(list[0]?.readingMinutes).toBe(1);
     expect(list[0]).not.toHaveProperty("raw");
+  });
+
+  it("fora de produção, cada consulta relê a fonte (post novo em dev)", async () => {
+    const loadPosts = mock(async () => posts);
+    const repo = createBlogRepository(loadPosts, { cacheReads: false });
+    await repo.list();
+    await repo.slugs();
+    expect(loadPosts).toHaveBeenCalledTimes(2);
   });
 
   it("lê a fonte uma vez, mesmo com várias consultas", async () => {

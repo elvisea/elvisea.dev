@@ -69,6 +69,11 @@ describe("getPostViewModel", () => {
     });
   });
 
+  it("o view-model não carrega metadata (a rota pede por fora)", async () => {
+    const model = await getPostViewModel("meu-post", repository);
+    expect(model).not.toHaveProperty("metadata");
+  });
+
   it("slug sem post publicado devolve null", async () => {
     expect(await getPostViewModel("rascunho", repository)).toBeNull();
   });

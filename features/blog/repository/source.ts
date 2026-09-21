@@ -5,12 +5,12 @@
  *
  * Esta é a única peça do sistema que toca filesystem. Substituí-la por
  * uma fonte alternativa (Postgres, CMS headless) requer apenas reescrever
- * `loadAllPostsFromFs` — a fachada cacheada (`./index.ts`), as rotas e os
- * componentes não mudam.
+ * `loadAllPostsFromFs` — o repository (`./blog-repository.ts`), os
+ * view-models e os componentes não mudam.
  *
  * Marcado `server-only` para que `node:fs` nunca vaze para o bundle do client.
  *
- * @module lib/blog/source
+ * @module features/blog/repository/source
  */
 import "server-only";
 
@@ -85,8 +85,8 @@ export async function loadPostsFromDir(dir: string): Promise<Post[]> {
 
 /**
  * Atalho que aplica `loadPostsFromDir` ao `POSTS_DIR` padrão.
- * Consumido pela fachada cacheada em `./index.ts` — não chame direto
- * em rotas ou componentes (perde o cache do React).
+ * Consumido pelo repository em `./blog-repository.ts` — não chame direto
+ * em rotas ou componentes (fura a porta de acesso e a memoização).
  */
 export const loadAllPostsFromFs = (): Promise<Post[]> =>
   loadPostsFromDir(POSTS_DIR);

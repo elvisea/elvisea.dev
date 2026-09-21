@@ -3,9 +3,12 @@
  * lugar só e devolve o que as telas usam.
  *
  * A fonte (`./source.ts`) e o pipeline de Markdown entram por parâmetro,
- * para os testes não dependerem do filesystem. A leitura é memoizada por
- * instância: lista, prévia, sitemap, RSS e páginas de post compartilham a
- * mesma carga durante o build.
+ * para os testes não dependerem do filesystem.
+ *
+ * Em produção (e no `next build`) a leitura é memoizada por instância:
+ * lista, prévia, sitemap, RSS e páginas de post compartilham a mesma carga.
+ * Fora de produção cada chamada relê os arquivos, para `next dev` mostrar um
+ * post novo ou editado sem reiniciar o servidor.
  */
 import "server-only";
 
@@ -41,6 +44,8 @@ interface BlogRepositoryDeps {
   render?: (markdown: string) => Promise<string>;
   toc?: (markdown: string) => TocItem[];
   tocMinSections?: number;
+  /** Memoizar a leitura da fonte (padrão: só em produção). */
+  cacheReads?: boolean;
 }
 
 const toSummary = ({ raw, ...rest }: Post): PostSummary => ({
@@ -54,10 +59,11 @@ export function createBlogRepository(
     render = renderMarkdown,
     toc = extractToc,
     tocMinSections = TOC_MIN_SECTIONS,
+    cacheReads = process.env.NODE_ENV === "production",
   }: BlogRepositoryDeps = {},
 ): BlogRepository {
   let loaded: Promise<Post[]> | undefined;
-  const all = () => (loaded ??= loadPosts());
+  const all = () => (cacheReads ? (loaded ??= loadPosts()) : loadPosts());
   const published = async () =>
     (await all()).filter((post) => !post.frontmatter.draft);
 

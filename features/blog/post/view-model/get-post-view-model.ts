@@ -1,7 +1,8 @@
 /**
  * View-model de `/blog/[slug]`: cabeçalho do post, sumário, corpo em HTML,
- * compartilhamento, trilha, JSON-LD e metadata. `null` para slug sem post
- * publicado (a rota responde 404).
+ * compartilhamento, trilha e JSON-LD. `null` para slug sem post publicado
+ * (a rota responde 404). A metadata sai de `getPostMetadata`, que a rota
+ * chama no `generateMetadata`, sem renderizar o Markdown.
  */
 import type { Metadata } from "next";
 
@@ -39,7 +40,6 @@ export interface PostViewModel {
   share: { href: string; label: string };
   breadcrumb: readonly BreadcrumbItem[];
   jsonLd: readonly JsonLdNode[];
-  metadata: Metadata;
 }
 
 export async function getPostMetadata(
@@ -90,7 +90,6 @@ export async function getPostViewModel(
       { name: title, path: postPath(slug) },
     ],
     jsonLd: [blogPostingNode({ slug, ...post.frontmatter })],
-    metadata: await getPostMetadata(slug, repository),
   };
 }
 

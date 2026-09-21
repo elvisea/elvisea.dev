@@ -1,13 +1,13 @@
 /**
  * Contrato do frontmatter dos posts (`content/pt-BR/blog/posts/*.md`).
  *
- * Validado em build por `lib/blog/source.ts`: frontmatter inválido faz o
+ * Validado em build por `features/blog/repository/source.ts`: frontmatter inválido faz o
  * build falhar com a mensagem `Invalid frontmatter in "<arquivo>.md": …`.
  *
  * `.strict()`: campo desconhecido (ou com erro de digitação) também falha.
  * O autor não fica no frontmatter: é sempre `site.person`.
  *
- * @module lib/blog/schema
+ * @module features/blog/repository/schema
  */
 import { z } from "zod";
 
