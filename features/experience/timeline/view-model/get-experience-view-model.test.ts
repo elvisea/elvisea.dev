@@ -5,10 +5,7 @@ import { createAboutRepository } from "@/features/about/repository/about-reposit
 import { createExperienceRepository } from "@/features/experience/repository/experience-repository";
 import type { Experience } from "@/lib/content/types";
 
-import {
-  getExperienceViewModel,
-  getTimelineEntries,
-} from "./get-experience-view-model";
+import { getExperienceViewModel } from "./get-experience-view-model";
 
 const experience = (slug: string, highlight?: boolean): Experience =>
   ({
@@ -71,15 +68,5 @@ describe("getExperienceViewModel", () => {
       { name: experienciaPage.metaTitle, path: "/experiencia" },
     ]);
     expect(model.metadata.alternates?.canonical).toBe("/experiencia");
-  });
-});
-
-describe("getTimelineEntries", () => {
-  it("versão compacta traz só os destaques, com link para a página completa", () => {
-    const entries = getTimelineEntries(false, repositories);
-    expect(entries.map((entry) => entry.slug)).toEqual(["atual"]);
-    expect(entries[0]?.roleHref).toBe("/experiencia#atual");
-    expect(entries[0]?.paragraphs).toEqual(["Um."]);
-    expect(entries[0]?.groups).toEqual([]);
   });
 });

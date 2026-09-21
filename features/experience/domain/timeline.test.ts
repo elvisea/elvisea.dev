@@ -3,7 +3,7 @@ import { describe, expect, it } from "bun:test";
 import { experienciaPage } from "@/content/pt-BR/pages/profissional";
 import type { Experience, StackItem } from "@/lib/content/types";
 
-import { toTimelineEntry } from "./timeline";
+import { toTimelineEntries, toTimelineEntry } from "./timeline";
 
 const experience = {
   slug: "atz-aero",
@@ -87,5 +87,23 @@ describe("toTimelineEntry", () => {
     );
     expect(entry.place).toBeNull();
     expect(entry.company.ariaLabel).toBeDefined();
+  });
+});
+
+describe("toTimelineEntries", () => {
+  it("usa os textos do conteúdo e aplica o modo em todas as entradas", () => {
+    const entries = toTimelineEntries([experience, experience], {
+      full: false,
+      stackItem,
+    });
+    expect(entries).toHaveLength(2);
+    for (const entry of entries) {
+      expect(entry.roleHref).toBe("/experiencia#atz-aero");
+      expect(entry.paragraphs).toEqual(["Primeiro parágrafo."]);
+      expect(entry.groups).toEqual([]);
+      expect(entry.stack.label).toBe(
+        `${experienciaPage.labels.stack} na ATZ AERO`,
+      );
+    }
   });
 });

@@ -12,7 +12,12 @@ import {
   toCertificateModel,
   toEducationModel,
 } from "@/features/about/domain/credentials";
-import type { StackBadgeModel } from "@/features/about/domain/stack-badges";
+import {
+  type ProfileModel,
+  type StackGroupModel,
+  toProfileModel,
+  toStackGroups,
+} from "@/features/about/domain/profile";
 import {
   aboutRepository,
   type AboutRepository,
@@ -24,15 +29,7 @@ import {
   profilePageNode,
 } from "@/lib/seo/structured-data";
 
-export interface ProfileModel {
-  summary: string;
-  atuacao: { title: string; items: readonly string[] };
-}
-
-export interface StackGroupModel {
-  title: string;
-  items: readonly StackBadgeModel[];
-}
+export type { ProfileModel, StackGroupModel };
 
 export interface AboutViewModel {
   header: typeof sobrePage.header;
@@ -58,44 +55,22 @@ export interface AboutViewModel {
   metadata: Metadata;
 }
 
-/** Perfil (resumo e atuação), compartilhado com a home. */
-export function getProfileModel(
-  repository: AboutRepository = aboutRepository,
-): ProfileModel {
-  const profile = repository.profile();
-  return {
-    summary: profile.resumo,
-    atuacao: { title: sobrePage.atuacao, items: profile.atuacao },
-  };
-}
-
-/** Stack agrupada por área, compartilhada com a home. */
-export function getStackGroups(
-  repository: AboutRepository = aboutRepository,
-): StackGroupModel[] {
-  return repository.stackGroups().map((group) => ({
-    title: group.title,
-    items: group.items.map((item) => ({
-      key: item.key,
-      label: item.label,
-      icon: item.icon,
-    })),
-  }));
-}
-
 export function getAboutViewModel(
   repository: AboutRepository = aboutRepository,
 ): AboutViewModel {
   return {
     header: sobrePage.header,
-    profile: getProfileModel(repository),
+    profile: toProfileModel(repository.profile(), sobrePage.atuacao),
     aiEngineering: {
       title: sobrePage.engenhariaComIa.title,
       text: repository.profile().engenhariaComIa,
       link: { href: "/como-trabalho", label: sobrePage.engenhariaComIa.link },
     },
     resumeLink: { href: "/curriculo", label: sobrePage.curriculo },
-    stack: { header: sobrePage.stack, groups: getStackGroups(repository) },
+    stack: {
+      header: sobrePage.stack,
+      groups: toStackGroups(repository.stackGroups()),
+    },
     education: {
       header: sobrePage.formacao,
       items: repository.education().map(toEducationModel),

@@ -8,7 +8,7 @@ import {
 } from "@/features/about/repository/about-repository";
 import {
   type TimelineEntry,
-  toTimelineEntry,
+  toTimelineEntries,
 } from "@/features/experience/domain/timeline";
 import {
   experienceRepository,
@@ -30,35 +30,18 @@ interface Repositories {
   about?: AboutRepository;
 }
 
-const timelineTexts = {
-  stack: experienciaPage.labels.stack,
-  companyPage: experienciaPage.labels.companyPage,
-  modes: experienciaPage.modes,
-};
-
-/** Entradas da linha do tempo; `full: false` é a versão compacta da home. */
-export function getTimelineEntries(
-  full: boolean,
-  {
-    experiences = experienceRepository,
-    about = aboutRepository,
-  }: Repositories = {},
-): TimelineEntry[] {
-  const list = full ? experiences.list() : experiences.highlighted();
-  return list.map((experience) =>
-    toTimelineEntry(experience, timelineTexts, {
-      full,
-      stackItem: about.stackItem,
-    }),
-  );
-}
-
 export function getExperienceViewModel(
   repositories: Repositories = {},
 ): ExperienceViewModel {
   return {
     header: experienciaPage.header,
-    entries: getTimelineEntries(true, repositories),
+    entries: toTimelineEntries(
+      (repositories.experiences ?? experienceRepository).list(),
+      {
+        full: true,
+        stackItem: (repositories.about ?? aboutRepository).stackItem,
+      },
+    ),
     breadcrumb: [{ name: experienciaPage.metaTitle, path: EXPERIENCE_PATH }],
     metadata: pageMetadata({
       title: experienciaPage.metaTitle,

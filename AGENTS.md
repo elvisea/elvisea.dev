@@ -126,9 +126,6 @@ Mapa de termos, modelo de página e checklist de lançamento em
   | `<fluxo>/view/`                           | só renderiza o `model` recebido por prop                                                                            |
   | `components/{atoms,molecules,organisms}/` | componentes da feature                                                                                              |
 
-  As áreas que ainda não estão em `features/` migram pelas sub-issues de #24
-  (#47 a #50).
-
 - **Rota fina:** `app/**/page.tsx` declara a metadata
   (`pageMetadata(model.metadata)`) e o `generateStaticParams` e renderiza
   `<XView model={getXViewModel()} />`. Sem layout, busca de dados ou lógica.

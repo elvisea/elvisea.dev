@@ -1,11 +1,12 @@
+import { readdirSync } from "node:fs";
+
 import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 import prettier from "eslint-config-prettier";
 
-// Fronteiras entre camadas (AGENTS.md § Arquitetura). Cada regra liga para
-// uma pasta só quando ela já está conforme; a migração de #22, #23 e #24
-// amplia os globos até cobrir `components/**`.
+// Fronteiras entre camadas (AGENTS.md § Arquitetura): componentes e Views
+// recebem tudo por props; só view-model e repository leem conteúdo e dados.
 const forbid = {
   content: {
     group: ["@/content/*"],
@@ -44,6 +45,35 @@ const layer = (files, patterns) => ({
   rules: { "no-restricted-imports": ["error", { patterns }] },
 });
 
+// Uma feature enxerga de outra só `repository/`, `domain/`, `routes.ts` e
+// `components/`: view e view-model de outra feature ficam fora do alcance.
+const featureNames = readdirSync("features", { withFileTypes: true })
+  .filter((entry) => entry.isDirectory())
+  .map((entry) => entry.name);
+
+const crossFeatureRules = featureNames.map((feature) => ({
+  files: [`features/${feature}/**`],
+  ignores: ["**/*.test.ts", "**/*.test.tsx"],
+  rules: {
+    "no-restricted-imports": [
+      "error",
+      {
+        patterns: featureNames
+          .filter((other) => other !== feature)
+          .map((other) => ({
+            group: [
+              `@/features/${other}/*/view/*`,
+              `@/features/${other}/*/view-model/*`,
+            ],
+            allowTypeImports: true,
+            message:
+              "Entre features, só repository/, domain/, routes.ts e components/.",
+          })),
+      },
+    ],
+  },
+}));
+
 const layerRules = [
   layer(
     ["components/atoms/**", "features/*/components/atoms/**"],
@@ -57,7 +87,7 @@ const layerRules = [
     ],
   ),
   layer(
-    ["features/*/components/molecules/**"],
+    ["components/molecules/**", "features/*/components/molecules/**"],
     [
       forbid.content,
       forbid.dataLib,
@@ -65,6 +95,10 @@ const layerRules = [
       forbid.organisms,
       forbid.app,
     ],
+  ),
+  layer(
+    ["components/organisms/**", "features/*/components/organisms/**"],
+    [forbid.content, forbid.dataLib, forbid.repository, forbid.app],
   ),
   layer(
     ["components/templates/**"],
@@ -102,6 +136,7 @@ const eslintConfig = defineConfig([
     settings: { react: { version: "19.3" } },
   },
   ...layerRules,
+  ...crossFeatureRules,
   // `.claude/**` inclui `.claude/worktrees/`, cópias do repositório criadas
   // pelos subagentes do Claude Code: sem isso, o lint varre o projeto de novo.
   globalIgnores([

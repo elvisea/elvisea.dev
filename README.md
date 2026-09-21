@@ -30,12 +30,17 @@ bun run dev          # http://localhost:3000
 ## Estrutura
 
 ```
-app/            rotas (App Router), metadata, sitemap, robots, imagens OG
-components/     ui (shadcn), molecules e organisms
+app/            rotas finas (App Router): metadata, sitemap, robots, imagens OG
+features/       uma pasta por área do site, em MVVM: repository, domain,
+                view-model, view e componentes
+components/     compartilhados: ui (shadcn), atoms, molecules, organisms e templates
 content/pt-BR/  textos e dados do site; posts em blog/posts/*.md
-lib/            blog, og e utilitários
+lib/            utilitários transversais: seo, markdown, datas, log, e-mail
 assets/fonts/   fontes TTF usadas nas imagens OG (SIL OFL)
 ```
+
+Arquitetura (MVVM por feature, design atômico e responsabilidade única) em
+[`AGENTS.md`](AGENTS.md).
 
 O conteúdo é gerado em build: o site é estático e roda como container
 standalone ou em qualquer plataforma que sirva Next.js.
