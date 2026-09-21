@@ -12,13 +12,9 @@ export interface ExternalLink {
 export interface SiteHeaderViewModel {
   home: { href: string; name: string; domain: string; hint: string };
   navigation: readonly { href: string; label: string }[];
-  labels: {
-    mainNav: string;
-    mobileNav: string;
-    openMenu: string;
-    role: string;
-    name: string;
-  };
+  labels: { mainNav: string; mobileNav: string; openMenu: string };
+  /** Cabeçalho do menu mobile (Sheet). */
+  sheet: { name: string; role: string };
   theme: typeof site.theme;
   externalLinks: readonly ExternalLink[];
 }
@@ -31,13 +27,6 @@ export interface SiteFooterViewModel {
   labels: { footerNav: string; domain: string };
   /** Ano e titular separados, como no HTML (dois nós de texto). */
   copyright: { year: string; holder: string };
-}
-
-export interface NotFoundViewModel {
-  code: string;
-  title: string;
-  description: string;
-  back: { href: string; label: string };
 }
 
 const externalLinks = (): ExternalLink[] =>
@@ -56,9 +45,8 @@ export function getSiteHeaderViewModel(): SiteHeaderViewModel {
       mainNav: site.a11y.mainNav,
       mobileNav: site.a11y.mobileNav,
       openMenu: site.a11y.openMenu,
-      role: site.person.role,
-      name: site.person.name,
     },
+    sheet: { name: site.person.name, role: site.person.role },
     theme: site.theme,
     externalLinks: externalLinks(),
   };
@@ -81,14 +69,5 @@ export function getSiteFooterViewModel(
       year: String(now.getFullYear()),
       holder: site.footer.copyright,
     },
-  };
-}
-
-export function getNotFoundViewModel(): NotFoundViewModel {
-  return {
-    code: "404",
-    title: site.notFound.title,
-    description: site.notFound.description,
-    back: { href: "/", label: site.notFound.backHome },
   };
 }

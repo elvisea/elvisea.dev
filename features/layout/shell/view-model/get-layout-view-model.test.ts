@@ -3,7 +3,6 @@ import { describe, expect, it } from "bun:test";
 import { site } from "@/content/pt-BR/site";
 
 import {
-  getNotFoundViewModel,
   getSiteFooterViewModel,
   getSiteHeaderViewModel,
 } from "./get-layout-view-model";
@@ -21,6 +20,10 @@ describe("getSiteHeaderViewModel", () => {
     });
     expect(model.labels.mainNav).toBe(site.a11y.mainNav);
     expect(model.labels.openMenu).toBe(site.a11y.openMenu);
+    expect(model.sheet).toEqual({
+      name: site.person.name,
+      role: site.person.role,
+    });
   });
 
   it("leva os links externos e os textos do tema", () => {
@@ -45,16 +48,5 @@ describe("getSiteFooterViewModel", () => {
     expect(model.externalLinks.map((link) => link.label)).toEqual(
       Object.values(site.links).map((link) => link.label),
     );
-  });
-});
-
-describe("getNotFoundViewModel", () => {
-  it("traz código, textos e o caminho de volta", () => {
-    expect(getNotFoundViewModel()).toEqual({
-      code: "404",
-      title: site.notFound.title,
-      description: site.notFound.description,
-      back: { href: "/", label: site.notFound.backHome },
-    });
   });
 });

@@ -93,10 +93,10 @@ export function SiteHeader({ model }: { model: SiteHeaderViewModel }) {
                 <div className="flex h-[100dvh] max-h-[100dvh] flex-col">
                   <div className="border-b border-border bg-surface pt-14 pr-14 pb-6 pl-6">
                     <SheetTitle className="text-left text-xl font-semibold tracking-tight text-heading">
-                      {model.labels.name}
+                      {model.sheet.name}
                     </SheetTitle>
                     <SheetDescription className="mt-1 text-left text-sm text-muted-foreground">
-                      {model.labels.role}
+                      {model.sheet.role}
                     </SheetDescription>
                   </div>
 

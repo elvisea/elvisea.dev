@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { Eyebrow } from "@/components/atoms/eyebrow";
 import { buttonVariants } from "@/components/ui/button";
-import type { NotFoundViewModel } from "@/features/layout/shell/view-model/get-layout-view-model";
+import type { NotFoundViewModel } from "@/features/layout/not-found/view-model/get-not-found-view-model";
 import { cn } from "cn";
 
 /** Página 404. */

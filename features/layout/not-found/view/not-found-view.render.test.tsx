@@ -2,7 +2,7 @@ import { describe, expect, it } from "bun:test";
 
 import { render, screen } from "@testing-library/react";
 
-import { getNotFoundViewModel } from "@/features/layout/shell/view-model/get-layout-view-model";
+import { getNotFoundViewModel } from "@/features/layout/not-found/view-model/get-not-found-view-model";
 
 import { NotFoundView } from "./not-found-view";
 

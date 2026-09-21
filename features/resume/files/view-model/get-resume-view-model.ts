@@ -20,6 +20,12 @@ export interface ResumeViewModel {
   metadata: Metadata;
 }
 
+export const resumeMetadata: Metadata = pageMetadata({
+  title: curriculoPage.metaTitle,
+  description: curriculoPage.metaDescription,
+  path: RESUME_PATH,
+});
+
 export function getResumeViewModel(): ResumeViewModel {
   return {
     header: curriculoPage.header,
@@ -30,10 +36,6 @@ export function getResumeViewModel(): ResumeViewModel {
       download: curriculoPage.download,
     })),
     breadcrumb: [{ name: curriculoPage.metaTitle, path: RESUME_PATH }],
-    metadata: pageMetadata({
-      title: curriculoPage.metaTitle,
-      description: curriculoPage.metaDescription,
-      path: RESUME_PATH,
-    }),
+    metadata: resumeMetadata,
   };
 }
