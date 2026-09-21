@@ -13,9 +13,7 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { projetosPage } from "@/content/pt-BR/pages/projetos";
-import { formatYearMonth, toYearMonth } from "@/lib/content/dates";
-import type { Project } from "@/lib/projects/types";
+import type { ProjectCardModel } from "@/features/projects/domain/project-card";
 import { cn } from "cn";
 
 const linkClass = cn(
@@ -23,12 +21,8 @@ const linkClass = cn(
   "h-11 px-0 sm:h-7",
 );
 
-export function ProjectCard({ project }: { project: Project }) {
-  const { card } = projetosPage;
-  const updated = project.updatedAt
-    ? formatYearMonth(toYearMonth(new Date(project.updatedAt)))
-    : null;
-
+/** Card de um projeto: nome, resumo, linguagem, estrelas, data e links. */
+export function ProjectCard({ project }: { project: ProjectCardModel }) {
   return (
     <Card className="h-full transition-shadow hover:ring-primary/40">
       <CardHeader>
@@ -38,33 +32,33 @@ export function ProjectCard({ project }: { project: Project }) {
         {project.fork ? (
           <CardAction>
             <Badge className="font-mono" variant="outline">
-              {card.fork}
+              {project.fork}
             </Badge>
           </CardAction>
         ) : null}
         <CardDescription
           className={cn(
             "text-pretty",
-            project.summary ? "text-foreground" : "italic",
+            project.hasSummary ? "text-foreground" : "italic",
           )}
         >
-          {project.summary ?? card.noDescription}
+          {project.summary}
         </CardDescription>
       </CardHeader>
 
       <CardContent className="mt-auto">
         <p className="flex flex-wrap items-center gap-x-3 gap-y-1 font-mono text-xs text-muted-foreground">
           {project.language ? <span>{project.language}</span> : null}
-          {project.stars > 0 ? (
+          {project.stars ? (
             <span className="inline-flex items-center gap-1">
               <StarIcon aria-hidden className="size-3" />
-              <span className="sr-only">{card.stars(project.stars)}</span>
-              <span aria-hidden>{project.stars}</span>
+              <span className="sr-only">{project.stars.label}</span>
+              <span aria-hidden>{project.stars.count}</span>
             </span>
           ) : null}
-          {updated ? (
+          {project.updated ? (
             <span>
-              {card.updated} {updated}
+              {project.updated.label} {project.updated.value}
             </span>
           ) : null}
         </p>
@@ -72,34 +66,25 @@ export function ProjectCard({ project }: { project: Project }) {
 
       <CardFooter className="flex-wrap gap-x-4 gap-y-1 py-2">
         {project.caseStudy ? (
-          <Link className={linkClass} href={`/projetos/${project.slug}`}>
-            {card.caseStudy}
+          <Link className={linkClass} href={project.caseStudy.href}>
+            {project.caseStudy.label}
           </Link>
         ) : null}
-        {project.repoUrl ? (
-          <a
-            aria-label={`${card.code}: ${project.title}`}
-            className={linkClass}
-            href={project.repoUrl}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            {card.code}
-            <ArrowUpRightIcon aria-hidden data-icon="inline-end" />
-          </a>
-        ) : null}
-        {project.liveUrl ? (
-          <a
-            aria-label={`${card.site}: ${project.title}`}
-            className={linkClass}
-            href={project.liveUrl}
-            rel="noopener noreferrer"
-            target="_blank"
-          >
-            {card.site}
-            <ArrowUpRightIcon aria-hidden data-icon="inline-end" />
-          </a>
-        ) : null}
+        {[project.repo, project.site].map((link) =>
+          link ? (
+            <a
+              key={link.href}
+              aria-label={link.ariaLabel}
+              className={linkClass}
+              href={link.href}
+              rel="noopener noreferrer"
+              target="_blank"
+            >
+              {link.label}
+              <ArrowUpRightIcon aria-hidden data-icon="inline-end" />
+            </a>
+          ) : null,
+        )}
       </CardFooter>
     </Card>
   );

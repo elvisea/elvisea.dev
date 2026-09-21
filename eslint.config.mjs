@@ -15,7 +15,7 @@ const forbid = {
   // puros de `lib/content` (datas, registro de ícones) seguem liberados.
   dataLib: {
     regex:
-      "^@/lib/(blog|projects|content)(/index)?$|^@/lib/blog/source$|^@/lib/content/markdown-page$",
+      "^@/lib/(blog|content)(/index)?$|^@/lib/blog/source$|^@/lib/content/markdown-page$",
     message: "Consulta de dados fica no repository, chamado pelo view-model.",
   },
   repository: {
@@ -37,8 +37,11 @@ const forbid = {
   },
 };
 
+// As fronteiras valem para o código de produção: um teste pode importar o
+// conteúdo real para comparar com o que a tela mostra.
 const layer = (files, patterns) => ({
   files,
+  ignores: ["**/*.test.ts", "**/*.test.tsx"],
   rules: { "no-restricted-imports": ["error", { patterns }] },
 });
 

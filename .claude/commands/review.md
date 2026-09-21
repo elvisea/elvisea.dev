@@ -100,6 +100,8 @@ destes itens; o review cobre o que ele não enxerga.
 
 - **Aviso:** área do site fora de `features/<feature>/`:
   - `repository/`: acesso a dados, com tipos, fonte injetável e sem estado;
+  - `domain/`: funções puras que outra feature reaproveita (mapeadores de
+    card, regras);
   - `<fluxo>/validations.ts`: schema zod do fluxo, quando há formulário;
   - `<fluxo>/view-model/`: função pura (`get-*-view-model.ts`) ou hook de
     cliente (`use-*-view-model.ts`), com teste;
@@ -110,7 +112,7 @@ destes itens; o review cobre o que ele não enxerga.
 - **Direção das dependências:** `app/` → `features/` → `components/` → `lib/`.
   - `lib/` importando `app/`, `features/` ou `components/` é aviso.
   - Feature importando `view/` ou `view-model/` de outra é aviso (só
-    `repository/`, `routes.ts` e `components/`).
+    `repository/`, `domain/`, `routes.ts` e `components/`).
 - **Design atômico:**
   - dependência só para baixo: view → template → organismo → molécula → átomo;
   - átomo ou molécula lendo `content/`, repository ou consulta de dados de
@@ -178,8 +180,8 @@ destes itens; o review cobre o que ele não enxerga.
 
 ### Testes (`bun test`)
 
-- Regra nova em `lib/**`, `features/**/view-model`, `features/**/repository`
-  ou `features/**/form` vem com teste ao lado, com dependências injetadas em
+- Regra nova em `lib/**`, `features/**/view-model`, `features/**/repository`,
+  `features/**/domain` ou `features/**/form` vem com teste ao lado, com dependências injetadas em
   vez de módulos reais.
 - Conteúdo novo com invariantes (slugs, limites de SEO, termos proibidos) no
   teste do conteúdo.

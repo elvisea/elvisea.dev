@@ -17,7 +17,7 @@ import {
   GithubRepoSchema,
   GithubSnapshotSchema,
   type GithubRepo,
-} from "../lib/projects/schema";
+} from "../features/projects/repository/schema";
 
 const USER = "elvisea";
 const OUTPUT = path.join(
@@ -39,14 +39,27 @@ export function nextPageUrl(linkHeader: string | null): string | null {
   return null;
 }
 
-async function fetchAllRepos(): Promise<GithubRepo[]> {
+/** Só o que o script usa do `fetch`, para os testes passarem respostas falsas. */
+export type FetchPage = (
+  url: string,
+  init: { headers: Record<string, string> },
+) => Promise<Response>;
+
+/**
+ * Busca todas as páginas de repositórios públicos, validando cada um.
+ * `fetchPage` e `token` são injetáveis (padrão: `fetch` e `GITHUB_TOKEN`).
+ */
+export async function fetchAllRepos(
+  fetchPage: FetchPage = fetch,
+  token: string | undefined = process.env.GITHUB_TOKEN,
+): Promise<GithubRepo[]> {
   const headers: Record<string, string> = {
     Accept: "application/vnd.github+json",
     "X-GitHub-Api-Version": "2022-11-28",
     "User-Agent": "elvisea.dev-sync",
   };
-  if (process.env.GITHUB_TOKEN) {
-    headers.Authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
+  if (token) {
+    headers.Authorization = `Bearer ${token}`;
   }
 
   const repos: GithubRepo[] = [];
@@ -54,7 +67,7 @@ async function fetchAllRepos(): Promise<GithubRepo[]> {
     `https://api.github.com/users/${USER}/repos?type=owner&per_page=100`;
 
   while (url) {
-    const response: Response = await fetch(url, { headers });
+    const response: Response = await fetchPage(url, { headers });
     if (!response.ok) {
       throw new Error(
         `GitHub respondeu ${response.status} em ${url}: ${await response.text()}`,
