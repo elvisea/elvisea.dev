@@ -1,6 +1,7 @@
 import { describe, expect, it } from "bun:test";
 
 import { servicosPage } from "@/content/pt-BR/pages/servicos";
+import { createAboutRepository } from "@/features/about/repository/about-repository";
 import { createServicesRepository } from "@/features/services/repository/services-repository";
 import type { Service } from "@/features/services/repository/types";
 
@@ -37,6 +38,23 @@ const service: Service = {
   stack: ["typescript"],
   faq: [{ question: "Específica?", answer: "Sim." }],
 };
+
+const about = createAboutRepository({
+  profile: {
+    resumo: "",
+    atuacao: [],
+    engenhariaComIa: "",
+    projetosProprios: "",
+  },
+  stack: [
+    {
+      title: "Linguagens",
+      items: [{ key: "typescript", label: "TypeScript", icon: "siTypescript" }],
+    },
+  ],
+  education: [],
+  certificates: [],
+});
 
 const repository = createServicesRepository([service]);
 
@@ -79,5 +97,24 @@ describe("getServiceDetailViewModel", () => {
 
   it("lista os slugs para generateStaticParams", () => {
     expect(getServiceSlugs(repository)).toEqual(["pix"]);
+  });
+});
+
+describe("stack do serviço", () => {
+  it("chega resolvida, com rótulo e ícone do repository de sobre", () => {
+    const model = getServiceDetailViewModel("pix", repository, about);
+    expect(model?.stack).toEqual([
+      { key: "typescript", label: "TypeScript", icon: "siTypescript" },
+    ]);
+  });
+
+  it("chave sem item conhecido aparece como está", () => {
+    const outro = createServicesRepository([
+      { ...service, slug: "outro", stack: ["cobol"] },
+    ]);
+    const model = getServiceDetailViewModel("outro", outro, about);
+    expect(model?.stack).toEqual([
+      { key: "cobol", label: "cobol", icon: undefined },
+    ]);
   });
 });
