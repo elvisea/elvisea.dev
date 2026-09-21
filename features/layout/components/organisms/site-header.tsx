@@ -1,15 +1,12 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { useState } from "react";
 
 import {
   LucideChevronRight as ChevronRightIcon,
   LucideMenu as MenuIcon,
 } from "lucide-react";
 
-import { ThemeToggle } from "@/components/molecules/theme-toggle";
 import { Button } from "@/components/ui/button";
 import {
   Sheet,
@@ -19,41 +16,40 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { site, type NavItem } from "@/content/pt-BR/site";
+import { ThemeToggle } from "@/features/layout/components/molecules/theme-toggle";
+import type { SiteHeaderViewModel } from "@/features/layout/shell/view-model/get-layout-view-model";
+import { useSiteHeaderViewModel } from "@/features/layout/shell/view-model/use-site-header-view-model";
 import { cn } from "cn";
 
-/** Rota ativa por prefixo (ex.: `/blog/post` ativa `/blog`). A home não está no menu. */
-function isActive(item: NavItem, pathname: string): boolean {
-  return pathname === item.href || pathname.startsWith(`${item.href}/`);
-}
-
-export function SiteHeader() {
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const pathname = usePathname();
+/** Cabeçalho fixo: marca, navegação, tema e menu mobile. */
+export function SiteHeader({ model }: { model: SiteHeaderViewModel }) {
+  const { mobileOpen, setMobileOpen, links } = useSiteHeaderViewModel(
+    model.navigation,
+  );
 
   return (
     <header className="sticky top-0 z-[100] border-b border-border bg-background/85 backdrop-blur-md supports-[backdrop-filter]:bg-background/70">
       <div className="mx-auto flex h-14 max-w-6xl items-center justify-between gap-6 px-4 sm:h-16 sm:px-6">
         <Link
           className="group flex shrink-0 items-baseline gap-2 rounded-md outline-none focus-visible:ring-3 focus-visible:ring-ring/50"
-          href="/"
+          href={model.home.href}
         >
           <span className="font-semibold tracking-tight text-heading">
-            {site.person.name}
+            {model.home.name}
           </span>
           <span className="hidden font-mono text-xs text-muted-foreground transition-colors group-hover:text-primary sm:inline">
-            {site.domain}
+            {model.home.domain}
           </span>
           {/* Complemento só para leitor de tela, depois do texto visível. */}
-          <span className="sr-only"> — {site.a11y.homeLinkHint}</span>
+          <span className="sr-only"> — {model.home.hint}</span>
         </Link>
 
         <nav
-          aria-label={site.a11y.mainNav}
+          aria-label={model.labels.mainNav}
           className="hidden items-center gap-1 md:flex"
         >
-          {site.navigation.map((item) => {
-            const active = isActive(item, pathname);
+          {links.map((item) => {
+            const active = item.active;
             return (
               <Link
                 key={item.href}
@@ -73,14 +69,14 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex shrink-0 items-center gap-2">
-          <ThemeToggle />
+          <ThemeToggle labels={model.theme} />
           <div className="md:hidden">
             <Sheet onOpenChange={setMobileOpen} open={mobileOpen}>
               <SheetTrigger
                 render={
                   <Button
                     aria-expanded={mobileOpen}
-                    aria-label={site.a11y.openMenu}
+                    aria-label={model.labels.openMenu}
                     className="size-10 shrink-0"
                     size="icon"
                     type="button"
@@ -97,19 +93,19 @@ export function SiteHeader() {
                 <div className="flex h-[100dvh] max-h-[100dvh] flex-col">
                   <div className="border-b border-border bg-surface pt-14 pr-14 pb-6 pl-6">
                     <SheetTitle className="text-left text-xl font-semibold tracking-tight text-heading">
-                      {site.person.name}
+                      {model.sheet.name}
                     </SheetTitle>
                     <SheetDescription className="mt-1 text-left text-sm text-muted-foreground">
-                      {site.person.role}
+                      {model.sheet.role}
                     </SheetDescription>
                   </div>
 
                   <nav
-                    aria-label={site.a11y.mobileNav}
+                    aria-label={model.labels.mobileNav}
                     className="flex flex-1 flex-col gap-1 overflow-y-auto p-4 pb-6"
                   >
-                    {site.navigation.map((item) => {
-                      const active = isActive(item, pathname);
+                    {links.map((item) => {
+                      const active = item.active;
                       return (
                         <SheetClose
                           key={item.href}
@@ -138,7 +134,7 @@ export function SiteHeader() {
                   </nav>
 
                   <div className="mt-auto flex items-center justify-center gap-6 border-t border-border bg-surface px-6 py-5 text-sm">
-                    {Object.values(site.links).map((link) => (
+                    {model.externalLinks.map((link) => (
                       <a
                         key={link.href}
                         className="text-muted-foreground underline-offset-4 hover:text-primary hover:underline"

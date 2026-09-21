@@ -9,7 +9,6 @@ import {
 import { useTheme } from "next-themes";
 
 import { Button } from "@/components/ui/button";
-import { site } from "@/content/pt-BR/site";
 
 function useClientMounted(): boolean {
   return React.useSyncExternalStore(
@@ -19,22 +18,31 @@ function useClientMounted(): boolean {
   );
 }
 
+interface ThemeToggleProps {
+  /** Rótulos do botão: antes de montar, ao ir para claro e ao ir para escuro. */
+  labels: {
+    toggleAria: string;
+    toggleLightAria: string;
+    toggleDarkAria: string;
+  };
+}
+
 /**
  * Alterna tema claro/escuro (`next-themes` aplica a classe `dark` no `<html>`).
  * Antes de montar, o tema resolvido é desconhecido: o botão mostra um ícone
  * neutro e um rótulo genérico, sem `disabled` (evita divergência de
  * hidratação no Button do Base UI).
  */
-export function ThemeToggle() {
+export function ThemeToggle({ labels }: ThemeToggleProps) {
   const { resolvedTheme, setTheme } = useTheme();
   const mounted = useClientMounted();
   const isDark = mounted && resolvedTheme === "dark";
 
   const label = !mounted
-    ? site.theme.toggleAria
+    ? labels.toggleAria
     : isDark
-      ? site.theme.toggleLightAria
-      : site.theme.toggleDarkAria;
+      ? labels.toggleLightAria
+      : labels.toggleDarkAria;
 
   return (
     <Button
