@@ -37,6 +37,7 @@ features/<feature>/
     types.ts                                  contrato do conteúdo
     <feature>-repository.ts                   createXRepository(source) + instância padrão
     <feature>-repository.test.ts              repository + invariantes do conteúdo
+  domain/                                     funções puras que outra feature reaproveita (opcional)
   <fluxo>/
     validations.ts                            schema zod (só em fluxo com formulário)
     view-model/get-<feature>-<fluxo>-view-model.ts        função pura (servidor)

@@ -120,13 +120,14 @@ Mapa de termos, modelo de página e checklist de lançamento em
   | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
   | `routes.ts`                               | caminhos e links da feature                                                                                         |
   | `repository/`                             | acesso a dados (conteúdo, Markdown, snapshot, envio), com tipos, fonte injetável e sem estado                       |
+  | `domain/`                                 | funções puras e tipos que outras features reaproveitam (ex.: o card de projeto usado pela home)                     |
   | `<fluxo>/validations.ts`                  | schema zod do fluxo, quando há formulário                                                                           |
   | `<fluxo>/view-model/`                     | monta o que a tela mostra: `get-*-view-model.ts` (função pura, servidor) ou `use-*-view-model.ts` (hook de cliente) |
   | `<fluxo>/view/`                           | só renderiza o `model` recebido por prop                                                                            |
   | `components/{atoms,molecules,organisms}/` | componentes da feature                                                                                              |
 
   As áreas que ainda não estão em `features/` migram pelas sub-issues de #24
-  (#46 a #50).
+  (#47 a #50).
 
 - **Rota fina:** `app/**/page.tsx` declara a metadata
   (`pageMetadata(model.metadata)`) e o `generateStaticParams` e renderiza
@@ -135,7 +136,7 @@ Mapa de termos, modelo de página e checklist de lançamento em
   nunca ao contrário.
   - `lib/` só tem utilitários puros e transversais (SEO, Markdown, datas, log,
     e-mail genérico) e nunca importa `app/`, `features/` nem `components/`.
-  - Uma feature importa de outra só `repository/`, `routes.ts` e
+  - Uma feature importa de outra só `repository/`, `domain/`, `routes.ts` e
     `components/` (a home agrega as outras); nunca `view/` nem `view-model/`.
   - O `eslint.config.mjs` confere as fronteiras com `no-restricted-imports`.
 - **Responsabilidade única:** um arquivo, uma responsabilidade, com o teste ao
