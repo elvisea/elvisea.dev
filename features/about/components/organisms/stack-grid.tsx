@@ -1,17 +1,18 @@
+import { MonoLabel } from "@/components/atoms/mono-label";
 import { TechIcon } from "@/components/atoms/tech-icon";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { stack } from "@/content/pt-BR/stack";
+import type { StackGroupModel } from "@/features/about/profile/view-model/get-about-view-model";
 
 /** Stack agrupada por área, com ícones. Sem nível de proficiência. */
-export function StackGrid() {
+export function StackGrid({ groups }: { groups: readonly StackGroupModel[] }) {
   return (
     <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {stack.map((group) => (
+      {groups.map((group) => (
         <Card key={group.title}>
           <CardHeader>
-            <CardTitle className="font-mono text-xs tracking-wide text-highlight uppercase">
-              {group.title}
+            <CardTitle>
+              <MonoLabel>{group.title}</MonoLabel>
             </CardTitle>
           </CardHeader>
           <CardContent>

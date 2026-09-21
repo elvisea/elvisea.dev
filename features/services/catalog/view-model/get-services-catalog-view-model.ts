@@ -7,6 +7,14 @@ import {
   servicesRepository,
   type ServicesRepository,
 } from "@/features/services/repository/services-repository";
+import {
+  type StackBadgeModel,
+  toStackBadges,
+} from "@/features/about/domain/stack-badges";
+import {
+  aboutRepository,
+  type AboutRepository,
+} from "@/features/about/repository/about-repository";
 import { contactHrefFor } from "@/features/contact/routes";
 import { SERVICES_PATH, servicePath } from "@/features/services/routes";
 import type { BreadcrumbItem } from "@/lib/seo/structured-data";
@@ -16,7 +24,7 @@ export interface ServiceCardModel {
   href: string;
   title: string;
   summary: string;
-  stack: readonly string[];
+  stack: readonly StackBadgeModel[];
 }
 
 export interface ServicesCatalogViewModel {
@@ -37,6 +45,7 @@ export interface ServicesCatalogViewModel {
 
 export function getServicesCatalogViewModel(
   repository: ServicesRepository = servicesRepository,
+  about: AboutRepository = aboutRepository,
 ): ServicesCatalogViewModel {
   return {
     header: servicosPage.header,
@@ -45,7 +54,7 @@ export function getServicesCatalogViewModel(
       href: servicePath(service.slug),
       title: service.shortTitle,
       summary: service.summary,
-      stack: service.stack,
+      stack: toStackBadges(service.stack, about.stackItem),
     })),
     cardMore: servicosPage.card.more,
     cardStackLabel: servicosPage.detail.stack,

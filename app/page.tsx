@@ -3,26 +3,30 @@ import Link from "next/link";
 import { ArrowRightIcon } from "lucide-react";
 
 import { SectionHeader } from "@/components/molecules/section-header";
-import { ExperienceTimeline } from "@/components/organisms/experience-timeline";
 import { HeroSection } from "@/components/organisms/hero-section";
-import { ProfileSummary } from "@/components/organisms/profile-summary";
-import { StackGrid } from "@/components/organisms/stack-grid";
 import { buttonVariants } from "@/components/ui/button";
 import { blogPage } from "@/content/pt-BR/pages/blog";
 import { contatoPage } from "@/content/pt-BR/pages/contato";
 import { servicosPage } from "@/content/pt-BR/pages/servicos";
-import { homePage, sobrePage } from "@/content/pt-BR/pages/profissional";
+import { homePage } from "@/content/pt-BR/pages/profissional";
 import { projetosPage } from "@/content/pt-BR/pages/projetos";
+import { ProfileSummary } from "@/features/about/components/organisms/profile-summary";
+import { StackGrid } from "@/features/about/components/organisms/stack-grid";
+import {
+  getProfileModel,
+  getStackGroups,
+} from "@/features/about/profile/view-model/get-about-view-model";
 import { BlogPreviewSection } from "@/features/blog/components/organisms/blog-preview-section";
 import { toPostCardModel } from "@/features/blog/domain/post-card";
 import { blogRepository } from "@/features/blog/repository/blog-repository";
 import { BLOG_PATH } from "@/features/blog/routes";
+import { ExperienceTimeline } from "@/features/experience/components/organisms/experience-timeline";
+import { getTimelineEntries } from "@/features/experience/timeline/view-model/get-experience-view-model";
 import { ProjectCard } from "@/features/projects/components/molecules/project-card";
 import { toProjectCardModel } from "@/features/projects/domain/project-card";
 import { defaultProjectsRepository } from "@/features/projects/repository/projects-repository";
 import { getServicesCatalogViewModel } from "@/features/services/catalog/view-model/get-services-catalog-view-model";
 import { ServicesSection } from "@/features/services/components/organisms/services-section";
-import { getHighlightedExperiences } from "@/lib/content";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { cn } from "cn";
 
@@ -54,7 +58,7 @@ export default async function HomePage() {
             eyebrow={homePage.profile.eyebrow}
             title={homePage.profile.title}
           />
-          <ProfileSummary atuacaoTitle={sobrePage.atuacao} />
+          <ProfileSummary profile={getProfileModel()} />
           <MoreLink href="/sobre" label={homePage.profile.more} />
         </div>
       </section>
@@ -77,10 +81,7 @@ export default async function HomePage() {
             title={homePage.experience.title}
           />
           <div className="max-w-3xl">
-            <ExperienceTimeline
-              experiences={getHighlightedExperiences()}
-              variant="compact"
-            />
+            <ExperienceTimeline entries={getTimelineEntries(false)} />
           </div>
           <MoreLink href="/experiencia" label={homePage.experience.all} />
         </div>
@@ -116,7 +117,7 @@ export default async function HomePage() {
             eyebrow={homePage.stack.eyebrow}
             title={homePage.stack.title}
           />
-          <StackGrid />
+          <StackGrid groups={getStackGroups()} />
         </div>
       </section>
 
