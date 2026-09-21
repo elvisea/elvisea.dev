@@ -8,9 +8,9 @@ import {
   OG_SIZE,
   OgCardTemplate,
 } from "@/components/templates/og-card-template";
-import { blogPage } from "@/content/pt-BR/pages/blog";
 import { site } from "@/content/pt-BR/site";
-import { getAllSlugs, getPostBySlug } from "@/lib/blog";
+import { getPostOgModel } from "@/features/blog/post/view-model/get-post-view-model";
+import { blogRepository } from "@/features/blog/repository/blog-repository";
 import { loadOgFonts } from "@/lib/og/fonts";
 
 export const size = OG_SIZE;
@@ -18,7 +18,7 @@ export const contentType = "image/png";
 export const dynamicParams = false;
 
 export async function generateStaticParams() {
-  return (await getAllSlugs()).map((slug) => ({ slug }));
+  return (await blogRepository.slugs()).map((slug) => ({ slug }));
 }
 
 export default async function PostOpengraphImage({
@@ -26,16 +26,14 @@ export default async function PostOpengraphImage({
 }: {
   params: Promise<{ slug: string }>;
 }) {
-  const { slug } = await params;
-  const post = await getPostBySlug(slug);
-  const title = post?.frontmatter.title ?? blogPage.metaTitle;
+  const model = await getPostOgModel((await params).slug);
 
   return new ImageResponse(
     <OgCardTemplate
       author={site.person.fullName}
       domain={site.domain}
-      eyebrow={`${blogPage.header.eyebrow} · ${blogPage.meta.readingTime(post?.readingMinutes ?? 1)}`}
-      title={title}
+      eyebrow={model.eyebrow}
+      title={model.title}
     />,
     { ...size, fonts: await loadOgFonts() },
   );

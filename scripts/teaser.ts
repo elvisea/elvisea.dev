@@ -12,7 +12,7 @@
  * comentário. O card do link usa a imagem OG gerada para o post.
  */
 import { site } from "../content/pt-BR/site";
-import { loadAllPostsFromFs } from "../lib/blog/source";
+import { blogRepository } from "../features/blog/repository/blog-repository";
 
 export function teaserUrl(slug: string): string {
   const params = new URLSearchParams({
@@ -30,7 +30,7 @@ async function main() {
     process.exit(1);
   }
 
-  const post = (await loadAllPostsFromFs()).find((p) => p.slug === slug);
+  const post = (await blogRepository.listAll()).find((p) => p.slug === slug);
   if (!post) {
     console.error(`Post "${slug}" não encontrado em content/pt-BR/blog/posts.`);
     process.exit(1);

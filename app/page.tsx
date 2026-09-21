@@ -3,16 +3,20 @@ import Link from "next/link";
 import { ArrowRightIcon } from "lucide-react";
 
 import { SectionHeader } from "@/components/molecules/section-header";
-import { BlogPreviewSection } from "@/components/organisms/blog-preview-section";
 import { ExperienceTimeline } from "@/components/organisms/experience-timeline";
 import { HeroSection } from "@/components/organisms/hero-section";
 import { ProfileSummary } from "@/components/organisms/profile-summary";
 import { StackGrid } from "@/components/organisms/stack-grid";
 import { buttonVariants } from "@/components/ui/button";
+import { blogPage } from "@/content/pt-BR/pages/blog";
 import { contatoPage } from "@/content/pt-BR/pages/contato";
 import { servicosPage } from "@/content/pt-BR/pages/servicos";
 import { homePage, sobrePage } from "@/content/pt-BR/pages/profissional";
 import { projetosPage } from "@/content/pt-BR/pages/projetos";
+import { BlogPreviewSection } from "@/features/blog/components/organisms/blog-preview-section";
+import { toPostCardModel } from "@/features/blog/domain/post-card";
+import { blogRepository } from "@/features/blog/repository/blog-repository";
+import { BLOG_PATH } from "@/features/blog/routes";
 import { ProjectCard } from "@/features/projects/components/molecules/project-card";
 import { toProjectCardModel } from "@/features/projects/domain/project-card";
 import { defaultProjectsRepository } from "@/features/projects/repository/projects-repository";
@@ -36,7 +40,7 @@ function MoreLink({ href, label }: { href: string; label: string }) {
   );
 }
 
-export default function HomePage() {
+export default async function HomePage() {
   return (
     <>
       <HeroSection />
@@ -116,7 +120,17 @@ export default function HomePage() {
         </div>
       </section>
 
-      <BlogPreviewSection />
+      <BlogPreviewSection
+        eyebrow={blogPage.preview.eyebrow}
+        posts={(await blogRepository.recent(3)).map((post) =>
+          toPostCardModel(post, {
+            readMore: blogPage.card.readMore,
+            meta: blogPage.meta,
+          }),
+        )}
+        title={blogPage.preview.title}
+        viewAll={{ href: BLOG_PATH, label: blogPage.preview.viewAll }}
+      />
 
       <section className="scroll-mt-20 bg-surface py-20" id="contato">
         <div className="mx-auto flex max-w-6xl flex-col items-start gap-6 px-4 sm:px-6 md:flex-row md:items-end md:justify-between">

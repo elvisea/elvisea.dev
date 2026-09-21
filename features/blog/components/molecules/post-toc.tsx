@@ -1,18 +1,23 @@
+import { MonoLabel } from "@/components/atoms/mono-label";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { blogPage } from "@/content/pt-BR/pages/blog";
-import type { TocItem } from "@/lib/blog";
+import type { TocItem } from "@/lib/markdown/toc";
 import { cn } from "cn";
 
+interface PostTocProps {
+  label: string;
+  items: readonly TocItem[];
+}
+
 /** Sumário do post (só renderizado quando há seções suficientes). */
-export function PostToc({ items }: { items: readonly TocItem[] }) {
+export function PostToc({ label, items }: PostTocProps) {
   if (items.length === 0) return null;
 
   return (
-    <nav aria-label={blogPage.post.toc}>
+    <nav aria-label={label}>
       <Card>
         <CardHeader>
-          <CardTitle className="font-mono text-xs tracking-wide text-highlight uppercase">
-            {blogPage.post.toc}
+          <CardTitle>
+            <MonoLabel>{label}</MonoLabel>
           </CardTitle>
         </CardHeader>
         <CardContent>

@@ -6,14 +6,15 @@
 import type { MetadataRoute } from "next";
 
 import { site } from "@/content/pt-BR/site";
+import { blogRepository } from "@/features/blog/repository/blog-repository";
+import { BLOG_PATH, postPath } from "@/features/blog/routes";
 import { defaultProjectsRepository } from "@/features/projects/repository/projects-repository";
 import { projectPath } from "@/features/projects/routes";
 import { getServiceSlugs } from "@/features/services/detail/view-model/get-service-detail-view-model";
 import { SERVICES_PATH, servicePath } from "@/features/services/routes";
-import { getAllPosts } from "@/lib/blog";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const posts = await getAllPosts();
+  const posts = await blogRepository.list();
   const blogLastModified = posts[0]
     ? new Date(`${posts[0].frontmatter.date}T00:00:00Z`)
     : undefined;
@@ -48,7 +49,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...(posts.length > 0
       ? [
           {
-            url: `${site.url}/blog`,
+            url: `${site.url}${BLOG_PATH}`,
             lastModified: blogLastModified,
             changeFrequency: "weekly" as const,
             priority: 0.8,
@@ -63,7 +64,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         priority: 0.6,
       })),
     ...posts.map((p) => ({
-      url: `${site.url}/blog/${p.slug}`,
+      url: `${site.url}${postPath(p.slug)}`,
       lastModified: new Date(`${p.frontmatter.date}T00:00:00Z`),
       changeFrequency: "monthly" as const,
       priority: 0.6,
