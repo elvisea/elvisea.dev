@@ -1,30 +1,28 @@
 import Link from "next/link";
 
 import { Separator } from "@/components/ui/separator";
-import { site } from "@/content/pt-BR/site";
+import type { SiteFooterViewModel } from "@/features/layout/shell/view-model/get-layout-view-model";
 
 const linkClass =
   "text-muted-foreground underline-offset-4 hover:text-heading hover:underline";
 
-export function SiteFooter() {
-  const year = new Date().getFullYear();
-  const external = Object.values(site.links);
-
+/** Rodapé: identificação, navegação, links externos e direitos. */
+export function SiteFooter({ model }: { model: SiteFooterViewModel }) {
   return (
     <footer className="border-t border-border bg-surface py-10">
       <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 sm:px-6 md:flex-row md:items-start md:justify-between">
         <div className="space-y-1">
-          <p className="font-semibold text-heading">{site.person.name}</p>
+          <p className="font-semibold text-heading">{model.person.name}</p>
           <p className="text-sm text-muted-foreground">
-            {site.person.role} · {site.person.location}
+            {model.person.role} · {model.person.location}
           </p>
         </div>
         <nav
-          aria-label={site.a11y.footerNav}
+          aria-label={model.labels.footerNav}
           className="flex flex-col gap-3 text-sm md:items-end"
         >
           <ul className="flex flex-wrap gap-x-5 gap-y-2">
-            {site.navigation.map((item) => (
+            {model.navigation.map((item) => (
               <li key={item.href}>
                 <Link className={linkClass} href={item.href}>
                   {item.label}
@@ -33,14 +31,14 @@ export function SiteFooter() {
             ))}
           </ul>
           <ul className="flex flex-wrap gap-x-5 gap-y-2">
-            {site.footerLinks.map((item) => (
+            {model.pages.map((item) => (
               <li key={item.href}>
                 <Link className={linkClass} href={item.href}>
                   {item.label}
                 </Link>
               </li>
             ))}
-            {external.map((link) => (
+            {model.externalLinks.map((link) => (
               <li key={link.href}>
                 <a
                   className={linkClass}
@@ -59,9 +57,9 @@ export function SiteFooter() {
         <Separator />
         <div className="flex flex-wrap justify-between gap-2 text-xs text-muted-foreground">
           <span>
-            © {year} {site.footer.copyright}
+            © {model.copyright.year} {model.copyright.holder}
           </span>
-          <span className="font-mono">{site.domain}</span>
+          <span className="font-mono">{model.labels.domain}</span>
         </div>
       </div>
     </footer>

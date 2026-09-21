@@ -1,35 +1,14 @@
-import { SectionHeader } from "@/components/molecules/section-header";
-import { PostBody } from "@/components/organisms/post-body";
-import { comoTrabalhoPage } from "@/content/pt-BR/pages/profissional";
-import { renderContentPage } from "@/lib/content/markdown-page";
-import { PageJsonLd } from "@/components/molecules/page-json-ld";
-import { pageMetadata } from "@/lib/seo/metadata";
+/** Rota `/como-trabalho`: só metadata e a View (MVVM, ver AGENTS.md). */
+import {
+  getHowIWorkViewModel,
+  howIWorkMetadata,
+} from "@/features/how-i-work/page/view-model/get-how-i-work-view-model";
+import { HowIWorkView } from "@/features/how-i-work/page/view/how-i-work-view";
 
 export const dynamic = "force-static";
 
-export const metadata = pageMetadata({
-  title: comoTrabalhoPage.metaTitle,
-  description: comoTrabalhoPage.metaDescription,
-  path: "/como-trabalho",
-});
+export const metadata = howIWorkMetadata;
 
 export default async function ComoTrabalhoPage() {
-  const html = await renderContentPage("como-trabalho");
-
-  return (
-    <div className="mx-auto max-w-3xl space-y-10 px-4 py-16 sm:px-6 lg:py-20">
-      <PageJsonLd
-        breadcrumb={[
-          { name: comoTrabalhoPage.metaTitle, path: "/como-trabalho" },
-        ]}
-      />
-      <SectionHeader
-        as="h1"
-        description={comoTrabalhoPage.header.description}
-        eyebrow={comoTrabalhoPage.header.eyebrow}
-        title={comoTrabalhoPage.header.title}
-      />
-      <PostBody html={html} />
-    </div>
-  );
+  return <HowIWorkView model={await getHowIWorkViewModel()} />;
 }
