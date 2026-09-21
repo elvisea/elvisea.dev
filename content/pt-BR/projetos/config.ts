@@ -12,7 +12,7 @@
  * O snapshot vem de `bun run sync:github`. Nomes aqui precisam existir nele
  * (o teste confere).
  */
-import type { ProjectsConfig } from "@/lib/projects/types";
+import type { ProjectsConfig } from "@/features/projects/repository/types";
 
 export const projectsConfig = {
   mode: "all",

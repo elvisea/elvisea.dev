@@ -4,7 +4,6 @@ import { ArrowRightIcon } from "lucide-react";
 
 import { SectionHeader } from "@/components/molecules/section-header";
 import { BlogPreviewSection } from "@/components/organisms/blog-preview-section";
-import { ProjectCard } from "@/components/molecules/project-card";
 import { ExperienceTimeline } from "@/components/organisms/experience-timeline";
 import { HeroSection } from "@/components/organisms/hero-section";
 import { ProfileSummary } from "@/components/organisms/profile-summary";
@@ -14,10 +13,12 @@ import { contatoPage } from "@/content/pt-BR/pages/contato";
 import { servicosPage } from "@/content/pt-BR/pages/servicos";
 import { homePage, sobrePage } from "@/content/pt-BR/pages/profissional";
 import { projetosPage } from "@/content/pt-BR/pages/projetos";
+import { ProjectCard } from "@/features/projects/components/molecules/project-card";
+import { toProjectCardModel } from "@/features/projects/domain/project-card";
+import { defaultProjectsRepository } from "@/features/projects/repository/projects-repository";
 import { getServicesCatalogViewModel } from "@/features/services/catalog/view-model/get-services-catalog-view-model";
 import { ServicesSection } from "@/features/services/components/organisms/services-section";
 import { getHighlightedExperiences } from "@/lib/content";
-import { getFeaturedProjects } from "@/lib/projects";
 import { pageMetadata } from "@/lib/seo/metadata";
 import { cn } from "cn";
 
@@ -91,11 +92,15 @@ export default function HomePage() {
             title={projetosPage.preview.title}
           />
           <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {getFeaturedProjects(6).map((project) => (
-              <li key={project.slug}>
-                <ProjectCard project={project} />
-              </li>
-            ))}
+            {defaultProjectsRepository()
+              .featured(6)
+              .map((project) => (
+                <li key={project.slug}>
+                  <ProjectCard
+                    project={toProjectCardModel(project, projetosPage.card)}
+                  />
+                </li>
+              ))}
           </ul>
           <MoreLink href="/projetos" label={projetosPage.preview.all} />
         </div>

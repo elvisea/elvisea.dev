@@ -6,10 +6,11 @@
 import type { MetadataRoute } from "next";
 
 import { site } from "@/content/pt-BR/site";
+import { defaultProjectsRepository } from "@/features/projects/repository/projects-repository";
+import { projectPath } from "@/features/projects/routes";
 import { getServiceSlugs } from "@/features/services/detail/view-model/get-service-detail-view-model";
 import { SERVICES_PATH, servicePath } from "@/features/services/routes";
 import { getAllPosts } from "@/lib/blog";
-import { getCaseStudies } from "@/lib/projects";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const posts = await getAllPosts();
@@ -54,11 +55,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           },
         ]
       : []),
-    ...getCaseStudies().map((p) => ({
-      url: `${site.url}/projetos/${p.slug}`,
-      changeFrequency: "monthly" as const,
-      priority: 0.6,
-    })),
+    ...defaultProjectsRepository()
+      .caseStudies()
+      .map((p) => ({
+        url: `${site.url}${projectPath(p.slug)}`,
+        changeFrequency: "monthly" as const,
+        priority: 0.6,
+      })),
     ...posts.map((p) => ({
       url: `${site.url}/blog/${p.slug}`,
       lastModified: new Date(`${p.frontmatter.date}T00:00:00Z`),

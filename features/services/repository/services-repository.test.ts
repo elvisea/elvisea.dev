@@ -7,7 +7,7 @@ import { experiencias } from "@/content/pt-BR/experiencias";
 import { servicos } from "@/content/pt-BR/servicos";
 import { site } from "@/content/pt-BR/site";
 import { stack } from "@/content/pt-BR/stack";
-import { getProjects } from "@/lib/projects";
+import { defaultProjectsRepository } from "@/features/projects/repository/projects-repository";
 
 import {
   createServicesRepository,
@@ -39,7 +39,11 @@ describe("conteúdo de serviços", () => {
   );
   const experienceSlugs = new Set<string>(experiencias.map((e) => e.slug));
   // Repositórios que o próprio site exibe em /projetos (curadoria aplicada).
-  const shownRepos = new Set(getProjects().map((project) => project.repoUrl));
+  const shownRepos = new Set(
+    defaultProjectsRepository()
+      .list()
+      .map((project) => project.repoUrl),
+  );
 
   it("tem slugs únicos em formato de URL", () => {
     const slugs = servicos.map((s) => s.slug);
