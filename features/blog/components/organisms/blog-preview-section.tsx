@@ -1,35 +1,38 @@
 /**
- * Seção da home (`app/page.tsx`) com os 3 posts mais recentes + CTA "Ver
- * todos". RSC assíncrono — busca via `getRecentPosts(3)` em build time.
- *
- * Renderiza `null` quando ainda não há posts publicados (evita seção
- * vazia na home).
- *
+ * Seção da home com os posts mais recentes e o link para a listagem. Os
+ * cards chegam prontos: sem posts, a home não mostra a seção.
  */
 import Link from "next/link";
 
 import { ArrowRightIcon } from "lucide-react";
 
-import { PostCard } from "@/components/molecules/post-card";
 import { buttonVariants } from "@/components/ui/button";
-import { blogPage } from "@/content/pt-BR/pages/blog";
-import { getRecentPosts } from "@/lib/blog";
+import { PostCard } from "@/features/blog/components/molecules/post-card";
+import type { PostCardModel } from "@/features/blog/domain/post-card";
 import { cn } from "cn";
 
-export async function BlogPreviewSection() {
-  const posts = await getRecentPosts(3);
+interface BlogPreviewSectionProps {
+  eyebrow: string;
+  title: string;
+  posts: readonly PostCardModel[];
+  viewAll: { href: string; label: string };
+}
 
+export function BlogPreviewSection({
+  eyebrow,
+  title,
+  posts,
+  viewAll,
+}: BlogPreviewSectionProps) {
   if (posts.length === 0) return null;
 
   return (
     <section className="border-b border-border bg-background py-20" id="blog">
       <div className="mx-auto max-w-6xl space-y-10 px-4 sm:px-6">
         <div className="max-w-2xl space-y-3">
-          <p className="font-mono text-sm text-highlight">
-            {blogPage.preview.eyebrow}
-          </p>
+          <p className="font-mono text-sm text-highlight">{eyebrow}</p>
           <h2 className="text-3xl font-bold tracking-tight text-balance text-heading">
-            {blogPage.preview.title}
+            {title}
           </h2>
         </div>
 
@@ -47,9 +50,9 @@ export async function BlogPreviewSection() {
               buttonVariants({ variant: "outline", size: "lg" }),
               "gap-2",
             )}
-            href="/blog"
+            href={viewAll.href}
           >
-            {blogPage.preview.viewAll}
+            {viewAll.label}
             <ArrowRightIcon aria-hidden className="size-4" />
           </Link>
         </div>

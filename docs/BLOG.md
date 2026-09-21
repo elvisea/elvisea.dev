@@ -7,7 +7,7 @@ banco, painel nem CMS.
 
 1. Crie `content/pt-BR/blog/posts/<slug>.md`. O nome do arquivo é a URL
    (`/blog/<slug>`): minúsculas, números e hífens. Renomear depois quebra links.
-2. Frontmatter (validado por `lib/blog/schema.ts`, campos extras falham o build):
+2. Frontmatter (validado por `features/blog/repository/schema.ts`, campos extras falham o build):
 
    ```yaml
    ---
@@ -44,12 +44,14 @@ inventados, cenas só se aconteceram.
 
 ## Arquitetura
 
-| Caminho                  | Papel                                                    |
-| ------------------------ | -------------------------------------------------------- |
-| `lib/blog/schema.ts`     | Schema do frontmatter e tipos                            |
-| `lib/blog/source.ts`     | Leitura dos `.md` com gray-matter (única parte com `fs`) |
-| `lib/blog/index.ts`      | Fachada com `React.cache`; filtra drafts                 |
-| `lib/markdown/render.ts` | Pipeline remark/rehype (também usado em páginas `.md`)   |
-| `lib/markdown/toc.ts`    | Sumário com os mesmos ids do `rehype-slug`               |
-| `app/blog/**`            | Lista, post e imagem OG                                  |
-| `app/rss.xml/route.ts`   | Feed RSS                                                 |
+| Caminho                                       | Papel                                                                  |
+| --------------------------------------------- | ---------------------------------------------------------------------- |
+| `features/blog/repository/schema.ts`          | Schema do frontmatter e tipos                                          |
+| `features/blog/repository/source.ts`          | Leitura dos `.md` com gray-matter (única parte com `fs`)               |
+| `features/blog/repository/blog-repository.ts` | Porta de acesso: lê a fonte uma vez, filtra rascunhos, monta o sumário |
+| `features/blog/domain/`                       | Card e meta do post em texto (usados pela listagem e pela home)        |
+| `features/blog/{list,post}/`                  | View-models e Views da listagem e do post                              |
+| `features/blog/feed/`                         | XML do RSS (`buildRssFeed`), sem I/O                                   |
+| `lib/markdown/render.ts`                      | Pipeline remark/rehype (também usado em páginas `.md`)                 |
+| `lib/markdown/toc.ts`                         | Sumário com os mesmos ids do `rehype-slug`                             |
+| `app/blog/**`, `app/rss.xml/route.ts`         | Rotas finas: metadata e View, ou o feed montado pelo repository        |

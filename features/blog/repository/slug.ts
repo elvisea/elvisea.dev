@@ -6,7 +6,7 @@
  * **muda a URL pública** — evite após a publicação para não quebrar
  * links indexados.
  *
- * @module lib/blog/slug
+ * @module features/blog/repository/slug
  */
 
 const SLUG_REGEX = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;

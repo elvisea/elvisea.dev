@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
 
-import { escapeXml, rfc822 } from "./rss";
+import { escapeXml, rfc822 } from "./rss-xml";
 
 describe("rss", () => {
   it("escapa caracteres especiais de XML", () => {

@@ -14,8 +14,7 @@ const forbid = {
   // Só as fachadas que consultam dados e as leituras de arquivo. Utilitários
   // puros de `lib/content` (datas, registro de ícones) seguem liberados.
   dataLib: {
-    regex:
-      "^@/lib/(blog|content)(/index)?$|^@/lib/blog/source$|^@/lib/content/markdown-page$",
+    regex: "^@/lib/content(/index)?$|^@/lib/content/markdown-page$",
     message: "Consulta de dados fica no repository, chamado pelo view-model.",
   },
   repository: {

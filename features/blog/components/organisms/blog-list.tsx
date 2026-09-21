@@ -1,10 +1,9 @@
 /**
- * Grid da página `/blog` (1 col mobile → 2 md → 3 lg), com estado vazio
- * quando não há posts publicados.
+ * Grid da listagem de posts (1 coluna no mobile, 2 em md, 3 em lg), com
+ * estado vazio quando não há posts publicados.
  */
 import { NewspaperIcon } from "lucide-react";
 
-import { PostCard } from "@/components/molecules/post-card";
 import {
   Empty,
   EmptyDescription,
@@ -12,14 +11,15 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty";
-import { blogPage } from "@/content/pt-BR/pages/blog";
-import type { PostSummary } from "@/lib/blog";
+import { PostCard } from "@/features/blog/components/molecules/post-card";
+import type { PostCardModel } from "@/features/blog/domain/post-card";
 
 interface BlogListProps {
-  posts: PostSummary[];
+  posts: readonly PostCardModel[];
+  emptyState: { title: string; description: string };
 }
 
-export function BlogList({ posts }: BlogListProps) {
+export function BlogList({ posts, emptyState }: BlogListProps) {
   if (posts.length === 0) {
     return (
       <Empty className="border border-dashed bg-card">
@@ -27,8 +27,8 @@ export function BlogList({ posts }: BlogListProps) {
           <EmptyMedia variant="icon">
             <NewspaperIcon aria-hidden />
           </EmptyMedia>
-          <EmptyTitle>{blogPage.emptyState.title}</EmptyTitle>
-          <EmptyDescription>{blogPage.emptyState.description}</EmptyDescription>
+          <EmptyTitle>{emptyState.title}</EmptyTitle>
+          <EmptyDescription>{emptyState.description}</EmptyDescription>
         </EmptyHeader>
       </Empty>
     );

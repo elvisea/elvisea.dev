@@ -1,23 +1,20 @@
 /**
- * Cabeçalho do post (`<header>` dentro do `<article>` da rota): tags, título,
+ * Cabeçalho do post (`<header>` dentro do `<article>`): tags, título,
  * descrição, meta e capa opcional.
  */
 import Image from "next/image";
 
-import { PostMeta } from "@/components/molecules/post-meta";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
-import type { PostSummary } from "@/lib/blog";
+import { PostMeta } from "@/features/blog/components/molecules/post-meta";
+import type { PostViewModel } from "@/features/blog/post/view-model/get-post-view-model";
 
-export function PostHeader({ post }: { post: PostSummary }) {
-  const { title, description, tags, coverImage, date, updated } =
-    post.frontmatter;
-
+export function PostHeader({ header }: { header: PostViewModel["header"] }) {
   return (
     <header className="space-y-6">
-      {tags.length > 0 ? (
+      {header.tags.length > 0 ? (
         <div className="flex flex-wrap gap-2">
-          {tags.map((tag) => (
+          {header.tags.map((tag) => (
             <Badge key={tag} variant="secondary">
               {tag}
             </Badge>
@@ -25,25 +22,20 @@ export function PostHeader({ post }: { post: PostSummary }) {
         </div>
       ) : null}
       <h1 className="text-3xl font-bold tracking-tight text-balance text-heading md:text-4xl">
-        {title}
+        {header.title}
       </h1>
       <p className="text-lg leading-relaxed text-pretty text-muted-foreground">
-        {description}
+        {header.description}
       </p>
-      <PostMeta
-        date={date}
-        readingMinutes={post.readingMinutes}
-        showAuthor
-        updated={updated}
-      />
-      {coverImage ? (
+      <PostMeta meta={header.meta} />
+      {header.coverImage ? (
         <Card className="py-0">
           <Image
-            alt={title}
+            alt={header.title}
             className="h-auto w-full"
             height={630}
             priority
-            src={coverImage}
+            src={header.coverImage}
             width={1200}
           />
         </Card>
