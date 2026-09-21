@@ -8,24 +8,18 @@ import {
   type ServicesRepository,
 } from "@/features/services/repository/services-repository";
 import {
-  type StackBadgeModel,
-  toStackBadges,
-} from "@/features/about/domain/stack-badges";
-import {
   aboutRepository,
   type AboutRepository,
 } from "@/features/about/repository/about-repository";
 import { contactHrefFor } from "@/features/contact/routes";
-import { SERVICES_PATH, servicePath } from "@/features/services/routes";
+import {
+  type ServiceCardModel,
+  toServiceCardModel,
+} from "@/features/services/domain/service-card";
+import { SERVICES_PATH } from "@/features/services/routes";
 import type { BreadcrumbItem } from "@/lib/seo/structured-data";
 
-export interface ServiceCardModel {
-  slug: string;
-  href: string;
-  title: string;
-  summary: string;
-  stack: readonly StackBadgeModel[];
-}
+export type { ServiceCardModel };
 
 export interface ServicesCatalogViewModel {
   header: typeof servicosPage.header;
@@ -49,13 +43,9 @@ export function getServicesCatalogViewModel(
 ): ServicesCatalogViewModel {
   return {
     header: servicosPage.header,
-    services: repository.list().map((service) => ({
-      slug: service.slug,
-      href: servicePath(service.slug),
-      title: service.shortTitle,
-      summary: service.summary,
-      stack: toStackBadges(service.stack, about.stackItem),
-    })),
+    services: repository
+      .list()
+      .map((service) => toServiceCardModel(service, about.stackItem)),
     cardMore: servicosPage.card.more,
     cardStackLabel: servicosPage.detail.stack,
     contact: { ...servicosPage.catalogContact, href: contactHrefFor() },

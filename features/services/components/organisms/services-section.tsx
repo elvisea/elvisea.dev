@@ -1,15 +1,16 @@
 import { ArrowLink } from "@/components/atoms/arrow-link";
 import { SectionTemplate } from "@/components/templates/section-template";
-import type { ServicesCatalogViewModel } from "@/features/services/catalog/view-model/get-services-catalog-view-model";
 import { ServiceCard } from "@/features/services/components/molecules/service-card";
-import { SERVICES_PATH } from "@/features/services/routes";
+import type { ServiceCardModel } from "@/features/services/domain/service-card";
 
 interface ServicesSectionProps {
   eyebrow: string;
   title: string;
   description: string;
-  allLabel: string;
-  model: ServicesCatalogViewModel;
+  cards: readonly ServiceCardModel[];
+  cardMore: string;
+  cardStackLabel: string;
+  all: { href: string; label: string };
 }
 
 /** Seção de serviços da home: cards e link para o catálogo. */
@@ -17,8 +18,10 @@ export function ServicesSection({
   eyebrow,
   title,
   description,
-  allLabel,
-  model,
+  cards,
+  cardMore,
+  cardStackLabel,
+  all,
 }: ServicesSectionProps) {
   return (
     <SectionTemplate
@@ -27,17 +30,17 @@ export function ServicesSection({
       surface
     >
       <ul className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-        {model.services.map((service) => (
+        {cards.map((service) => (
           <li key={service.slug}>
             <ServiceCard
-              moreLabel={model.cardMore}
+              moreLabel={cardMore}
               service={service}
-              stackLabel={model.cardStackLabel}
+              stackLabel={cardStackLabel}
             />
           </li>
         ))}
       </ul>
-      <ArrowLink href={SERVICES_PATH}>{allLabel}</ArrowLink>
+      <ArrowLink href={all.href}>{all.label}</ArrowLink>
     </SectionTemplate>
   );
 }
