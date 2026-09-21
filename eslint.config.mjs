@@ -1,7 +1,130 @@
+import { readdirSync } from "node:fs";
+
 import { defineConfig, globalIgnores } from "eslint/config";
 import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 import prettier from "eslint-config-prettier";
+
+// Fronteiras entre camadas (AGENTS.md § Arquitetura): componentes e Views
+// recebem tudo por props; só view-model e repository leem conteúdo e dados.
+const forbid = {
+  content: {
+    group: ["@/content/*"],
+    message: "Textos e dados chegam por props, vindos do view-model.",
+  },
+  // Só as fachadas que consultam dados e as leituras de arquivo. Utilitários
+  // puros de `lib/content` (datas, registro de ícones) seguem liberados.
+  dataLib: {
+    regex: "^@/lib/content(/index)?$|^@/lib/content/markdown-page$",
+    message: "Consulta de dados fica no repository, chamado pelo view-model.",
+  },
+  repository: {
+    group: ["@/features/*/repository/*"],
+    allowTypeImports: true,
+    message: "Só o view-model chama o repository.",
+  },
+  organisms: {
+    group: ["**/organisms/*"],
+    message: "Átomo e molécula nunca importam organismo.",
+  },
+  molecules: {
+    group: ["**/molecules/*", "**/templates/*"],
+    message: "Átomo não importa camada acima dele.",
+  },
+  app: {
+    group: ["@/app/*"],
+    message: "Só `app/` importa de `app/`.",
+  },
+};
+
+// As fronteiras valem para o código de produção: um teste pode importar o
+// conteúdo real para comparar com o que a tela mostra.
+const layer = (files, patterns) => ({
+  files,
+  ignores: ["**/*.test.ts", "**/*.test.tsx"],
+  rules: { "no-restricted-imports": ["error", { patterns }] },
+});
+
+// Uma feature enxerga de outra só `repository/`, `domain/`, `routes.ts` e
+// `components/`: view e view-model de outra feature ficam fora do alcance.
+const featureNames = readdirSync("features", { withFileTypes: true })
+  .filter((entry) => entry.isDirectory())
+  .map((entry) => entry.name);
+
+const crossFeatureRules = featureNames.map((feature) => ({
+  files: [`features/${feature}/**`],
+  ignores: ["**/*.test.ts", "**/*.test.tsx"],
+  rules: {
+    "no-restricted-imports": [
+      "error",
+      {
+        patterns: featureNames
+          .filter((other) => other !== feature)
+          .map((other) => ({
+            group: [
+              `@/features/${other}/*/view/*`,
+              `@/features/${other}/*/view-model/*`,
+            ],
+            allowTypeImports: true,
+            message:
+              "Entre features, só repository/, domain/, routes.ts e components/.",
+          })),
+      },
+    ],
+  },
+}));
+
+const layerRules = [
+  layer(
+    ["components/atoms/**", "features/*/components/atoms/**"],
+    [
+      forbid.content,
+      forbid.dataLib,
+      forbid.repository,
+      forbid.organisms,
+      forbid.molecules,
+      forbid.app,
+    ],
+  ),
+  layer(
+    ["components/molecules/**", "features/*/components/molecules/**"],
+    [
+      forbid.content,
+      forbid.dataLib,
+      forbid.repository,
+      forbid.organisms,
+      forbid.app,
+    ],
+  ),
+  layer(
+    ["components/organisms/**", "features/*/components/organisms/**"],
+    [forbid.content, forbid.dataLib, forbid.repository, forbid.app],
+  ),
+  layer(
+    ["components/templates/**"],
+    [
+      forbid.content,
+      forbid.dataLib,
+      forbid.repository,
+      forbid.organisms,
+      forbid.app,
+    ],
+  ),
+  layer(
+    ["features/*/*/view/**"],
+    [forbid.content, forbid.dataLib, forbid.repository, forbid.app],
+  ),
+  layer(
+    ["lib/**"],
+    [
+      {
+        group: ["@/app/*", "@/features/*", "@/components/*"],
+        message:
+          "`lib/` só tem utilitários transversais: nunca importa app/, features/ nem components/.",
+      },
+    ],
+  ),
+];
 
 const eslintConfig = defineConfig([
   ...nextVitals,
@@ -12,6 +135,8 @@ const eslintConfig = defineConfig([
     // detecção não roda. Manter igual à major/minor do React no package.json.
     settings: { react: { version: "19.3" } },
   },
+  ...layerRules,
+  ...crossFeatureRules,
   // `.claude/**` inclui `.claude/worktrees/`, cópias do repositório criadas
   // pelos subagentes do Claude Code: sem isso, o lint varre o projeto de novo.
   globalIgnores([

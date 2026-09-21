@@ -38,7 +38,7 @@ agente.
 | `home`     | página inicial                                            |
 | `services` | `features/services`, `/servicos`                          |
 | `projects` | `/projetos`, snapshot do GitHub, curadoria                |
-| `blog`     | posts, `lib/blog`, `app/blog`, RSS                        |
+| `blog`     | posts, `features/blog`, `app/blog`, RSS                   |
 | `contact`  | formulário, Server Action, e-mail                         |
 | `seo`      | metadata, JSON-LD, sitemap, robots, redirects             |
 | `logs`     | `lib/log`                                                 |

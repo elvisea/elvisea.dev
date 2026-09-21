@@ -14,10 +14,15 @@ import type {
   ServiceFaqItem,
 } from "@/features/services/repository/types";
 import {
-  contactHrefFor,
-  SERVICES_PATH,
-  servicePath,
-} from "@/features/services/routes";
+  type StackBadgeModel,
+  toStackBadges,
+} from "@/features/about/domain/stack-badges";
+import {
+  aboutRepository,
+  type AboutRepository,
+} from "@/features/about/repository/about-repository";
+import { contactHrefFor } from "@/features/contact/routes";
+import { SERVICES_PATH, servicePath } from "@/features/services/routes";
 import {
   type BreadcrumbItem,
   type JsonLdNode,
@@ -40,9 +45,10 @@ export interface ServiceDetailViewModel {
     | "forWho"
     | "deliverables"
     | "process"
-    | "stack"
     | "note"
   >;
+  /** Tecnologias do serviço, já com rótulo e ícone. */
+  stack: readonly StackBadgeModel[];
   eyebrow: string;
   backHref: string;
   evidence: readonly EvidenceModel[];
@@ -62,6 +68,7 @@ export function getServiceSlugs(
 export function getServiceDetailViewModel(
   slug: string,
   repository: ServicesRepository = servicesRepository,
+  about: AboutRepository = aboutRepository,
 ): ServiceDetailViewModel | null {
   const service = repository.findBySlug(slug);
   if (!service) return null;
@@ -77,9 +84,9 @@ export function getServiceDetailViewModel(
       forWho: service.forWho,
       deliverables: service.deliverables,
       process: service.process,
-      stack: service.stack,
       note: service.note,
     },
+    stack: toStackBadges(service.stack, about.stackItem),
     eyebrow: servicosPage.label,
     backHref: SERVICES_PATH,
     evidence: service.evidence.map((item) => ({

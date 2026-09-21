@@ -51,11 +51,16 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
+    "@happy-dom/global-registrator": "^20.14.5",
     "@semantic-release/changelog": "^7.0.0",
     "@semantic-release/git": "^11.0.1",
     "@semantic-release/npm": "^13.1.5",
     "@tailwindcss/postcss": "^4.3.3",
     "@tailwindcss/typography": "^0.5.20",
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/jest-dom": "^7.0.1",
+    "@testing-library/react": "^16.3.3",
+    "@testing-library/user-event": "^14.6.7",
     "@types/bun": "^1.4.2",
     "@types/mdast": "^4.0.4",
     "@types/node": "^22.20.3",

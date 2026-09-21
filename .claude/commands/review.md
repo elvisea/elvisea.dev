@@ -17,7 +17,8 @@ Prefira o agente em diffs grandes: a leitura fica fora do contexto principal.
    `git diff develop...HEAD` para a branch inteira (outra base se vier em
    `$ARGUMENTS`).
 2. **Mapear o risco** dos arquivos tocados, do maior para o menor:
-   - `app/actions/` (entrada do usuário, e-mail, logs);
+   - `features/contact/repository/` (Server Action: entrada do usuário, e-mail,
+     logs);
    - `content/pt-BR/` e textos públicos (regras de conteúdo);
    - `lib/`, `features/`, `app/**/page.tsx` e metadata;
    - `components/`, estilos;
@@ -92,23 +93,45 @@ PR.
 - Cores só por token (`primary`, `highlight`, `surface`, `heading`…); nada de
   paleta Tailwind crua (`bg-sky-500`) nem cor fixa em `style`.
 
-### Arquitetura: MVVM e design atômico (AGENTS.md § Arquitetura)
+### Arquitetura: MVVM, design atômico e SRP (AGENTS.md § Arquitetura e § Componentização)
 
-Modelo: `features/services`.
+Modelo: `features/services`. O lint (`no-restricted-imports`) já barra parte
+destes itens; o review cobre o que ele não enxerga.
 
-- **Aviso:** feature nova fora de `features/<feature>/`:
-  - `repository/`: acesso ao conteúdo, com tipos;
+- **Aviso:** área do site fora de `features/<feature>/`:
+  - `repository/`: acesso a dados, com tipos, fonte injetável e sem estado;
+  - `domain/`: funções puras que outra feature reaproveita (mapeadores de
+    card, regras);
+  - `<fluxo>/validations.ts`: schema zod do fluxo, quando há formulário;
   - `<fluxo>/view-model/`: função pura (`get-*-view-model.ts`) ou hook de
     cliente (`use-*-view-model.ts`), com teste;
-  - `<fluxo>/view/`: só renderiza o view-model, sem ler conteúdo nem montar
-    link;
-  - `components/{molecules,organisms}/`.
-- `app/**/page.tsx` só declara metadata e `generateStaticParams` e renderiza a
-  View.
-- Átomo ou molécula nunca importa organismo. Leitura de dados só em página,
-  view-model ou organismo.
+  - `<fluxo>/view/`: só renderiza o `model`, sem ler conteúdo nem montar link;
+  - `components/{atoms,molecules,organisms}/`.
+- `app/**/page.tsx` só declara metadata e `generateStaticParams` e renderiza
+  a View. Layout, busca de dados ou lógica na rota é aviso.
+- **Direção das dependências:** `app/` → `features/` → `components/` → `lib/`.
+  - `lib/` importando `app/`, `features/` ou `components/` é aviso.
+  - Feature importando `view/` ou `view-model/` de outra é aviso (só
+    `repository/`, `domain/`, `routes.ts` e `components/`).
+- **Design atômico:**
+  - dependência só para baixo: view → template → organismo → molécula → átomo;
+  - átomo ou molécula lendo `content/`, repository ou consulta de dados de
+    `lib/`, ou importando organismo, é aviso;
+  - organismo buscando os próprios dados em vez de recebê-los por props;
+  - casco de página ou seção copiado em vez de `PageTemplate` ou
+    `SectionTemplate`;
+  - padrão visual repetido (link com seta, eyebrow, rótulo mono, card de
+    chamada) copiado em vez de usar `ArrowLink`, `Eyebrow`, `MonoLabel` ou
+    `CtaCard`;
+  - mais de um componente exportado no mesmo arquivo.
+- **Responsabilidade única:**
+  - Server Action e route handler com regra de negócio própria (devem ler a
+    entrada e delegar);
+  - serviço que lê `process.env`, `Date.now()`, `fetch` ou filesystem direto
+    em vez de receber por parâmetro;
+  - efeito colateral no import de módulo (validação, leitura de arquivo).
 - **Estado na URL** (`useSearchParams`):
-  - parser puro e testado, como `lib/contact/prefill.ts`, que ignora valores
+  - parser puro e testado, como `features/contact/form/prefill.ts`, que ignora valores
     desconhecidos;
   - o componente fica dentro de `Suspense` para a página seguir estática.
 
@@ -124,13 +147,15 @@ Modelo: `features/services`.
 - Arquivo lido em build (Markdown) entra em `outputFileTracingIncludes`.
 - Imagens com `next/image` (exceto SVG inline e ícones).
 
-### Server Action, e-mail e logs (`app/actions/contact`)
+### Server Action, e-mail e logs (`features/contact/repository`)
 
-- Validação com zod antes de qualquer outra checagem; honeypot e tempo mínimo
-  mantidos.
+- A action (`submit-contact-action.ts`) só lê a requisição e chama
+  `processContactSubmission`; regra nova entra numa função pura testada.
+- Ordem dos sinais de robô: isca antes da validação, tempo mínimo depois dela
+  (envio inválido sempre mostra os erros); os dois mantidos.
 - Rate limit por IP com o header confiável (`TRUSTED_IP_HEADER`).
-- Constante exportada de arquivo `"use server"` quebra o build: vai para
-  `schema.ts`.
+- Constante ou tipo exportado de arquivo `"use server"` quebra o build: vai
+  para `types.ts` ou para `form/`.
 - Logs só pelo `logger` (`lib/log/logger.ts`), com evento nomeado:
   - sem nome, texto da mensagem, e-mail completo ou IP completo (`maskEmail`,
     `ipPrefix`);
@@ -155,13 +180,18 @@ Modelo: `features/services`.
 
 ### Testes (`bun test`)
 
-- Regra nova em `lib/**`, `features/**/view-model`, `features/**/repository`
-  ou `app/actions/**` vem com teste ao lado, com dependências injetadas em vez
-  de módulos reais.
+- Regra nova em `lib/**`, `features/**/view-model`, `features/**/repository`,
+  `features/**/domain` ou `features/**/form` vem com teste ao lado, com dependências injetadas em
+  vez de módulos reais.
 - Conteúdo novo com invariantes (slugs, limites de SEO, termos proibidos) no
   teste do conteúdo.
 - Não remover nem enfraquecer teste para passar na CI.
-- Testes de render de componente ainda não têm infraestrutura (#23).
+- Hook view-model testado com `renderHook`.
+- View e componente com estado ou lógica condicional vêm com
+  `*.render.test.tsx` cobrindo os estados visíveis (vazio, erro, sucesso,
+  filtro), com consultas por papel e nome acessível.
+- Teste com mock global de módulo (`mock.module`) onde uma dependência
+  injetada resolveria é aviso.
 
 ### Dependências novas
 

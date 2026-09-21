@@ -115,7 +115,7 @@ Não criar página nem conteúdo para atrair:
 | `/servicos/<slug>` | `Service` (prestador: `/#person`, área: Brasil), `BreadcrumbList` |
 | `/blog/<slug>`     | `BlogPosting` (autor e editor: `/#person`), `BreadcrumbList`      |
 
-Builders em `lib/seo/structured-data.ts`, componente em `lib/seo/json-ld.tsx`.
+Builders em `lib/seo/structured-data.ts`, componentes em `components/atoms/json-ld.tsx` e `components/molecules/page-json-ld.tsx`.
 
 ## Redirects
 

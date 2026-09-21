@@ -25,9 +25,22 @@ describe("getServicesCatalogViewModel", () => {
         href: "/servicos/chatbot",
         title: "Chatbot",
         summary: "Resumo do chatbot.",
-        stack: ["typescript"],
+        stack: [
+          { key: "typescript", label: "TypeScript", icon: "siTypescript" },
+        ],
       },
     ]);
+  });
+
+  it("traz os rótulos dos cards e a metadata do catálogo", () => {
+    const model = getServicesCatalogViewModel(repository);
+    expect(model.cardMore).toBe(servicosPage.card.more);
+    expect(model.cardStackLabel).toBe(servicosPage.detail.stack);
+    expect(model.metadata).toEqual({
+      title: servicosPage.metaTitle,
+      description: servicosPage.metaDescription,
+      path: "/servicos",
+    });
   });
 
   it("leva ao contato com assunto de projeto e tem trilha própria", () => {

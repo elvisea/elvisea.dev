@@ -16,12 +16,13 @@ function cleanupExpired(now: number, windowMs: number) {
   }
 }
 
+/** `now` é injetável para os testes não dependerem do relógio real. */
 export function isRateLimited(
   key: string,
   max = 3,
   windowMs = 60_000,
+  now = Date.now(),
 ): boolean {
-  const now = Date.now();
   cleanupExpired(now, windowMs);
 
   const entry = buckets.get(key);

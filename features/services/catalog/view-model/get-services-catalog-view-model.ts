@@ -8,24 +8,25 @@ import {
   type ServicesRepository,
 } from "@/features/services/repository/services-repository";
 import {
-  contactHrefFor,
-  SERVICES_PATH,
-  servicePath,
-} from "@/features/services/routes";
+  aboutRepository,
+  type AboutRepository,
+} from "@/features/about/repository/about-repository";
+import { contactHrefFor } from "@/features/contact/routes";
+import {
+  type ServiceCardModel,
+  toServiceCardModel,
+} from "@/features/services/domain/service-card";
+import { SERVICES_PATH } from "@/features/services/routes";
 import type { BreadcrumbItem } from "@/lib/seo/structured-data";
 
-export interface ServiceCardModel {
-  slug: string;
-  href: string;
-  title: string;
-  summary: string;
-  stack: readonly string[];
-}
+export type { ServiceCardModel };
 
 export interface ServicesCatalogViewModel {
   header: typeof servicosPage.header;
   services: readonly ServiceCardModel[];
   cardMore: string;
+  /** Nome acessível da lista de tecnologias de cada card. */
+  cardStackLabel: string;
   contact: {
     title: string;
     description: string;
@@ -33,22 +34,26 @@ export interface ServicesCatalogViewModel {
     href: string;
   };
   breadcrumb: readonly BreadcrumbItem[];
+  metadata: { title: string; description: string; path: string };
 }
 
 export function getServicesCatalogViewModel(
   repository: ServicesRepository = servicesRepository,
+  about: AboutRepository = aboutRepository,
 ): ServicesCatalogViewModel {
   return {
     header: servicosPage.header,
-    services: repository.list().map((service) => ({
-      slug: service.slug,
-      href: servicePath(service.slug),
-      title: service.shortTitle,
-      summary: service.summary,
-      stack: service.stack,
-    })),
+    services: repository
+      .list()
+      .map((service) => toServiceCardModel(service, about.stackItem)),
     cardMore: servicosPage.card.more,
+    cardStackLabel: servicosPage.detail.stack,
     contact: { ...servicosPage.catalogContact, href: contactHrefFor() },
     breadcrumb: [{ name: servicosPage.label, path: SERVICES_PATH }],
+    metadata: {
+      title: servicosPage.metaTitle,
+      description: servicosPage.metaDescription,
+      path: SERVICES_PATH,
+    },
   };
 }

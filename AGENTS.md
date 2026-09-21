@@ -82,7 +82,15 @@ Mapa de termos, modelo de página e checklist de lançamento em
   A 10 exige `conventional-changelog-writer` 9, que o
   `@semantic-release/release-notes-generator` ainda não usa. Rodar
   `bunx semantic-release --dry-run --no-ci --branches develop` antes de subir.
-- **Testes:** `bun:test` (`bun test`), com `test-setup.ts` pré-carregado.
+- **Testes:** `bun:test` (`bun test`). Pré-carregados: `test-setup.ts` (mocks
+  de servidor e DOM do happy-dom) e `test-dom.ts` (matchers do Testing
+  Library).
+  - Funções puras, repositories e view-models de servidor: `*.test.ts`, com a
+    fonte de dados injetada (sem mock global de módulo).
+  - Hook view-model: `renderHook` do Testing Library.
+  - Views e componentes com estado ou lógica condicional: `*.render.test.tsx`,
+    cobrindo os estados visíveis (vazio, erro, sucesso, filtro), com consultas
+    por papel e nome acessível (`getByRole`).
 - **Documentação do Next:** a versão instalada traz a documentação em
   `node_modules/next/dist/docs/`; consulte-a antes de usar uma API do Next.
   O bloco `nextjs-agent-rules` no fim deste arquivo é mantido pelo `next dev`
@@ -95,25 +103,46 @@ Mapa de termos, modelo de página e checklist de lançamento em
   entra por `import` (TS/JSON) ou é lido em build (Markdown). Assim o site roda
   igual em Docker standalone ou em Cloudflare Workers.
 - **Única parte em runtime:** a Server Action do formulário de contato
-  (`app/actions/contact`). O envio de e-mail é plugável (`lib/email/sender.ts`,
-  `EMAIL_TRANSPORT`), para trocar SMTP por API HTTP se a hospedagem exigir.
+  (`features/contact/repository/submit-contact-action.ts`). O envio de e-mail é
+  plugável (`lib/email/sender.ts`, `EMAIL_TRANSPORT`), para trocar SMTP por API
+  HTTP se a hospedagem exigir.
   Não há confirmação por e-mail ao visitante (evita abuso do formulário).
 - **Não ligar `cacheComponents`** do Next 16: as rotas usam `dynamic =
 "force-static"` e `dynamicParams = false`, que ele proíbe.
 - `content/pt-BR/` guarda conteúdo e textos de interface (`site.ts`, `pages/*`,
-  `blog/posts/*.md`). Componentes não têm texto fixo.
+  `blog/posts/*.md`). Componentes não têm texto fixo: recebem os textos por
+  props.
 - Header e rodapé ficam em `app/layout.tsx`; páginas renderizam só o conteúdo.
-- **Features novas seguem MVVM** em `features/<feature>/`:
-  - `repository/`: acesso ao conteúdo, com tipos;
-  - `<fluxo>/view-model/`: funções puras e testadas que montam o que a tela
-    mostra (`get-*-view-model.ts` no servidor, `use-*-view-model.ts` no
-    cliente);
-  - `<fluxo>/view/`: só renderiza o view-model;
-  - `components/{molecules,organisms}/`: componentes da feature.
+- **Cada área do site é uma feature em MVVM**, em `features/<feature>/`
+  (`features/services` é o modelo):
 
-  A rota em `app/` só declara metadata e renderiza a View. `features/services`
-  é o modelo; o restante do site migra pelas issues #22 e #24.
+  | Pasta                                     | Papel                                                                                                               |
+  | ----------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+  | `routes.ts`                               | caminhos e links da feature                                                                                         |
+  | `repository/`                             | acesso a dados (conteúdo, Markdown, snapshot, envio), com tipos, fonte injetável e sem estado                       |
+  | `domain/`                                 | funções puras e tipos que outras features reaproveitam (ex.: o card de projeto usado pela home)                     |
+  | `<fluxo>/validations.ts`                  | schema zod do fluxo, quando há formulário                                                                           |
+  | `<fluxo>/view-model/`                     | monta o que a tela mostra: `get-*-view-model.ts` (função pura, servidor) ou `use-*-view-model.ts` (hook de cliente) |
+  | `<fluxo>/view/`                           | só renderiza o `model` recebido por prop                                                                            |
+  | `components/{atoms,molecules,organisms}/` | componentes da feature                                                                                              |
 
+- **Rota fina:** `app/**/page.tsx` declara a metadata
+  (`pageMetadata(model.metadata)`) e o `generateStaticParams` e renderiza
+  `<XView model={getXViewModel()} />`. Sem layout, busca de dados ou lógica.
+- **Direção das dependências:** `app/` → `features/` → `components/` → `lib/`,
+  nunca ao contrário.
+  - `lib/` só tem utilitários puros e transversais (SEO, Markdown, datas, log,
+    e-mail genérico) e nunca importa `app/`, `features/` nem `components/`.
+  - Uma feature importa de outra só `repository/`, `domain/`, `routes.ts` e
+    `components/` (a home agrega as outras); nunca `view/` nem `view-model/`.
+  - O `eslint.config.mjs` confere as fronteiras com `no-restricted-imports`.
+- **Responsabilidade única:** um arquivo, uma responsabilidade, com o teste ao
+  lado.
+  - Server Action e route handler são finos: leem a entrada e delegam.
+  - Regra de negócio fica em função pura.
+  - Serviço recebe as dependências por parâmetro (relógio, headers, transporte
+    de e-mail, `fetch`, fonte de dados), para o teste não depender de rede,
+    filesystem ou relógio reais.
 - URL do site é a constante `site.url` (`content/pt-BR/site.ts`), usada em
   metadata, sitemap, robots e imagens OG.
 - Imagens OG com `next/og` usam as TTF de `assets/fonts` (satori não lê woff2).
@@ -172,14 +201,24 @@ valores em `app/globals.css`):
 
 ## Componentização — design atômico
 
-| Camada         | Papel                            | Exemplos                                                                                                               |
-| -------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
-| **Átomos**     | Blocos mínimos                   | `components/ui/*` (shadcn, obrigatório quando existir) e `components/atoms/*` (só o que o shadcn não tem, ex.: ícones) |
-| **Moléculas**  | Combinações simples de átomos    | `PostCard`, `PostMeta`, `ThemeToggle`                                                                                  |
-| **Organismos** | Seções completas                 | `SiteHeader`, `HeroSection`, `BlogList`                                                                                |
-| **Páginas**    | Rota + dados (`app/**/page.tsx`) | Home, `/blog`, `/blog/[slug]`                                                                                          |
+| Camada         | Papel                                          | Onde                                                                                                                             |
+| -------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| **Átomos**     | Blocos mínimos                                 | `components/ui/*` (shadcn, obrigatório quando existir) e `components/atoms/*` (só o que o shadcn não tem: ícone, link com seta…) |
+| **Moléculas**  | Combinações simples de átomos                  | `components/molecules/*` e `features/<f>/components/molecules/*`                                                                 |
+| **Organismos** | Seções completas                               | `components/organisms/*` e `features/<f>/components/organisms/*`                                                                 |
+| **Templates**  | Cascos de página e de seção, sem dados reais   | `components/templates/*` (`PageTemplate`, `SectionTemplate`, `OgCardTemplate`)                                                   |
+| **Views**      | Compõem template e organismos com o view-model | `features/<f>/<fluxo>/view/*`, renderizadas pela rota                                                                            |
 
-- Busca de dados e efeitos ficam em páginas e organismos, nunca em átomos.
+- Dependência só para baixo: view → template → organismo → molécula → átomo.
+- Átomos e moléculas recebem tudo por props: nunca importam `content/`,
+  repository, consulta de dados de `lib/` ou organismo.
+- Organismos recebem os dados por props e podem ter estado de interface; a
+  lógica fica no hook view-model ou em funções puras.
+- Componente usado por mais de uma feature fica em `components/`; o de uma
+  feature só, em `features/<f>/components/`.
+- Um componente exportado por arquivo.
+- Padrão visual repetido vira átomo ou molécula (`ArrowLink`, `Eyebrow`,
+  `MonoLabel`, `CtaCard`), nunca classe copiada.
 - TypeScript estrito, sem `any`. Responsivo do mobile ao desktop.
 
 ## Fluxo de trabalho
@@ -228,6 +267,9 @@ rodado antes de todo PR.
 - PR para `develop`; mesclado quando a CI passa. O PR de release
   (`develop` → `main`) só é mesclado com OK explícito do dono e gera tag,
   changelog, release e imagem no GHCR.
+- Depois da release, um PR `main` → `develop` traz o commit
+  `chore(release)`. Como ele tem `[skip ci]`, a validação desse PR é local.
+  PRs de release e de sincronização nunca usam `--delete-branch`.
 - A branch padrão do GitHub é `main`, então o `Closes #N` de um PR para
   `develop` não fecha a issue sozinho. O `merge` fecha a issue como concluída
   logo depois do merge, para que as issues abertas sejam só as pendentes. O PR

@@ -3,11 +3,15 @@ import { Geist, Geist_Mono } from "next/font/google";
 
 import "./globals.css";
 
-import { SiteFooter } from "@/components/organisms/site-footer";
-import { SiteHeader } from "@/components/organisms/site-header";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import { site } from "@/content/pt-BR/site";
-import { JsonLd } from "@/lib/seo/json-ld";
+import { JsonLd } from "@/components/atoms/json-ld";
+import { SiteFooter } from "@/features/layout/components/organisms/site-footer";
+import { SiteHeader } from "@/features/layout/components/organisms/site-header";
+import {
+  getSiteFooterViewModel,
+  getSiteHeaderViewModel,
+} from "@/features/layout/shell/view-model/get-layout-view-model";
 import { rssAlternate, siteTitle } from "@/lib/seo/metadata";
 import {
   jsonLdGraph,
@@ -88,11 +92,11 @@ export default function RootLayout({
             {site.a11y.skipToContent}
           </a>
           <div className="relative flex min-h-screen flex-col">
-            <SiteHeader />
+            <SiteHeader model={getSiteHeaderViewModel()} />
             <main className="relative z-0 min-w-0 flex-1" id="conteudo">
               {children}
             </main>
-            <SiteFooter />
+            <SiteFooter model={getSiteFooterViewModel()} />
           </div>
         </ThemeProvider>
       </body>
