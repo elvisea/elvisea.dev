@@ -1,3 +1,10 @@
+## [1.0.1](https://github.com/elvisea/elvisea.dev/compare/v1.0.0...v1.0.1) (2026-09-21)
+
+### Bug Fixes
+
+* **claude:** /merge cobre o merge de release e a sincronização da develop ([2bf86e6](https://github.com/elvisea/elvisea.dev/commit/2bf86e66eb56c0f22d119d1b06897f3b6fc45c6b)), closes [#13](https://github.com/elvisea/elvisea.dev/issues/13) [#41](https://github.com/elvisea/elvisea.dev/issues/41)
+* **claude:** ajustes da revisão no fluxo de release do /merge ([956158f](https://github.com/elvisea/elvisea.dev/commit/956158f3a7c4ff1fa11f77817821ab4d7f085deb))
+
 ## 1.0.0 (2026-09-17)
 
 ### Features
