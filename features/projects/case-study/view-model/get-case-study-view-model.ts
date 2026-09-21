@@ -8,6 +8,7 @@ import {
   defaultProjectsRepository,
   type ProjectsRepository,
 } from "@/features/projects/repository/projects-repository";
+import type { Project } from "@/features/projects/repository/types";
 import { PROJECTS_PATH, projectPath } from "@/features/projects/routes";
 import { renderContentPage } from "@/lib/content/markdown-page";
 import type { BreadcrumbItem } from "@/lib/seo/structured-data";
@@ -33,17 +34,20 @@ export function getCaseStudySlugs(
   return repository.caseStudies().map((project) => project.slug);
 }
 
-export function getCaseStudyMetadata(
-  slug: string,
-  repository: ProjectsRepository = defaultProjectsRepository(),
-): CaseStudyMetadata | null {
-  const project = repository.findCaseStudy(slug);
-  if (!project) return null;
+function metadataOf(project: Project): CaseStudyMetadata {
   return {
     title: project.title,
     description: project.summary ?? undefined,
     path: projectPath(project.slug),
   };
+}
+
+export function getCaseStudyMetadata(
+  slug: string,
+  repository: ProjectsRepository = defaultProjectsRepository(),
+): CaseStudyMetadata | null {
+  const project = repository.findCaseStudy(slug);
+  return project ? metadataOf(project) : null;
 }
 
 export async function getCaseStudyViewModel(
@@ -71,10 +75,6 @@ export async function getCaseStudyViewModel(
       { name: projetosPage.metaTitle, path: PROJECTS_PATH },
       { name: project.title, path: projectPath(project.slug) },
     ],
-    metadata: {
-      title: project.title,
-      description: project.summary ?? undefined,
-      path: projectPath(project.slug),
-    },
+    metadata: metadataOf(project),
   };
 }
