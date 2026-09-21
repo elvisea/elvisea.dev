@@ -9,16 +9,16 @@ import type { Metadata } from "next";
 
 import { blogPage } from "@/content/pt-BR/pages/blog";
 import { contatoPage } from "@/content/pt-BR/pages/contato";
-import { homePage } from "@/content/pt-BR/pages/profissional";
+import { homePage, sobrePage } from "@/content/pt-BR/pages/profissional";
 import { projetosPage } from "@/content/pt-BR/pages/projetos";
 import { servicosPage } from "@/content/pt-BR/pages/servicos";
 import { site } from "@/content/pt-BR/site";
 import {
   type ProfileModel,
-  getProfileModel,
-  getStackGroups,
   type StackGroupModel,
-} from "@/features/about/profile/view-model/get-about-view-model";
+  toProfileModel,
+  toStackGroups,
+} from "@/features/about/domain/profile";
 import { ABOUT_PATH } from "@/features/about/routes";
 import {
   type PostCardModel,
@@ -30,8 +30,14 @@ import {
 } from "@/features/blog/repository/blog-repository";
 import { BLOG_PATH } from "@/features/blog/routes";
 import { CONTACT_PATH } from "@/features/contact/routes";
-import { getTimelineEntries } from "@/features/experience/timeline/view-model/get-experience-view-model";
-import type { TimelineEntry } from "@/features/experience/domain/timeline";
+import {
+  type TimelineEntry,
+  toTimelineEntries,
+} from "@/features/experience/domain/timeline";
+import {
+  experienceRepository,
+  type ExperienceRepository,
+} from "@/features/experience/repository/experience-repository";
 import { EXPERIENCE_PATH } from "@/features/experience/routes";
 import {
   type ProjectCardModel,
@@ -121,13 +127,13 @@ export interface HomeViewModel {
     header: { eyebrow: string; title: string; description: string };
     cta: SectionLink;
   };
-  metadata: Metadata;
 }
 
 export const homeMetadata: Metadata = pageMetadata({ path: "/" });
 
 interface HomeRepositories {
   about?: AboutRepository;
+  experiences?: ExperienceRepository;
   services?: ServicesRepository;
   projects?: ProjectsRepository;
   blog?: BlogRepository;
@@ -135,6 +141,7 @@ interface HomeRepositories {
 
 export async function getHomeViewModel({
   about = aboutRepository,
+  experiences = experienceRepository,
   services = servicesRepository,
   projects = defaultProjectsRepository(),
   blog = blogRepository,
@@ -160,7 +167,7 @@ export async function getHomeViewModel({
         eyebrow: homePage.profile.eyebrow,
         title: homePage.profile.title,
       },
-      model: getProfileModel(about),
+      model: toProfileModel(about.profile(), sobrePage.atuacao),
       more: { href: ABOUT_PATH, label: homePage.profile.more },
     },
     services: {
@@ -177,7 +184,10 @@ export async function getHomeViewModel({
         eyebrow: homePage.experience.eyebrow,
         title: homePage.experience.title,
       },
-      entries: getTimelineEntries(false, { about }),
+      entries: toTimelineEntries(experiences.highlighted(), {
+        full: false,
+        stackItem: about.stackItem,
+      }),
       more: { href: EXPERIENCE_PATH, label: homePage.experience.all },
     },
     projects: {
@@ -192,7 +202,7 @@ export async function getHomeViewModel({
     },
     stack: {
       header: { eyebrow: homePage.stack.eyebrow, title: homePage.stack.title },
-      groups: getStackGroups(about),
+      groups: toStackGroups(about.stackGroups()),
     },
     blog: {
       header: {
@@ -211,6 +221,5 @@ export async function getHomeViewModel({
       header: contatoPage.home,
       cta: { href: CONTACT_PATH, label: contatoPage.home.cta },
     },
-    metadata: homeMetadata,
   };
 }

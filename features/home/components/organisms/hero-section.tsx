@@ -8,7 +8,7 @@ import Link from "next/link";
 import { Eyebrow } from "@/components/atoms/eyebrow";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
-import type { HeroModel } from "@/features/home/home/view-model/get-home-view-model";
+import type { HeroModel } from "@/features/home/page/view-model/get-home-view-model";
 import { cn } from "cn";
 
 const actionClass = (primary: boolean) =>

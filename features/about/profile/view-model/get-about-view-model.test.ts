@@ -7,11 +7,7 @@ import {
 } from "@/features/about/repository/about-repository";
 import type { Certificate } from "@/lib/content/types";
 
-import {
-  getAboutViewModel,
-  getProfileModel,
-  getStackGroups,
-} from "./get-about-view-model";
+import { getAboutViewModel } from "./get-about-view-model";
 
 const source: AboutSource = {
   profile: {
@@ -93,12 +89,5 @@ describe("getAboutViewModel", () => {
     ]);
     expect(model.jsonLd[0]).toMatchObject({ "@type": "ProfilePage" });
     expect(model.metadata.alternates?.canonical).toBe("/sobre");
-  });
-});
-
-describe("modelos compartilhados com a home", () => {
-  it("getProfileModel e getStackGroups usam o mesmo repository", () => {
-    expect(getProfileModel(repository).summary).toBe("Resumo do perfil.");
-    expect(getStackGroups(repository)).toHaveLength(1);
   });
 });

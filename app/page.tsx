@@ -2,8 +2,8 @@
 import {
   getHomeViewModel,
   homeMetadata,
-} from "@/features/home/home/view-model/get-home-view-model";
-import { HomeView } from "@/features/home/home/view/home-view";
+} from "@/features/home/page/view-model/get-home-view-model";
+import { HomeView } from "@/features/home/page/view/home-view";
 
 export const metadata = homeMetadata;
 

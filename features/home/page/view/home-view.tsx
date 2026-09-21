@@ -9,7 +9,7 @@ import { StackGrid } from "@/features/about/components/organisms/stack-grid";
 import { BlogPreviewSection } from "@/features/blog/components/organisms/blog-preview-section";
 import { ExperienceTimeline } from "@/features/experience/components/organisms/experience-timeline";
 import { HeroSection } from "@/features/home/components/organisms/hero-section";
-import type { HomeViewModel } from "@/features/home/home/view-model/get-home-view-model";
+import type { HomeViewModel } from "@/features/home/page/view-model/get-home-view-model";
 import { ProjectCard } from "@/features/projects/components/molecules/project-card";
 import { ServicesSection } from "@/features/services/components/organisms/services-section";
 import { cn } from "cn";

@@ -6,6 +6,7 @@
  * - `full` (`/experiencia`): todos os parágrafos, os blocos de bullets e a
  *   âncora de cada item.
  */
+import { experienciaPage } from "@/content/pt-BR/pages/profissional";
 import {
   toStackBadges,
   type StackBadgeModel,
@@ -83,4 +84,21 @@ export function toTimelineEntry(
       badges: toStackBadges(experience.stack, stackItem),
     },
   };
+}
+
+/** Textos da linha do tempo (`content/pt-BR/pages/profissional.ts`). */
+export const timelineTexts: TimelineTexts = {
+  stack: experienciaPage.labels.stack,
+  companyPage: experienciaPage.labels.companyPage,
+  modes: experienciaPage.modes,
+};
+
+/** Entradas da linha do tempo; `full: false` é a versão compacta da home. */
+export function toTimelineEntries(
+  experiences: readonly Experience[],
+  options: { full: boolean; stackItem: (key: string) => StackItem | undefined },
+): TimelineEntry[] {
+  return experiences.map((experience) =>
+    toTimelineEntry(experience, timelineTexts, options),
+  );
 }

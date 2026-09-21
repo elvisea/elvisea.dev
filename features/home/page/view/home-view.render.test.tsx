@@ -2,7 +2,7 @@ import { describe, expect, it } from "bun:test";
 
 import { render, screen } from "@testing-library/react";
 
-import { getHomeViewModel } from "@/features/home/home/view-model/get-home-view-model";
+import { getHomeViewModel } from "@/features/home/page/view-model/get-home-view-model";
 
 import { HomeView } from "./home-view";
 
