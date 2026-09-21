@@ -3,9 +3,8 @@ import nextVitals from "eslint-config-next/core-web-vitals";
 import nextTs from "eslint-config-next/typescript";
 import prettier from "eslint-config-prettier";
 
-// Fronteiras entre camadas (AGENTS.md § Arquitetura). Cada regra liga para
-// uma pasta só quando ela já está conforme; a migração de #22, #23 e #24
-// amplia os globos até cobrir `components/**`.
+// Fronteiras entre camadas (AGENTS.md § Arquitetura): componentes e Views
+// recebem tudo por props; só view-model e repository leem conteúdo e dados.
 const forbid = {
   content: {
     group: ["@/content/*"],
@@ -57,7 +56,7 @@ const layerRules = [
     ],
   ),
   layer(
-    ["features/*/components/molecules/**"],
+    ["components/molecules/**", "features/*/components/molecules/**"],
     [
       forbid.content,
       forbid.dataLib,
@@ -65,6 +64,10 @@ const layerRules = [
       forbid.organisms,
       forbid.app,
     ],
+  ),
+  layer(
+    ["components/organisms/**", "features/*/components/organisms/**"],
+    [forbid.content, forbid.dataLib, forbid.repository, forbid.app],
   ),
   layer(
     ["components/templates/**"],
