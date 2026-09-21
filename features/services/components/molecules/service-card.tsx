@@ -46,7 +46,7 @@ export function ServiceCard({
         </CardDescription>
       </CardHeader>
       <CardContent className="mt-auto">
-        <StackBadges keys={service.stack} label={stackLabel} />
+        <StackBadges items={service.stack} label={stackLabel} />
       </CardContent>
       <CardFooter className="py-2">
         <ArrowLink aria-hidden href={service.href} size="sm" tabIndex={-1}>

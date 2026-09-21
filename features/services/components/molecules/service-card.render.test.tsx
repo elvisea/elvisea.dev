@@ -9,7 +9,7 @@ const service = {
   href: "/servicos/chatbot",
   title: "Chatbot com IA",
   summary: "Atendimento automático no WhatsApp.",
-  stack: ["typescript"],
+  stack: [{ key: "typescript", label: "TypeScript", icon: "siTypescript" }],
 };
 
 describe("ServiceCard", () => {

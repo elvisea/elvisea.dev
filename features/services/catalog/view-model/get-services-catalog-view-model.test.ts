@@ -25,7 +25,9 @@ describe("getServicesCatalogViewModel", () => {
         href: "/servicos/chatbot",
         title: "Chatbot",
         summary: "Resumo do chatbot.",
-        stack: ["typescript"],
+        stack: [
+          { key: "typescript", label: "TypeScript", icon: "siTypescript" },
+        ],
       },
     ]);
   });

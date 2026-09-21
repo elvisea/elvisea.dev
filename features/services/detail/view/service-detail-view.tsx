@@ -102,7 +102,7 @@ export function ServiceDetailView({
 
         <section className="space-y-5">
           <h2 className={sectionTitle}>{labels.stack}</h2>
-          <StackBadges keys={service.stack} label={labels.stack} />
+          <StackBadges items={model.stack} label={labels.stack} />
         </section>
 
         <section className="space-y-5">
