@@ -6,8 +6,11 @@ run-name: Release from ${{ github.ref_name }} by @${{ github.actor }}
 #   1. semantic-release calcula a versão, cria tag, release e CHANGELOG.
 #   2. Se saiu versão nova, publica a imagem em ghcr.io/<owner>/elvisea.dev.
 #
-# Não há job de deploy: a hospedagem ainda não foi definida. Quando for,
-# acrescentar o deploy aqui (depende do job docker).
+# Não há job de deploy, e é de propósito. O site roda na stack do homelab
+# (repo elvisea/homelab, ADR-009): lá o compose fixa uma tag exata desta
+# imagem, e atualizar é trocar essa tag e rodar ./scripts/deploy.sh.
+# O homelab não tem porta aberta — só sai tráfego pelo Cloudflare Tunnel —
+# então um job daqui não alcança o servidor sem abrir um caminho novo.
 #
 # Usa o GITHUB_TOKEN do próprio workflow (sem PAT). O commit
 # `chore(release)` feito com esse token não dispara outros workflows.
