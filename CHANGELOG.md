@@ -1,3 +1,9 @@
+## [1.1.0](https://github.com/elvisea/elvisea.dev/compare/v1.0.1...v1.1.0) (2026-09-22)
+
+### Features
+
+* **seo:** barra crawlers de treinamento de IA no robots.txt ([b5a0b2c](https://github.com/elvisea/elvisea.dev/commit/b5a0b2c859e6d9ebb206c395f0259bc513f64503)), closes [#63](https://github.com/elvisea/elvisea.dev/issues/63)
+
 ## [1.0.1](https://github.com/elvisea/elvisea.dev/compare/v1.0.0...v1.0.1) (2026-09-21)
 
 ### Bug Fixes
