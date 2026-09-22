@@ -1,6 +1,11 @@
-# Produção: roda a imagem publicada pela release no GHCR.
-# A hospedagem ainda não foi definida; a porta fica presa ao localhost
-# para ser exposta por um proxy (NPM, túnel etc.).
+# Execução avulsa da imagem publicada pela release no GHCR, e referência
+# das variáveis que o site espera em runtime.
+#
+# A PRODUÇÃO não usa este arquivo: roda na stack do homelab (repo
+# elvisea/homelab), onde o serviço `elvisea-dev` fica na rede `edge`, é
+# alcançado pelo nginx-proxy-manager e exposto por Cloudflare Tunnel.
+#
+# A porta fica presa ao localhost: quem publica é sempre um proxy na frente.
 services:
   web:
     image: ${REGISTRY:-ghcr.io}/${IMAGE_NAME:-elvisea/elvisea.dev}:${TAG:-latest}
