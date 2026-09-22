@@ -53,3 +53,17 @@ merge na `main` gera a release (semantic-release) e a imagem
 [`AGENTS.md`](AGENTS.md).
 
 Como escrever e divulgar posts: [`docs/BLOG.md`](docs/BLOG.md).
+
+## Onde roda
+
+<https://elvisea.dev> roda na stack do meu homelab, em container, atrás do
+nginx-proxy-manager e exposto por Cloudflare Tunnel — sem nenhuma porta aberta
+no roteador. Infra em [elvisea/homelab](https://github.com/elvisea/homelab).
+
+O build fica no GitHub Actions: cada release publica
+`ghcr.io/elvisea/elvisea.dev`, e o homelab só faz `pull` de uma tag exata.
+Atualizar o site é trocar essa tag no compose de lá e rodar o deploy.
+
+Este repositório é a fonte da verdade. O
+[git.elvisea.dev](https://git.elvisea.dev/elvis/elvisea.dev) mantém um espelho
+(pull mirror), como backup independente de plataforma.
