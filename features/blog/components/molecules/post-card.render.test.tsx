@@ -55,6 +55,17 @@ describe("PostCard", () => {
     ).toHaveAttribute("href", "/blog/meu-post");
   });
 
+  it("link de leitura tem alvo de toque de 44 px no mobile", () => {
+    render(<PostCard post={card()} />);
+    const link = screen.getByRole("link", {
+      name: `${blogPage.card.readMore}: Meu post`,
+    });
+    // min-h-11 vem do ArrowLink; só a partir do sm o card o reduz.
+    expect(link.className).toContain("min-h-11");
+    expect(link.className).toContain("sm:min-h-0");
+    expect(link.className.split(/\s+/)).not.toContain("min-h-0");
+  });
+
   it("o card não mostra a data de atualização (só a página do post)", () => {
     render(
       <PostCard

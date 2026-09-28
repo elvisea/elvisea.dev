@@ -42,7 +42,8 @@ export function PostCard({ post }: { post: PostCardModel }) {
         </CardDescription>
         <ArrowLink
           aria-label={post.readMore.ariaLabel}
-          className="min-h-0"
+          // 44 px no mobile (toque); menor a partir do sm, como no ProjectCard.
+          className="sm:min-h-0"
           href={post.href}
           size="sm"
         >
