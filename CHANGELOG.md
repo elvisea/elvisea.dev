@@ -1,3 +1,10 @@
+## [1.3.0](https://github.com/elvisea/elvisea.dev/compare/v1.2.0...v1.3.0) (2026-09-28)
+
+### Features
+
+* **blog:** publicar o primeiro post, sobre o site em servidor próprio ([f5887b4](https://github.com/elvisea/elvisea.dev/commit/f5887b4b324e7d4a9d5dbb3b5199a452492e36ae)), closes [#70](https://github.com/elvisea/elvisea.dev/issues/70) [#31](https://github.com/elvisea/elvisea.dev/issues/31) [#76](https://github.com/elvisea/elvisea.dev/issues/76)
+* **blog:** suavizar as afirmações sobre exposição e custo do build ([b8f8204](https://github.com/elvisea/elvisea.dev/commit/b8f82049a220dd25c0a3b58709086cfe84c349b2)), closes [#76](https://github.com/elvisea/elvisea.dev/issues/76)
+
 ## [1.2.0](https://github.com/elvisea/elvisea.dev/compare/v1.1.0...v1.2.0) (2026-09-28)
 
 ### Features
