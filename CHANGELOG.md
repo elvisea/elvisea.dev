@@ -1,3 +1,13 @@
+## [1.2.0](https://github.com/elvisea/elvisea.dev/compare/v1.1.0...v1.2.0) (2026-09-28)
+
+### Features
+
+* **contact:** botão flutuante de WhatsApp e canais diretos ([92574b9](https://github.com/elvisea/elvisea.dev/commit/92574b99355ca16b2ada945056adb17e4933a886)), closes [#67](https://github.com/elvisea/elvisea.dev/issues/67)
+
+### Bug Fixes
+
+* **content:** padroniza o nome público como Elvis Amancio ([2b11caf](https://github.com/elvisea/elvisea.dev/commit/2b11caff9ade00a513397c0e1d6b33cd99246ef8)), closes [#69](https://github.com/elvisea/elvisea.dev/issues/69)
+
 ## [1.1.0](https://github.com/elvisea/elvisea.dev/compare/v1.0.1...v1.1.0) (2026-09-22)
 
 ### Features
