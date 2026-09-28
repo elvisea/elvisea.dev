@@ -1,3 +1,10 @@
+## [1.4.0](https://github.com/elvisea/elvisea.dev/compare/v1.3.0...v1.4.0) (2026-09-28)
+
+### Features
+
+* **blog:** precisar isolamento, portabilidade e backup no post de git e CI ([af9a38e](https://github.com/elvisea/elvisea.dev/commit/af9a38e499b819ecf7488ff7e04d1499a4c03b04)), closes [#80](https://github.com/elvisea/elvisea.dev/issues/80)
+* **blog:** publicar o segundo post, sobre git e CI em servidor próprio ([b1c1f6c](https://github.com/elvisea/elvisea.dev/commit/b1c1f6caab63137aff09278c0d1c912b543642be)), closes [#70](https://github.com/elvisea/elvisea.dev/issues/70) [#80](https://github.com/elvisea/elvisea.dev/issues/80)
+
 ## [1.3.0](https://github.com/elvisea/elvisea.dev/compare/v1.2.0...v1.3.0) (2026-09-28)
 
 ### Features
