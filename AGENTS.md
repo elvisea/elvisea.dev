@@ -5,7 +5,7 @@ Fonte única de contexto para qualquer agente (Claude Code, Cursor, Codex…).
 
 ## Projeto
 
-- **O que é:** site pessoal de **Elvis Erison Amancio** (`elvisea.dev`). Extensão
+- **O que é:** site pessoal de **Elvis Amancio** (`elvisea.dev`). Extensão
   do currículo e do LinkedIn: experiência, projetos, blog e contato.
 - **Públicos, em ordem de prioridade** (a maioria não é desenvolvedor):
   1. **Contratação:** recrutadores, RH, CEOs, CTOs e contratantes.
@@ -26,8 +26,10 @@ Fonte única de contexto para qualquer agente (Claude Code, Cursor, Codex…).
    de perfil trazem cargo, stack e fatos verificáveis. Se uma frase de
    posicionamento parecer útil, proponha como opção e espere a decisão; nunca
    aplique por conta própria.
-2. **Não publicar:** telefone, salário/pretensão, vitórias em licitações,
-   topologia de infraestrutura de empregador.
+2. **Não publicar:** salário/pretensão, vitórias em licitações, topologia de
+   infraestrutura de empregador. **Telefone:** só o WhatsApp oficial de
+   `site.contact.whatsapp` (botão flutuante e `/contato`); nenhum outro número
+   em conteúdo, texto ou currículo fora desse canal.
 3. **Trio:** aparece sem link para a página da empresa.
 4. **Texto canônico** das experiências e do "Sobre" nasce no repositório local
    `~/projects/presenca-digital/perfil/` (mesmo texto publicado no LinkedIn) e

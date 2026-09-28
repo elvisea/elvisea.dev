@@ -164,7 +164,7 @@ describe("snapshot e configuração reais", () => {
 
   it("nenhum projeto exibido cita termos proibidos", () => {
     // Nichos e empregadores que nunca podem aparecer, mesmo após novo sync.
-    const forbidden = /viki|stayclose|aerobi|lottopar|\btrio\b|massa/i;
+    const forbidden = /viki|stayclose|aerobi|lottopar|\btrio\b|massa|byteful/i;
     const shown = curateProjects(snapshot.repos, config);
     for (const p of shown) {
       const text = [p.slug, p.title, p.summary ?? "", p.liveUrl ?? ""].join(

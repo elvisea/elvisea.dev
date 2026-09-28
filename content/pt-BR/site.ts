@@ -5,7 +5,7 @@
  * imagens OG precisam de URL absoluta estável em build.
  *
  * Regras de conteúdo (ver AGENTS.md): cargo, stack e fatos. Sem slogan, sem
- * telefone, sem salário.
+ * salário; telefone só o WhatsApp de `contact`.
  */
 export const site = {
   url: "https://elvisea.dev",
@@ -16,6 +16,7 @@ export const site = {
   language: "pt-BR",
   person: {
     name: "Elvis Amancio",
+    /** Nome completo: só em documento (currículo) e como `alternateName` no JSON-LD. */
     fullName: "Elvis Erison Amancio",
     role: "Desenvolvedor Full-Stack Sênior",
     stack: ["TypeScript", "NestJS", "Next.js", "PostgreSQL", "Elixir"],
@@ -32,6 +33,21 @@ export const site = {
       label: "GitHub",
       href: "https://github.com/elvisea",
     },
+  },
+  /**
+   * Canais diretos. O WhatsApp é o único telefone publicado (AGENTS.md § Regras
+   * de conteúdo); o e-mail é o mesmo dos PDFs do currículo.
+   */
+  contact: {
+    whatsapp: {
+      label: "WhatsApp",
+      /** País + DDD + número, só dígitos. */
+      number: "5541992190528",
+      message:
+        "Olá, Elvis! Vim pelo elvisea.dev e quero conversar sobre um projeto.",
+      ariaLabel: "Conversar no WhatsApp",
+    },
+    email: { label: "E-mail", address: "elvis.e.amancio@gmail.com" },
   },
   seo: {
     /** Primeiro item de toda trilha (`BreadcrumbList`). */
@@ -66,7 +82,7 @@ export const site = {
     sheetDescription: "Páginas do site.",
   },
   footer: {
-    copyright: "Elvis Erison Amancio",
+    copyright: "Elvis Amancio",
   },
   theme: {
     toggleAria: "Alternar tema",

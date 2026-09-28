@@ -58,7 +58,7 @@ export function pageMetadata({
             type: "article",
             publishedTime: article.publishedTime,
             modifiedTime: article.modifiedTime,
-            authors: [site.person.fullName],
+            authors: [site.person.name],
             tags: article.tags,
           }
         : { type: "website" }),

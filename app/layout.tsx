@@ -7,10 +7,12 @@ import { ThemeProvider } from "@/components/providers/theme-provider";
 import { site } from "@/content/pt-BR/site";
 import { JsonLd } from "@/components/atoms/json-ld";
 import { SiteFooter } from "@/features/layout/components/organisms/site-footer";
+import { WhatsAppButton } from "@/features/layout/components/molecules/whatsapp-button";
 import { SiteHeader } from "@/features/layout/components/organisms/site-header";
 import {
   getSiteFooterViewModel,
   getSiteHeaderViewModel,
+  getWhatsAppButtonViewModel,
 } from "@/features/layout/shell/view-model/get-layout-view-model";
 import { rssAlternate, siteTitle } from "@/lib/seo/metadata";
 import {
@@ -47,8 +49,8 @@ export const metadata: Metadata = {
   },
   description: site.description,
   applicationName: site.domain,
-  authors: [{ name: site.person.fullName, url: site.url }],
-  creator: site.person.fullName,
+  authors: [{ name: site.person.name, url: site.url }],
+  creator: site.person.name,
   // Canonical e og:url ficam em cada página: no layout seriam herdados por
   // rotas que não os definem (ex.: 404) e apontariam todas para "/".
   openGraph: {
@@ -98,6 +100,7 @@ export default function RootLayout({
             </main>
             <SiteFooter model={getSiteFooterViewModel()} />
           </div>
+          <WhatsAppButton model={getWhatsAppButtonViewModel()} />
         </ThemeProvider>
       </body>
     </html>

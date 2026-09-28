@@ -30,7 +30,7 @@ export default async function PostOpengraphImage({
 
   return new ImageResponse(
     <OgCardTemplate
-      author={site.person.fullName}
+      author={site.person.name}
       domain={site.domain}
       eyebrow={model.eyebrow}
       title={model.title}
