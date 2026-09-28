@@ -1,8 +1,9 @@
 /**
- * View-models do casco do site: cabeçalho, rodapé e 404. Os textos vêm de
+ * View-models do casco do site: cabeçalho, rodapé, botão do WhatsApp e 404. Os textos vêm de
  * `content/pt-BR/site.ts`; o ano do rodapé entra por parâmetro.
  */
 import { site } from "@/content/pt-BR/site";
+import { whatsappHref } from "@/lib/contact/whatsapp";
 
 export interface ExternalLink {
   href: string;
@@ -70,4 +71,14 @@ export function getSiteFooterViewModel(
       holder: site.footer.copyright,
     },
   };
+}
+
+export interface WhatsAppButtonViewModel {
+  href: string;
+  label: string;
+}
+
+export function getWhatsAppButtonViewModel(): WhatsAppButtonViewModel {
+  const { number, message, ariaLabel } = site.contact.whatsapp;
+  return { href: whatsappHref(number, message), label: ariaLabel };
 }

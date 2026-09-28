@@ -9,7 +9,7 @@ const linkClass =
 /** Rodapé: identificação, navegação, links externos e direitos. */
 export function SiteFooter({ model }: { model: SiteFooterViewModel }) {
   return (
-    <footer className="border-t border-border bg-surface py-10">
+    <footer className="border-t border-border bg-surface pt-10 pb-24">
       <div className="mx-auto flex max-w-6xl flex-col gap-8 px-4 sm:px-6 md:flex-row md:items-start md:justify-between">
         <div className="space-y-1">
           <p className="font-semibold text-heading">{model.person.name}</p>

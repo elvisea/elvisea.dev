@@ -6,7 +6,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import type { ContactLink } from "@/features/contact/form/view-model/get-contact-view-model";
 import { cn } from "cn";
 
-/** Outros canais de contato (LinkedIn, GitHub), ao lado do formulário. */
+/** Outros canais de contato (WhatsApp, e-mail, LinkedIn, GitHub), ao lado do formulário. */
 export function OtherChannels({
   title,
   links,

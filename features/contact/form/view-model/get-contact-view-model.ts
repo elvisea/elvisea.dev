@@ -5,6 +5,7 @@
 import { contatoPage } from "@/content/pt-BR/pages/contato";
 import { site } from "@/content/pt-BR/site";
 import { CONTACT_PATH } from "@/features/contact/routes";
+import { whatsappHref } from "@/lib/contact/whatsapp";
 import {
   listServiceOptions,
   servicesRepository,
@@ -36,6 +37,19 @@ export interface ContactViewModel {
   metadata: { title: string; description: string; path: string };
 }
 
+/** Canais diretos primeiro (WhatsApp e e-mail), depois os perfis. */
+function otherChannelLinks(): ContactLink[] {
+  const { whatsapp, email } = site.contact;
+  return [
+    {
+      label: whatsapp.label,
+      href: whatsappHref(whatsapp.number, whatsapp.message),
+    },
+    { label: email.label, href: `mailto:${email.address}` },
+    ...Object.values(site.links).map(({ label, href }) => ({ label, href })),
+  ];
+}
+
 export function getContactViewModel(
   services: ServicesRepository = servicesRepository,
 ): ContactViewModel {
@@ -50,10 +64,7 @@ export function getContactViewModel(
     services: listServiceOptions(services),
     otherChannels: {
       title: contatoPage.aside.title,
-      links: Object.values(site.links).map(({ label, href }) => ({
-        label,
-        href,
-      })),
+      links: otherChannelLinks(),
     },
     breadcrumb: [{ name: contatoPage.metaTitle, path: CONTACT_PATH }],
     metadata: {

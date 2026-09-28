@@ -18,11 +18,16 @@ describe("getContactViewModel", () => {
     expect(model.services).toEqual([{ slug: "chatbot", title: "Chatbot" }]);
   });
 
-  it("lista os outros canais a partir dos links do site", () => {
+  it("lista WhatsApp e e-mail antes dos perfis do site", () => {
     expect(model.otherChannels.title).toBe(contatoPage.aside.title);
-    expect(model.otherChannels.links).toEqual(
-      Object.values(site.links).map(({ label, href }) => ({ label, href })),
-    );
+    expect(model.otherChannels.links).toEqual([
+      {
+        label: "WhatsApp",
+        href: expect.stringMatching(/^https:\/\/wa\.me\/5541992190528\?text=/),
+      },
+      { label: "E-mail", href: `mailto:${site.contact.email.address}` },
+      ...Object.values(site.links).map(({ label, href }) => ({ label, href })),
+    ]);
   });
 
   it("traz os textos do formulário, a trilha e a metadata", () => {
