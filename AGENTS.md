@@ -5,7 +5,7 @@ Fonte única de contexto para qualquer agente (Claude Code, Cursor, Codex…).
 
 ## Projeto
 
-- **O que é:** site pessoal de **Elvis Erison Amancio** (`elvisea.dev`). Extensão
+- **O que é:** site pessoal de **Elvis Amancio** (`elvisea.dev`). Extensão
   do currículo e do LinkedIn: experiência, projetos, blog e contato.
 - **Públicos, em ordem de prioridade** (a maioria não é desenvolvedor):
   1. **Contratação:** recrutadores, RH, CEOs, CTOs e contratantes.

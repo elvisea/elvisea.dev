@@ -1,6 +1,6 @@
 # elvisea.dev
 
-Site pessoal de **Elvis Erison Amancio**, desenvolvedor full-stack: experiência
+Site pessoal de **Elvis Amancio**, desenvolvedor full-stack: experiência
 profissional, projetos, artigos e contato.
 
 ## Stack

@@ -47,8 +47,8 @@ export const metadata: Metadata = {
   },
   description: site.description,
   applicationName: site.domain,
-  authors: [{ name: site.person.fullName, url: site.url }],
-  creator: site.person.fullName,
+  authors: [{ name: site.person.name, url: site.url }],
+  creator: site.person.name,
   // Canonical e og:url ficam em cada página: no layout seriam herdados por
   // rotas que não os definem (ex.: 404) e apontariam todas para "/".
   openGraph: {
