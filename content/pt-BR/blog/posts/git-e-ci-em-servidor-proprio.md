@@ -31,9 +31,10 @@ Um job de CI executa código: o do projeto e o de cada dependência que ele inst
 alguma dessas dependências for maliciosa, é esse código que roda no servidor.
 
 Por isso o CI não usa o Docker do servidor. Ele tem um Docker só dele, numa rede que sai
-para a internet e mais nada. Um job não enxerga o banco de dados, os arquivos nem os outros
-serviços da máquina, e não consegue parar nenhum deles. Cada execução começa num container
-limpo, que é descartado no fim.
+para a internet e mais nada. Pela rede, um job não alcança o banco de dados nem os outros
+serviços da máquina, e não tem acesso ao Docker que os roda. Cada execução começa num
+container limpo, que é removido no fim. Isso não elimina o risco, mas reduz muito o que um
+job comprometido consegue atingir.
 
 ## O dia em que o CI deixou tudo lento
 
@@ -41,8 +42,8 @@ O processador desse servidor é de 2012. Quando comecei a rodar builds de imagem
 CI, um build ocupava todos os 8 threads, e o próprio Gitea ficava lento para responder
 enquanto isso.
 
-A correção foi limitar o CI a no máximo 6 dos 8 threads. O build demora um pouco mais, e o
-resto do servidor continua respondendo. Pelo mesmo motivo, o build deste site não roda em
+A correção foi limitar o CI a no máximo 6 dos 8 threads. O build demora mais, e o resto do
+servidor continua respondendo. Pelo mesmo motivo, o build deste site não roda em
 casa: ele acontece no GitHub Actions, e o servidor só baixa a versão pronta.
 
 ## O que isso significa para uma empresa
@@ -53,10 +54,10 @@ casa: ele acontece no GitHub Actions, e o servidor só baixa a versão pronta.
   [2.000 minutos de Actions por mês](https://docs.github.com/en/billing/concepts/product-billing/github-actions).
   Passando disso, cada minuto é cobrado. No servidor próprio, o limite é a máquina.
 - **Não ficar refém:** o workflow do Gitea Actions é compatível com o do GitHub Actions na
-  maior parte dos casos. Mudar de um para o outro é mover arquivos, e não reescrever a
-  pipeline.
-- **CI que não põe o resto em risco:** CI isolado do resto é o que impede que um pacote
-  malicioso ou um build pesado derrube o sistema que atende o cliente.
+  maior parte dos casos. Mudar de um para o outro costuma exigir ajustes pontuais, como o
+  acesso ao Docker e ao registro de imagens, e não reescrever a pipeline.
+- **CI que não põe o resto em risco:** isolar o CI e limitar o que ele consome reduz o risco
+  de um pacote malicioso ou um build pesado afetar o sistema que atende o cliente.
 
 Uma ressalva: o GitHub também aceita um runner instalado num servidor da empresa, e não
 cobra por esse uso. Com isso se resolve o custo dos minutos, mas o código continua fora de
@@ -66,7 +67,8 @@ casa. O que o Gitea acrescenta é justamente o lugar onde o código fica.
 
 O servidor ainda não tem backup fora de casa. Para um servidor de git isso pesa: se o disco
 falhar, os repositórios que existem só aqui se perdem. Até o backup remoto existir, o Gitea
-não deve ser a única cópia de nada importante. O backup é o próximo item da lista.
+não deve ser a única cópia de nada importante. O backup remoto está planejado e depende de
+um disco externo.
 
 ## Como conferir
 
