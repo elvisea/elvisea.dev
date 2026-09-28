@@ -48,7 +48,7 @@ PR.
 
 - **Crítico:**
   - frase de efeito, slogan ou promessa em texto público;
-  - telefone, salário/pretensão ou licitação;
+  - telefone fora de `site.contact.whatsapp`, salário/pretensão ou licitação;
   - detalhe interno de empregador (topologia, repositórios, clientes, rotas
     internas);
   - link para a página da Trio;

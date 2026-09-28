@@ -124,9 +124,10 @@ describe("regras de conteúdo", () => {
     curriculoPage,
   });
 
-  it("não expõem telefone", () => {
-    expect(texts).not.toMatch(/\(?\d{2}\)?\s?9?\d{4}-?\d{4}/);
-    expect(texts.toLowerCase()).not.toContain("tel:");
+  it("não expõem telefone além do WhatsApp oficial", () => {
+    const semWhatsapp = texts.replaceAll(site.contact.whatsapp.number, "");
+    expect(semWhatsapp).not.toMatch(/\(?\d{2}\)?\s?9?\d{4}-?\d{4}/);
+    expect(semWhatsapp.toLowerCase()).not.toContain("tel:");
   });
 
   it("não citam licitação nem salário", () => {
