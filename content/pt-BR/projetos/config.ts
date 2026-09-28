@@ -27,6 +27,8 @@ export const projectsConfig = {
     // ou cujo nome, sem README, passa a ideia errada (disparo em massa).
     "viki_assistant_minio",
     "envio-de-mensagens-em-massa",
+    // Byteful Code: marca descontinuada, domínio fora do ar.
+    "landing-page-byteful-code",
     // Detalhes de infraestrutura própria.
     "local-infra",
     "openvpn",
@@ -40,6 +42,9 @@ export const projectsConfig = {
   hideForks: false,
   hideWithoutDescription: false,
   featured: [],
-  overrides: {},
+  overrides: {
+    // O homepage no GitHub aponta para um subdomínio da Byteful Code, fora do ar.
+    frontend_lawyers_and_clients: { liveUrl: null },
+  },
   manual: [],
 } as const satisfies ProjectsConfig;
