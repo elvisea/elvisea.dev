@@ -21,8 +21,8 @@ prontas de terceiros.
 
 O servidor não tem nenhuma porta aberta para a internet. Quem acessa o site chega à
 Cloudflare. A conexão entre a Cloudflare e o servidor é aberta de dentro para fora, pelo
-próprio servidor (Cloudflare Tunnel). Na prática, o IP da casa não aparece e não existe
-porta para alguém tentar invadir. O site também não tem tela de login na frente: ele
+próprio servidor (Cloudflare Tunnel). Na prática, o servidor não expõe porta para a
+internet e o IP da casa não é divulgado. O site também não tem tela de login na frente: ele
 existe para ser lido por quem está contratando e pelo Google.
 
 ## Como uma versão nova chega ao ar
@@ -43,8 +43,8 @@ continuam publicadas.
 
 O build fica fora de casa por um motivo concreto: um processador de 2012 é o gargalo
 dessa máquina. Compilar o site ali disputaria processador com todo o resto que roda nela.
-No GitHub Actions o build de repositório público não é cobrado e tem um ambiente limpo a
-cada execução.
+No GitHub Actions, como o repositório é público, o build do site não gera custo e roda num
+ambiente limpo a cada execução.
 
 O site também não guarda estado. Não tem banco de dados nem arquivo gravado em disco: o
 conteúdo é gerado no build, e a única parte que executa quando alguém acessa é o
