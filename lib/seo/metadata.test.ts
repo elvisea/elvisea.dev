@@ -44,7 +44,7 @@ describe("pageMetadata", () => {
     expect(meta.openGraph).toMatchObject({
       type: "article",
       publishedTime: "2026-09-16",
-      authors: [site.person.fullName],
+      authors: [site.person.name],
       tags: ["a"],
     });
   });

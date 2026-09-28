@@ -28,6 +28,12 @@ describe("grafo do site", () => {
     ]);
   });
 
+  it("usa o nome público e deixa o completo como nome alternativo", () => {
+    const person = personNode();
+    expect(person.name).toBe("Elvis Amancio");
+    expect(person.alternateName).toBe(site.person.fullName);
+  });
+
   it("identifica a pessoa pelos perfis públicos e pela formação", () => {
     const person = personNode();
     expect(person.sameAs).toEqual([

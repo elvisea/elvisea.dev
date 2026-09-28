@@ -14,7 +14,7 @@ export const contentType = "image/png";
 export default async function OpengraphImage() {
   return new ImageResponse(
     <OgCardTemplate
-      author={site.person.fullName}
+      author={site.person.name}
       domain={site.domain}
       eyebrow={site.person.role}
       subtitle={site.person.stack.join(" · ")}

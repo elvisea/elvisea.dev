@@ -16,6 +16,7 @@ export const site = {
   language: "pt-BR",
   person: {
     name: "Elvis Amancio",
+    /** Nome completo: só em documento (currículo) e como `alternateName` no JSON-LD. */
     fullName: "Elvis Erison Amancio",
     role: "Desenvolvedor Full-Stack Sênior",
     stack: ["TypeScript", "NestJS", "Next.js", "PostgreSQL", "Elixir"],
@@ -66,7 +67,7 @@ export const site = {
     sheetDescription: "Páginas do site.",
   },
   footer: {
-    copyright: "Elvis Erison Amancio",
+    copyright: "Elvis Amancio",
   },
   theme: {
     toggleAria: "Alternar tema",

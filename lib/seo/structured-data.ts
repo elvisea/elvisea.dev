@@ -50,8 +50,8 @@ export function personNode(): JsonLdNode {
   return {
     "@type": "Person",
     "@id": schemaIds.person,
-    name: site.person.fullName,
-    alternateName: site.person.name,
+    name: site.person.name,
+    alternateName: site.person.fullName,
     jobTitle: site.person.role,
     url: absoluteUrl("/"),
     address: {
