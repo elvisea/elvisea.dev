@@ -33,6 +33,11 @@ export const site = {
       label: "GitHub",
       href: "https://github.com/elvisea",
     },
+    /** Gitea no homelab: repositórios públicos citados nos posts da série self-hosted. */
+    gitea: {
+      label: "Gitea",
+      href: "https://git.elvisea.dev/elvisea",
+    },
   },
   /**
    * Canais diretos. O WhatsApp é o único telefone publicado (AGENTS.md § Regras

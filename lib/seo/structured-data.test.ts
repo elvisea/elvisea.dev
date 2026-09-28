@@ -39,6 +39,7 @@ describe("grafo do site", () => {
     expect(person.sameAs).toEqual([
       site.links.linkedin.href,
       site.links.github.href,
+      site.links.gitea.href,
       ...site.seo.otherProfiles,
     ]);
     expect(person.alumniOf).toContainEqual({
@@ -52,7 +53,10 @@ describe("grafo do site", () => {
     const urls = JSON.stringify([websiteNode(), personNode()]).match(
       /https?:\/\/[^"]+/g,
     );
-    const internal = (urls ?? []).filter((url) => url.includes(site.domain));
+    // Hostname exato: subdomínios (ex.: git.elvisea.dev) são outros sites.
+    const internal = (urls ?? []).filter(
+      (url) => new URL(url).hostname === site.domain,
+    );
     expect(internal.length).toBeGreaterThan(0);
     for (const url of internal) expect(url.startsWith(site.url)).toBe(true);
   });
