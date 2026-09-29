@@ -1,3 +1,13 @@
+## [1.5.0](https://github.com/elvisea/elvisea.dev/compare/v1.4.0...v1.5.0) (2026-09-29)
+
+### Features
+
+* **layout:** link para o Gitea no rodapé e nos canais ([d75d4c9](https://github.com/elvisea/elvisea.dev/commit/d75d4c9f563fc6dfb4a043231ce7760e474d40fc)), closes [#84](https://github.com/elvisea/elvisea.dev/issues/84)
+
+### Bug Fixes
+
+* **a11y:** alvo de toque de 44 px no link "Ler artigo" do card de post ([638326e](https://github.com/elvisea/elvisea.dev/commit/638326ed649c575b73145f293d570504029a67dc)), closes [#55](https://github.com/elvisea/elvisea.dev/issues/55)
+
 ## [1.4.0](https://github.com/elvisea/elvisea.dev/compare/v1.3.0...v1.4.0) (2026-09-28)
 
 ### Features
