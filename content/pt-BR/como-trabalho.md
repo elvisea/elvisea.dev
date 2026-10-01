@@ -3,7 +3,7 @@
 Desenvolvo com agentes de IA dentro de um fluxo definido em cada repositório:
 
 - **Contexto canonizado.** Um `AGENTS.md` na raiz descreve stack, arquitetura, convenções e regras do projeto. Os arquivos específicos de cada ferramenta apenas apontam para ele, sem duplicar texto, então o mesmo contexto serve a qualquer agente.
-- **Comandos de fluxo.** Issue, branch, commit, review, pull request e merge seguem roteiros versionados no próprio repositório. Um comando encadeia todos eles, e outro gera a estrutura de uma feature nova no padrão de arquitetura do projeto.
+- **Comandos de fluxo.** Issue, branch, commit, review, pull request e merge seguem roteiros compartilhados entre os meus repositórios, instalados como plugins do Claude Code. Um comando encadeia todos eles. O que é específico de cada projeto fica versionado no próprio repositório: checklist de revisão, escopos de commit, rotas a testar no navegador e o comando que gera a estrutura de uma feature nova no padrão de arquitetura do projeto.
 - **Skills.** Tarefas recorrentes ficam descritas uma vez:
   - acompanhar a CI de um pull request até passar;
   - percorrer as páginas no navegador nos temas claro e escuro, em celular e desktop;
@@ -38,8 +38,7 @@ Desenvolvo com agentes de IA dentro de um fluxo definido em cada repositório:
 O código deste site segue o mesmo fluxo e é aberto: [github.com/elvisea/elvisea.dev](https://github.com/elvisea/elvisea.dev). No repositório estão:
 
 - o `AGENTS.md`;
-- os comandos em `.claude/commands`;
-- as skills em `.claude/skills`;
-- o revisor em `.claude/agents`;
+- a configuração do fluxo de agentes em `.harness` (checklist de revisão, escopos de commit e roteiro de QA);
+- o comando de estrutura de feature em `.claude/commands`;
 - a CI em `.github/workflows`;
 - o histórico de issues e pull requests.
