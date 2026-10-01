@@ -1,12 +1,62 @@
+# Gerado por `harness deps` (agent-harness). Política: plugins/qa/skills/deps-update/references/policy.md.
+# Ajuste em .harness/config.json → deps e rode `harness deps --yes` de novo; não edite à mão.
+# O Dependabot lê este arquivo só da branch padrão do repo. Sem auto-merge: triagem com qa:deps-update.
+
 version: 2
 updates:
-  # Mantém os SHAs das actions atualizados (os workflows fixam por SHA).
-  - package-ecosystem: github-actions
-    directory: /
+  - package-ecosystem: "bun"
+    directory: "/"
+    target-branch: "develop"
     schedule:
-      interval: monthly
-    groups:
-      actions:
-        patterns: ["*"]
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 8
+    labels:
+      - "dependencies"
     commit-message:
-      prefix: ci
+      prefix: "chore(deps)"
+    cooldown:
+      default-days: 7
+    groups:
+      patch-minor:
+        applies-to: version-updates
+        update-types:
+          - "patch"
+          - "minor"
+        exclude-patterns:
+          - "prettier"
+          - "eslint-plugin-prettier"
+    ignore:
+      # @types/node: acompanha a versão de Node suportada (22), não a última major
+      - dependency-name: "@types/node"
+        update-types:
+          - "version-update:semver-major"
+      # TypeScript 7 fica para quando o typescript-eslint (usado pelo eslint-config-next) suportá-lo (AGENTS.md § Stack)
+      - dependency-name: "typescript"
+        update-types:
+          - "version-update:semver-major"
+      # conventional-changelog-conventionalcommits: a 10 exige conventional-changelog-writer 9, que o @semantic-release/release-notes-generator ainda não usa (AGENTS.md § Stack)
+      - dependency-name: "conventional-changelog-conventionalcommits"
+        update-types:
+          - "version-update:semver-major"
+
+  # Actions dos workflows. Major de action é atualizado à mão (política, regra 5).
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    target-branch: "develop"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+    open-pull-requests-limit: 5
+    labels:
+      - "dependencies"
+    commit-message:
+      prefix: "chore(ci)"
+    cooldown:
+      default-days: 7
+    groups:
+      actions-patch-minor:
+        applies-to: version-updates
+        update-types:
+          - "patch"
+          - "minor"

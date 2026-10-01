@@ -21,6 +21,7 @@ on:
     paths-ignore:
       - ".claude/**"
       - ".cursor/**"
+      - ".harness/**"
       - "AGENTS.md"
       - "CLAUDE.md"
       - "README.md"
