@@ -1,6 +1,8 @@
 ---
-description: elvisea.dev — stack, regras de conteúdo e convenções (fonte única AGENTS.md)
+description: Instruções canônicas do projeto (AGENTS.md) — gerado pelo agent-harness
 alwaysApply: true
 ---
 
 @AGENTS.md
+
+Os commands e skills do harness ficam no Claude Code (plugins `flow`, `sdd`, `qa`). No Cursor, siga as mesmas regras do `AGENTS.md` e use os comandos de terminal `forge`, `pm`, `gates` e `wt` (instalados com `harness install-bin`).

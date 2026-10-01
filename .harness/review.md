@@ -1,50 +1,29 @@
----
-description: Revisa o diff contra o checklist do projeto (conteúdo público, SEO, shadcn, MVVM, Next 16, Bun, Docker) e classifica os achados por severidade.
-argument-hint: "[base do diff, padrão develop]"
----
+# Checklist de review — elvisea.dev
 
-# Review de código (elvisea.dev)
+Usado por `/flow:review` e pelo agente `code-reviewer` (plugin `flow`), junto
+com o `AGENTS.md` e o checklist genérico do harness. Em dúvida, o `AGENTS.md`
+vale. Mantenha este arquivo alinhado ao `AGENTS.md` ao mudar um padrão.
 
-Revisão **antes de commit**, **antes de PR** ou quando pedida. O checklist
-aplica o [`AGENTS.md`](../../AGENTS.md); em caso de dúvida, o `AGENTS.md` vale.
+Site pessoal em **repositório público**: tudo o que entra no diff (código,
+texto, mensagem de commit, issue e PR) fica público.
 
-O agente [`code-reviewer`](../agents/code-reviewer.md) usa este checklist.
-Prefira o agente em diffs grandes: a leitura fica fora do contexto principal.
+## Áreas por risco (da maior para a menor)
 
-## Workflow
+1. `features/contact/repository/` (Server Action: entrada do usuário, e-mail,
+   logs)
+2. `content/pt-BR/` e textos públicos (regras de conteúdo)
+3. `lib/`, `features/`, `app/**/page.tsx` e metadata
+4. `components/`, estilos
+5. Docker, CI, dependências
+6. Documentação
 
-1. **Coletar o diff:** `git diff` + `git diff --cached`, ou
-   `git diff develop...HEAD` para a branch inteira (outra base se vier em
-   `$ARGUMENTS`).
-2. **Mapear o risco** dos arquivos tocados, do maior para o menor:
-   - `features/contact/repository/` (Server Action: entrada do usuário, e-mail,
-     logs);
-   - `content/pt-BR/` e textos públicos (regras de conteúdo);
-   - `lib/`, `features/`, `app/**/page.tsx` e metadata;
-   - `components/`, estilos;
-   - Docker, CI, dependências;
-   - documentação.
-3. **Aplicar o checklist.** Categoria que não se aplica fica como "NA".
-4. **Reportar** com arquivo, linha e severidade, com a correção sugerida.
-5. **Bloquear** commit/PR enquanto houver crítico, salvo exceção aceita pelo
-   usuário.
-
-### Severidades
-
-| Nível        | Critério                                                                                      |
-| ------------ | --------------------------------------------------------------------------------------------- |
-| **Crítico**  | segurança, dado pessoal ou interno exposto, bug provável, quebra de CI ou de contrato público |
-| **Aviso**    | desvio claro de padrão do `AGENTS.md`, regressão de manutenção, teste faltando em regra nova  |
-| **Sugestão** | polimento opcional                                                                            |
-
----
+Para fatos de conteúdo, confira a fonte citada (`experiencias.ts`,
+`~/projects/presenca-digital/perfil/` ou o código do projeto mencionado) antes
+de marcar "fato sem fonte".
 
 ## Checklist
 
 ### Repositório público e conteúdo (AGENTS.md § Regras de conteúdo)
-
-Tudo que entra no diff fica público: código, texto, mensagem de commit, issue e
-PR.
 
 - **Crítico:**
   - frase de efeito, slogan ou promessa em texto público;
@@ -131,19 +110,15 @@ destes itens; o review cobre o que ele não enxerga.
     em vez de receber por parâmetro;
   - efeito colateral no import de módulo (validação, leitura de arquivo).
 - **Estado na URL** (`useSearchParams`):
-  - parser puro e testado, como `features/contact/form/prefill.ts`, que ignora valores
-    desconhecidos;
+  - parser puro e testado, como `features/contact/form/prefill.ts`, que ignora
+    valores desconhecidos;
   - o componente fica dentro de `Suspense` para a página seguir estática.
 
 ### Next.js 16 (App Router, tudo estático)
 
-- Antes de usar uma API do Next, conferir a documentação da versão instalada em
-  `node_modules/next/dist/docs/`.
-- `"use client"` só onde há estado, efeito ou API do navegador.
 - Rotas dinâmicas com `dynamic = "force-static"`, `dynamicParams = false` e
   `generateStaticParams`. Sem `cacheComponents`, sem leitura de filesystem em
   runtime e sem `force-dynamic`.
-- `params`/`searchParams` são `Promise`.
 - Arquivo lido em build (Markdown) entra em `outputFileTracingIncludes`.
 - Imagens com `next/image` (exceto SVG inline e ícones).
 
@@ -175,17 +150,15 @@ destes itens; o review cobre o que ele não enxerga.
 
 - Classes base descrevem o mobile; `sm:`/`md:`/`lg:` só acrescentam.
 - Sem largura fixa que gere rolagem horizontal em 400 px.
-- Tema claro e escuro conferidos quando houver mudança visual (skill
-  `smoke-test`).
+- Tema claro e escuro conferidos quando houver mudança visual (`qa:smoke`).
 
 ### Testes (`bun test`)
 
 - Regra nova em `lib/**`, `features/**/view-model`, `features/**/repository`,
-  `features/**/domain` ou `features/**/form` vem com teste ao lado, com dependências injetadas em
-  vez de módulos reais.
+  `features/**/domain` ou `features/**/form` vem com teste ao lado, com
+  dependências injetadas em vez de módulos reais.
 - Conteúdo novo com invariantes (slugs, limites de SEO, termos proibidos) no
   teste do conteúdo.
-- Não remover nem enfraquecer teste para passar na CI.
 - Hook view-model testado com `renderHook`.
 - View e componente com estado ou lógica condicional vêm com
   `*.render.test.tsx` cobrindo os estados visíveis (vazio, erro, sucesso,
@@ -193,17 +166,13 @@ destes itens; o review cobre o que ele não enxerga.
 - Teste com mock global de módulo (`mock.module`) onde uma dependência
   injetada resolveria é aviso.
 
-### Dependências novas
+### Dependências novas (diff toca `package.json` ou `bun.lock`)
 
-Acionar sempre que o diff tocar `package.json` ou `bun.lock`.
+Além do checklist genérico (necessidade, versão estável, licença, `pm audit`):
 
-- **Necessidade:**
-  - não existe solução no projeto (dependência atual, helper em `lib/`, API
-    nativa do Node, da Web ou do Next);
-  - componente de interface vem do shadcn, não de outra biblioteca.
-- **Versão atual:** entra a versão estável mais recente; pin em versão antiga
-  só com o motivo registrado (como TypeScript 6 e o preset `conventionalcommits`
-  9.x no `AGENTS.md`).
+- Componente de interface vem do shadcn, não de outra biblioteca.
+- Pin em versão antiga só com o motivo registrado (como TypeScript 6 e o
+  preset `conventionalcommits` 9.x no `AGENTS.md`).
 - **Binário nativo** (`.node`, `.so`, pacotes opcionais por plataforma):
   - existe variante **musl**? A imagem é `oven/bun` Alpine;
   - o `output: "standalone"` rastreia a dependência, ou é preciso
@@ -211,25 +180,40 @@ Acionar sempre que o diff tocar `package.json` ou `bun.lock`.
   - validar com `docker build` e o container rodando, não só na máquina local.
 - **Peso** no bundle do cliente e na imagem. Dependência de servidor importada
   só em código de servidor (`server-only`).
-- **Saúde:**
-  - `bun run security:check` sem alta ou crítica;
-  - licença compatível;
-  - projeto mantido.
+- Projeto mantido; `bun run security:check` sem alta ou crítica.
 - **Lockfile:** `bun.lock` atualizado pelo Bun (nunca npm, yarn ou pnpm).
 
 ### Docker e CI (quando o diff tocar infra)
 
 - `Dockerfile` multi-stage compatível com `output: "standalone"`; versão do Bun
   igual ao `.bun-version`.
-- Healthcheck com `127.0.0.1` (no Alpine, `localhost` resolve para `::1`).
-- Actions fixadas por SHA; jobs de segurança (`bun audit`, Trivy) e qualidade
-  (lint, formatação, tipos, testes, build) coerentes com `package.json`.
+- Actions fixadas por SHA (com a tag no comentário); jobs de segurança
+  (`bun audit`, Trivy) e qualidade (lint, formatação, tipos, testes, build)
+  coerentes com `package.json`.
 - Diagnóstico temporário de workflow nunca entra em PR para `develop`: usar
   `ACTIONS_STEP_DEBUG` ou uma branch descartável.
 
 ### Commits e release
 
-- Conventional Commits, com o tipo coerente com a branch (`feat/12` → `feat`).
-  O semantic-release gera versão e changelog a partir deles.
+- Tipo coerente com a branch (`feat/12` → `feat`). O semantic-release gera
+  versão e changelog a partir deles (tabela em `.harness/scopes.md`).
 - `feat!:` ou `BREAKING CHANGE:` só para quebra real.
 - Mensagem sem dado sensível (o histórico é público).
+
+## Gotchas
+
+| Tema                | Observação                                                                                                                                                                                                                                                                                                        |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Repositório público | Diff, commits, issues e PRs são públicos. Dado pessoal, detalhe interno de empregador, nicho sensível com nome ou segredo é **Crítico**.                                                                                                                                                                          |
+| Regras de conteúdo  | Sem frase de efeito, telefone fora de `site.contact.whatsapp`, salário, licitação, número inventado, preço/prazo/garantia em serviço. Trio sem link.                                                                                                                                                              |
+| Bun                 | Scripts com `bun run …`/`bun --bun …`; lockfile `bun.lock`. Não sugerir npm/yarn/pnpm.                                                                                                                                                                                                                            |
+| Next 16 estático    | `force-static` + `dynamicParams = false`; sem `cacheComponents`. Documentação da versão em `node_modules/next/dist/docs/`. `useSearchParams` só dentro de `Suspense`.                                                                                                                                             |
+| Metadata e JSON-LD  | `pageMetadata` (a página substitui `openGraph`/`alternates` do layout); JSON-LD só pelos builders de `lib/seo/structured-data.ts` e `PageJsonLd`. Limites de título/descrição testados.                                                                                                                           |
+| shadcn Base UI      | Só componentes shadcn; recriar à mão é **Crítico**. Prop `render`, sem `asChild`. Link com cara de botão = `buttonVariants`.                                                                                                                                                                                      |
+| MVVM e atômico      | Área do site em `features/<feature>/` (modelo: `features/services`); rota fina; View só renderiza o `model`; view-model e repository testados; `lib/` nunca importa `app/`, `features/` nem `components/`; átomo e molécula só com props; cascos por `PageTemplate`/`SectionTemplate`; um componente por arquivo. |
+| Logs                | Só `logger` com evento nomeado; e-mail e IP mascarados; nunca nome ou texto da mensagem.                                                                                                                                                                                                                          |
+| Docker standalone   | Imagem Alpine: dependência nativa precisa de variante musl e rastreio no standalone; healthcheck com `127.0.0.1`.                                                                                                                                                                                                 |
+| Worktrees           | `node_modules` por symlink quebra o Turbopack (`worktree.deps: "install"`); cada worktree roda `bun install`. `.claude/worktrees/` é ignorado por git e ESLint.                                                                                                                                                   |
+| Versões fixadas     | TypeScript 6 (typescript-eslint sem TS 7), `conventional-changelog-conventionalcommits` 9.x (a 10 quebra o release-notes-generator), `settings.react.version` explícito no ESLint 10. Os dois primeiros estão em `deps.ignoreMajors`.                                                                             |
+| Release             | Branch padrão é `main`: `Closes #N` em PR para `develop` não fecha a issue sozinho (o `/flow:merge` fecha), mas continua obrigatório na descrição. Mensagens fora de Conventional Commits são aviso de processo.                                                                                                  |
+| Secrets             | Nenhuma variável não pública como literal, em exemplo ou em log.                                                                                                                                                                                                                                                  |

@@ -64,3 +64,6 @@ Thumbs.db
 !.claude/skills/
 !.claude/skills/**
 .claude/settings.local.json
+
+# agent-harness
+.claude/worktrees/

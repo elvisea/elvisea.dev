@@ -17,7 +17,7 @@ Closes #
 
 ## Checklist
 
-- [ ] Revisão de código (fluxo `/review` ou agente `code-reviewer`) sem pontos **críticos** pendentes
+- [ ] Revisão de código (`/flow:review` ou agente `code-reviewer`) sem pontos **críticos** pendentes
 - [ ] `bun run lint` e `bun run format:check` passam
 - [ ] `bun --bun run build` passa (quando o escopo não for só texto/config local)
 - [ ] `bun test` passa

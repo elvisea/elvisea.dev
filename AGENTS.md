@@ -2,6 +2,7 @@
 
 Fonte única de contexto para qualquer agente (Claude Code, Cursor, Codex…).
 `CLAUDE.md` e `.cursor/rules/agents-canonical.mdc` apenas referenciam este arquivo.
+O que é específico do fluxo de agentes deste projeto fica em `.harness/`.
 
 ## Projeto
 
@@ -225,80 +226,85 @@ valores em `app/globals.css`):
 
 ## Fluxo de trabalho
 
-Os roteiros ficam versionados no repositório e valem para qualquer agente. No
-Claude Code, comandos e skills viram `/nome`; no Cursor,
-[.cursor/commands/](.cursor/commands/) e [.cursor/agents/](.cursor/agents/)
-só apontam para os arquivos abaixo.
+O fluxo vem do [agent-harness](https://github.com/elvisea/agent-harness)
+(bloco "Harness de agentes" no fim deste arquivo): plugins do Claude Code
+`flow`, `qa`, `sdd` e `stack`, declarados em `.claude/settings.json`, e os
+comandos de terminal `forge`, `pm`, `gates` e `wt`, que servem também ao
+Cursor e ao Codex. O que é específico deste projeto fica versionado aqui:
 
-**Comandos** ([.claude/commands/](.claude/commands/)): passos do fluxo,
-chamados por quem está trabalhando.
+| Arquivo                                | Conteúdo                                                                                        |
+| -------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `.harness/config.json`                 | branches, porta do worktree, URL do app, referência do scaffold, Dependabot, aprovação de merge |
+| `.harness/review.md`                   | checklist e gotchas de review (usado por `/flow:review` e pelo agente `code-reviewer`)          |
+| `.harness/scopes.md`                   | escopos de commit, tabela de versões do semantic-release e o que cada merge dispara             |
+| `.harness/qa.md`                       | rotas, temas, portas 3102/3103, build de produção, SEO, termos proibidos e casos conhecidos     |
+| `.claude/commands/scaffold-feature.md` | esqueleto de feature MVVM a partir de `features/services` (`/scaffold-feature`)                 |
 
-| Comando            | Para quê                                                                 |
-| ------------------ | ------------------------------------------------------------------------ |
-| `branch`           | issue (se faltar) e branch `tipo/<número>` a partir da `develop`         |
-| `worktree`         | pasta de trabalho paralela para uma issue (outra tarefa ou outro agente) |
-| `commit`           | validação local e commits em Conventional Commits                        |
-| `review`           | checklist de revisão do diff (o mesmo do agente `code-reviewer`)         |
-| `pr`               | pull request para a `develop` com resumo, verificação e `Closes #N`      |
-| `merge`            | merge, limpeza de branch e worktree, fechamento da issue, PR de release  |
-| `complete-flow`    | encadeia todos os passos acima                                           |
-| `scaffold-feature` | esqueleto de feature MVVM a partir de `features/services`                |
-
-**Skills** ([.claude/skills/](.claude/skills/)): tarefas que o agente também
-aciona sozinho quando o contexto pede.
-
-| Skill           | Para quê                                                                   |
-| --------------- | -------------------------------------------------------------------------- |
-| `pr-checks`     | acompanhar a CI do PR até verde, corrigindo falhas da branch               |
-| `smoke-test`    | rotas nos dois temas, em 400 e 1280 px, com screenshots e erros de console |
-| `page-errors`   | diagnóstico de erro de console, rede e servidor numa página                |
-| `perf-audit`    | trace de performance e Core Web Vitals no build de produção                |
-| `seo-audit`     | metadata, JSON-LD, sitemap, redirects, termos proibidos e Lighthouse       |
-| `release-check` | verificação completa da `develop` antes do merge de release                |
-
-**Revisor:** [.claude/agents/code-reviewer.md](.claude/agents/code-reviewer.md),
-rodado antes de todo PR.
+| Passo                                      | Comando ou skill                                |
+| ------------------------------------------ | ----------------------------------------------- |
+| issue e branch `tipo/<número>` ou worktree | `/flow:start` (`wt new <número>` para worktree) |
+| commits em Conventional Commits            | `/flow:commit`                                  |
+| validação (o mesmo da CI)                  | `/flow:gates` (`gates` no terminal)             |
+| revisão do diff                            | `/flow:review` ou agente `code-reviewer`        |
+| pull request para a `develop`              | `/flow:pr`                                      |
+| CI do PR até verde                         | skill `flow:pr-watch`                           |
+| merge, limpeza e fechamento da issue       | `/flow:merge`                                   |
+| tudo acima em sequência                    | `/flow:ship`                                    |
+| rotas nos dois temas, 400 e 1280 px        | `qa:smoke`                                      |
+| erros de console, rede e servidor          | `qa:errors`                                     |
+| performance e Core Web Vitals              | `qa:perf`                                       |
+| SEO, JSON-LD, redirects, termos proibidos  | `qa:seo`                                        |
+| verificação da `develop` antes da release  | `qa:release-check`                              |
+| triagem de PRs do Dependabot               | `qa:deps-update`                                |
 
 ### Regras
 
 - Issue antes da branch; branch `tipo/<número>` a partir da `develop`.
-- Conventional Commits (semantic-release na `main`).
-- Antes do PR: `bun run lint`, `bun run format:check`, `bun run typecheck`,
-  `bun test` e `bun --bun run build`; mudança visual ou de rota passa pelas
-  skills `smoke-test` e `seo-audit`.
-- PR para `develop`; mesclado quando a CI passa. O PR de release
-  (`develop` → `main`) só é mesclado com OK explícito do dono e gera tag,
-  changelog, release e imagem no GHCR.
+- Conventional Commits (semantic-release na `main`); escopos e versões em
+  `.harness/scopes.md`.
+- Antes do PR, `gates` verde (`bun audit`, formatação, lint, tipos, testes e
+  build); mudança visual ou de rota passa por `qa:smoke` e `qa:seo`.
+- **Todo merge pede OK explícito do dono no chat**, inclusive PR para
+  `develop` com CI verde (`merge.approval: "all"`).
+- **O que cada merge dispara:**
+  - branch de trabalho → `develop`: só a CI na `develop`; sem release e sem
+    deploy;
+  - release `develop` → `main`: semantic-release (tag, `CHANGELOG.md`, release
+    no GitHub, commit `chore(release)` com `[skip ci]`) e, se saiu versão,
+    imagem no GHCR. Não há deploy automático: o homelab troca a tag da imagem
+    (README § Onde roda). Antes do OK, `qa:release-check` na `develop`.
 - Depois da release, um PR `main` → `develop` traz o commit
   `chore(release)`. Como ele tem `[skip ci]`, a validação desse PR é local.
-  PRs de release e de sincronização nunca usam `--delete-branch`.
+  PRs de release e de sincronização nunca apagam a branch de origem.
 - A branch padrão do GitHub é `main`, então o `Closes #N` de um PR para
-  `develop` não fecha a issue sozinho. O `merge` fecha a issue como concluída
-  logo depois do merge, para que as issues abertas sejam só as pendentes. O PR
-  de release repete os `Closes` do ciclo para rastreabilidade.
-- Mudanças só em `.claude/**`, `.cursor/**`, `AGENTS.md` ou `CLAUDE.md` não
-  disparam a CI.
+  `develop` não fecha a issue sozinho. O `/flow:merge` fecha a issue como
+  concluída logo depois do merge, para que as issues abertas sejam só as
+  pendentes. O PR de release repete os `Closes` do ciclo para rastreabilidade.
+- `gh pr edit` falha neste repositório por causa do Projects clássico: editar
+  a descrição pelo `forge pr edit-body` ou pela API
+  (`gh api -X PATCH repos/elvisea/elvisea.dev/pulls/<N> -F body=@corpo.md`).
+- Mudanças só em `.claude/**`, `.cursor/**`, `.harness/**`, `AGENTS.md` ou
+  `CLAUDE.md` não disparam a CI.
 
 ### Worktrees
 
-Detalhes e comandos em [.claude/commands/worktree.md](.claude/commands/worktree.md).
-
 - **Trabalho que vira PR:** worktree **irmã** do repositório
-  (`../elvisea.dev-<número>`), criada com `git worktree add` a partir de
-  `origin/develop`.
+  (`../elvisea.dev-<número>`), criada com `wt new <número> --type <tipo>` a
+  partir de `origin/develop`. O `wt` instala as dependências, aloca uma porta
+  livre (`wt env`) e copia o que o `.worktreeinclude` lista; `wt rm <número>`
+  remove depois do merge.
 - **Isolamento do Claude Code** (`claude --worktree`, `EnterWorktree`,
   subagentes com `isolation: worktree`):
   - fica em `.claude/worktrees/`, ignorado pelo git e pelo ESLint;
   - `worktree.baseRef: "head"` no `.claude/settings.json` faz a worktree partir
     do `HEAD` atual e não da `main`;
   - `.worktreeinclude` copia `.env` e `.env.local`.
-- **Dependências:** `bun install --frozen-lockfile` em cada worktree. **Nunca**
-  `node_modules` por symlink: o Turbopack do Next 16 recusa symlink que aponta
-  para fora do projeto.
-- **Dev server:** cada worktree em outra porta (`bun run dev --port 3001`); o
-  Next 16 recusa dois dev servers na mesma pasta.
-- **Isolamento:** um agente ou uma tarefa por worktree. Depois do merge,
-  `git worktree remove` e `git branch -d`.
+- **Dependências:** `bun install --frozen-lockfile` em cada worktree
+  (`worktree.deps: "install"`). **Nunca** `node_modules` por symlink: o
+  Turbopack do Next 16 recusa symlink que aponta para fora do projeto.
+- **Dev server:** cada worktree em outra porta (`bun run dev --port <porta do
+wt env>`); o Next 16 recusa dois dev servers na mesma pasta.
+- **Isolamento:** um agente ou uma tarefa por worktree.
 
 <!-- BEGIN:nextjs-agent-rules -->
 
@@ -309,3 +315,28 @@ This version has breaking changes — APIs, conventions, and file structure may 
 This block is written and re-added by `next dev` — verify at `node_modules/next/dist/server/lib/generate-agent-files.js`. Removing it from a diff only re-creates the uncommitted change; committing it with your work keeps the tree clean.
 
 <!-- END:nextjs-agent-rules -->
+
+<!-- BEGIN:agent-harness — gerado por `harness sync`; edite em github.com/elvisea/agent-harness (templates/AGENTS.block.md), não aqui -->
+
+## Harness de agentes (agent-harness)
+
+Este repositório usa o [agent-harness](https://github.com/elvisea/agent-harness). Os plugins do Claude Code (`flow, qa, sdd, stack`) vêm do marketplace `agent-harness (github.com/elvisea/agent-harness)`, declarado em `.claude/settings.json`. A configuração do projeto fica em `.harness/config.json`.
+
+### Fluxo
+
+`/flow:start` (issue + branch ou worktree) → implementação → `/flow:commit` → `/flow:gates` → `/flow:review` → `/flow:pr` → `pr-watch` (CI) → `/flow:merge`. O fluxo inteiro: `/flow:ship`. Features com critérios de aceite passam antes por `/sdd:spec`. Lote de sub-issues de um épico: `/flow:epic`.
+
+### Regras que valem para qualquer agente (Claude, Cursor, Codex)
+
+- **Pronto = `gates` verde** (security, format, lint, typecheck, test, build — os que o projeto tiver). Rode antes de declarar uma tarefa concluída. Não crie gate substituto, não desligue regra de lint e não pule teste para ficar verde.
+- **Toda mudança parte de uma issue** e de uma branch `{type}/{issue}` a partir de `origin/develop`. Nada de commit ou push direto em `develop` e `main`.
+- **Commits** em Conventional Commits (`tipo(escopo): descrição`), com escopos em `.harness/scopes.md`.
+- **Forge:** GitHub (gh). Use `forge` (issue, pr, ci), nunca `gh`/`tea`/curl direto: ele resolve as diferenças entre GitHub e Gitea.
+- **Pacotes:** **bun** (detectado por bun.lock). Use `pm install`, `pm run <script>`, `pm exec <bin>`. Nunca gere lockfile de outro gerenciador.
+- **Paralelo:** um agente por pasta. Trabalho simultâneo vai num worktree irmão (`wt new <issue>` → `../elvisea.dev-<issue>`), com porta própria.
+- **Segredos:** não leia nem imprima `.env*`. Use `.env.example`. Nada de segredo em código, log, commit ou PR.
+- **Review:** checklist do projeto em `.harness/review.md`, além deste arquivo.
+
+> Sem os plugins (outros agentes ou terminal): os comandos `forge`, `pm`, `gates` e `wt` são instalados com `harness install-bin`. A documentação completa está no repositório do harness (`docs/`).
+
+<!-- END:agent-harness -->
