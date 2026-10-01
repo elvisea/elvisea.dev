@@ -283,8 +283,16 @@ Cursor e ao Codex. O que é específico deste projeto fica versionado aqui:
 - `gh pr edit` falha neste repositório por causa do Projects clássico: editar
   a descrição pelo `forge pr edit-body` ou pela API
   (`gh api -X PATCH repos/elvisea/elvisea.dev/pulls/<N> -F body=@corpo.md`).
-- Mudanças só em `.claude/**`, `.cursor/**`, `.harness/**`, `AGENTS.md` ou
-  `CLAUDE.md` não disparam a CI.
+- **CI** (`ci.yml`, PR para `develop` e `main`, e push na `develop`): jobs
+  **Security** (`bun audit` alta ou crítica e Trivy em Dockerfile, compose,
+  CVEs e segredos) e **Lint, Format, Types, Test, Build**. O app externo
+  **GitGuardian Security Checks** roda em todo PR, mesmo quando a CI não roda.
+- Mudanças só em `.claude/**`, `.cursor/**`, `.harness/**`, `AGENTS.md`,
+  `CLAUDE.md`, `README.md` ou `CHANGELOG.md` não disparam a CI
+  (`paths-ignore`), nem o commit do topo com `[skip ci]`. Se só o GitGuardian
+  aparecer no PR (confira `gh run list --branch <head> --limit 3`), a CI não
+  rodou: com código no diff, rode `gates` localmente e registre o resultado
+  no PR.
 
 ### Worktrees
 

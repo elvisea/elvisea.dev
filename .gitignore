@@ -53,7 +53,7 @@ logs/
 # OS
 Thumbs.db
 
-# Claude Code — config compartilhada versionada (local continua ignorado).
+# Claude Code — config compartilhada versionada (settings e commands, agents e skills próprios do projeto; os do fluxo vêm dos plugins do agent-harness). Local continua ignorado.
 # `.claude/worktrees/` (worktrees de subagentes) fica ignorado pelo `.claude/*`.
 .claude/*
 !.claude/settings.json

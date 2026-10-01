@@ -21,7 +21,8 @@ Regras de referência: `AGENTS.md` § SEO, § Estilo visual e `docs/SEO.md`.
   processo iniciado no fim.
 
 - **Imagem Docker** (`qa:release-check`): container na porta **3103**
-  (`-p 127.0.0.1:3103:3000`), com healthcheck esperado `healthy`.
+  (`-p 127.0.0.1:3103:3000`), com healthcheck esperado `healthy`. Se a 3103
+  estiver ocupada, use uma porta livre.
 
 ## Build de produção — variáveis
 
@@ -97,12 +98,29 @@ Com posts publicados, incluir o post mais recente (`/blog/<slug>`).
   | 404    | `/servicos/nao-existe`, `/nao-existe`                                                                                                                          |
 
 - `bun run security:check` (`bun audit --audit-level=high`).
-- Release simulada:
-  `GITHUB_TOKEN="$(gh auth token)" bunx semantic-release --dry-run --no-ci --branches develop`.
+- Release simulada pelo passo do `qa:release-check`, sem token: o
+  `.releaserc.json` usa `preset: "conventionalcommits"` dentro dos plugins,
+  que precisa ser mantido no dry-run (não use `--plugins` na linha de
+  comando).
 - O resultado vai para a seção "Verificação" do PR de release. Se a `develop`
   mudar depois, refazer a checagem ou registrar que o diff novo não toca
   código, build nem dependências
   (`git diff --stat <commit verificado> origin/develop`).
+
+## Release publicada (depois do merge `develop` → `main`)
+
+- O workflow `release.yml` roda por push na `main`. Com versão nova, o job
+  Docker publica `ghcr.io/elvisea/elvisea.dev:<versão>` e `:latest`.
+- O token local do `gh` não tem `read:packages`: a imagem é conferida pelo log
+  do job Docker do run do commit de merge.
+
+  ```bash
+  JOB=$(gh run view "$RUN" --json jobs -q '.jobs[] | select(.name | test("Docker")) | .databaseId')
+  gh run view --job "$JOB" --log | grep -oE 'ghcr.io/[^ ]+:(<versão>|latest)@sha256:[0-9a-f]{12}' | sort -u
+  git fetch origin --tags && gh release view v<versão>
+  ```
+
+- Sem deploy automático: o homelab troca a tag da imagem (README § Onde roda).
 
 ## Servidor e logs
 
