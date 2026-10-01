@@ -27,15 +27,15 @@ updates:
           - "prettier"
           - "eslint-plugin-prettier"
     ignore:
-      # @types/node: acompanha a versão de Node suportada (22), não a última major
+      # @types/node: fixado em ^22 no package.json: os tipos acompanham a API de Node usada no código (o runtime é o Bun), não a última major; ignore permanente
       - dependency-name: "@types/node"
         update-types:
           - "version-update:semver-major"
-      # TypeScript 7 fica para quando o typescript-eslint (usado pelo eslint-config-next) suportá-lo (AGENTS.md § Stack)
+      # TypeScript 7 fica para quando o typescript-eslint (usado pelo eslint-config-next) suportá-lo (AGENTS.md § Stack) #96
       - dependency-name: "typescript"
         update-types:
           - "version-update:semver-major"
-      # conventional-changelog-conventionalcommits: a 10 exige conventional-changelog-writer 9, que o @semantic-release/release-notes-generator ainda não usa (AGENTS.md § Stack)
+      # conventional-changelog-conventionalcommits: a 10 exige conventional-changelog-writer 9, que o @semantic-release/release-notes-generator ainda não usa (AGENTS.md § Stack) #97
       - dependency-name: "conventional-changelog-conventionalcommits"
         update-types:
           - "version-update:semver-major"

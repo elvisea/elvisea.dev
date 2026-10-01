@@ -26,18 +26,18 @@
     "ignoreMajors": [
       {
         "name": "@types/node",
-        "reason": "acompanha a versão de Node suportada (22), não a última major",
+        "reason": "fixado em ^22 no package.json: os tipos acompanham a API de Node usada no código (o runtime é o Bun), não a última major; ignore permanente",
         "issue": null
       },
       {
         "name": "typescript",
         "reason": "TypeScript 7 fica para quando o typescript-eslint (usado pelo eslint-config-next) suportá-lo (AGENTS.md § Stack)",
-        "issue": null
+        "issue": "#96"
       },
       {
         "name": "conventional-changelog-conventionalcommits",
         "reason": "a 10 exige conventional-changelog-writer 9, que o @semantic-release/release-notes-generator ainda não usa (AGENTS.md § Stack)",
-        "issue": null
+        "issue": "#97"
       }
     ]
   },

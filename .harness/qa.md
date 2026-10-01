@@ -112,7 +112,8 @@ Com posts publicados, incluir o post mais recente (`/blog/<slug>`).
 - O workflow `release.yml` roda por push na `main`. Com versão nova, o job
   Docker publica `ghcr.io/elvisea/elvisea.dev:<versão>` e `:latest`.
 - O token local do `gh` não tem `read:packages`: a imagem é conferida pelo log
-  do job Docker do run do commit de merge.
+  do job Docker do run do commit de merge. O `forge` não cobre log de job
+  bem-sucedido nem release; aqui o `gh` é a exceção.
 
   ```bash
   JOB=$(gh run view "$RUN" --json jobs -q '.jobs[] | select(.name | test("Docker")) | .databaseId')

@@ -281,8 +281,7 @@ Cursor e ao Codex. O que é específico deste projeto fica versionado aqui:
   concluída logo depois do merge, para que as issues abertas sejam só as
   pendentes. O PR de release repete os `Closes` do ciclo para rastreabilidade.
 - `gh pr edit` falha neste repositório por causa do Projects clássico: editar
-  a descrição pelo `forge pr edit-body` ou pela API
-  (`gh api -X PATCH repos/elvisea/elvisea.dev/pulls/<N> -F body=@corpo.md`).
+  a descrição só pelo `forge pr edit-body <N> --body-file -`.
 - **CI** (`ci.yml`, PR para `develop` e `main`, e push na `develop`): jobs
   **Security** (`bun audit` alta ou crítica e Trivy em Dockerfile, compose,
   CVEs e segredos) e **Lint, Format, Types, Test, Build**. O app externo
@@ -290,7 +289,7 @@ Cursor e ao Codex. O que é específico deste projeto fica versionado aqui:
 - Mudanças só em `.claude/**`, `.cursor/**`, `.harness/**`, `AGENTS.md`,
   `CLAUDE.md`, `README.md` ou `CHANGELOG.md` não disparam a CI
   (`paths-ignore`), nem o commit do topo com `[skip ci]`. Se só o GitGuardian
-  aparecer no PR (confira `gh run list --branch <head> --limit 3`), a CI não
+  aparecer no PR (`forge ci status` sem nenhum `CI / …`), a CI não
   rodou: com código no diff, rode `gates` localmente e registre o resultado
   no PR.
 
