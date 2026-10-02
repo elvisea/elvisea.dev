@@ -99,6 +99,15 @@ jobs:
 
       - name: Unit tests
         run: bun test
+        env:
+          # Termos sensíveis (nichos, empregadores) fora do repositório público.
+          # Sem o secret, os testes que dependem dele falham na CI.
+          FORBIDDEN_TERMS: ${{ secrets.FORBIDDEN_TERMS }}
 
       - name: Build
         run: bun --bun run build
+
+      - name: Termos sensíveis no build
+        run: bun run check:forbidden
+        env:
+          FORBIDDEN_TERMS: ${{ secrets.FORBIDDEN_TERMS }}

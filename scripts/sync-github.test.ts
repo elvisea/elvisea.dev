@@ -1,6 +1,34 @@
 import { describe, expect, it, mock } from "bun:test";
 
-import { type FetchPage, fetchAllRepos, nextPageUrl } from "./sync-github";
+import {
+  GithubRepoSchema,
+  GithubSnapshotSchema,
+  HIDE_TOPIC,
+} from "../features/projects/repository/schema";
+import {
+  type FetchPage,
+  fetchAllRepos,
+  nextPageUrl,
+  publishableRepos,
+} from "./sync-github";
+
+describe("publishableRepos", () => {
+  it(`descarta os repositórios com o tópico ${HIDE_TOPIC}`, () => {
+    const repos = [
+      repo("mostrar"),
+      repo("esconder", { topics: ["nextjs", HIDE_TOPIC] }),
+    ].map((r) => GithubRepoSchema.parse(r));
+    expect(publishableRepos(repos).map((r) => r.name)).toEqual(["mostrar"]);
+  });
+
+  it("o schema do snapshot recusa repositório com o tópico", () => {
+    const result = GithubSnapshotSchema.safeParse({
+      user: "elvisea",
+      repos: [repo("esconder", { topics: [HIDE_TOPIC] })],
+    });
+    expect(result.success).toBe(false);
+  });
+});
 
 describe("nextPageUrl", () => {
   it("extrai a próxima página do header Link", () => {

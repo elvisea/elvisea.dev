@@ -8,6 +8,11 @@ import { servicos } from "@/content/pt-BR/servicos";
 import { site } from "@/content/pt-BR/site";
 import { stack } from "@/content/pt-BR/stack";
 import { defaultProjectsRepository } from "@/features/projects/repository/projects-repository";
+import {
+  findForbiddenTerms,
+  forbiddenTermsFromEnv,
+  warnIfSkipped,
+} from "@/lib/content/forbidden-terms";
 
 import {
   createServicesRepository,
@@ -86,16 +91,24 @@ describe("conteúdo de serviços", () => {
     },
   );
 
-  it("não cita nicho sensível, empregador interno, preço nem prazo", () => {
+  const sensitive = forbiddenTermsFromEnv();
+  warnIfSkipped(sensitive);
+  it.skipIf(!sensitive.required && sensitive.terms.length === 0)(
+    "não cita nicho sensível nem empregador interno (FORBIDDEN_TERMS)",
+    () => {
+      expect(sensitive.terms.length).toBeGreaterThan(0);
+      // Palavra inteira: uma palavra comum não dispara um nome que a contém.
+      expect(
+        findForbiddenTerms(JSON.stringify(servicos), sensitive.terms, {
+          wholeWord: true,
+        }),
+      ).toEqual([]);
+    },
+  );
+
+  it("não cita preço, prazo, garantia, licitação, salário nem telefone", () => {
     const text = JSON.stringify(servicos).toLowerCase();
-    // Palavra inteira: "conversou" não pode disparar "converso".
     const forbidden = [
-      /\bviki\b/,
-      /\bstayclose\b/,
-      /\blottopar\b/,
-      /\baerobi\b/,
-      /\bconverso\b/,
-      /\bprobitech\b/,
       /r\$/,
       /garant/,
       /\bprazos?\b/,

@@ -25,9 +25,20 @@ export const GithubRepoSchema = z.object({
 
 export type GithubRepo = z.infer<typeof GithubRepoSchema>;
 
+/**
+ * Tópico do GitHub que tira um repositório do site. O `sync:github` descarta
+ * quem o tem, então os nomes ficam fora deste repositório público. Um snapshot
+ * que ainda o traga quebra o build em vez de ir ao ar.
+ */
+export const HIDE_TOPIC = "no-portfolio";
+
 export const GithubSnapshotSchema = z.object({
   user: z.string().min(1),
-  repos: z.array(GithubRepoSchema),
+  repos: z.array(
+    GithubRepoSchema.refine((repo) => !repo.topics.includes(HIDE_TOPIC), {
+      message: `repositório com o tópico ${HIDE_TOPIC} não entra no snapshot`,
+    }),
+  ),
 });
 
 export type GithubSnapshot = z.infer<typeof GithubSnapshotSchema>;
