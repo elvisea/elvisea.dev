@@ -1,3 +1,9 @@
+## [1.5.1](https://github.com/elvisea/elvisea.dev/compare/v1.5.0...v1.5.1) (2026-10-02)
+
+### Bug Fixes
+
+* **deps:** Next 16.3.8 corrige RCE no next/og ([3b71b90](https://github.com/elvisea/elvisea.dev/commit/3b71b90764eeb29b1f665cf9be99b9c0917de545)), closes [#93](https://github.com/elvisea/elvisea.dev/issues/93)
+
 ## [1.5.0](https://github.com/elvisea/elvisea.dev/compare/v1.4.0...v1.5.0) (2026-09-29)
 
 ### Features
