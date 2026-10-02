@@ -16,20 +16,6 @@
       "pushed_at": "2021-06-17T23:32:00Z"
     },
     {
-      "name": "aerobi-poc",
-      "description": "Local Docker-based POC simulating the Aerobi airfield camera monitoring stack: Headscale + Tailscale + MediaMTX + NestJS + React/hls.js",
-      "html_url": "https://github.com/elvisea/aerobi-poc",
-      "homepage": null,
-      "language": "TypeScript",
-      "topics": [],
-      "stargazers_count": 0,
-      "fork": false,
-      "archived": false,
-      "private": false,
-      "created_at": "2026-05-07T06:20:44Z",
-      "pushed_at": "2026-05-07T18:42:25Z"
-    },
-    {
       "name": "agency-digital",
       "description": "A Digital Product Design Agency",
       "html_url": "https://github.com/elvisea/agency-digital",
@@ -56,20 +42,6 @@
       "private": false,
       "created_at": "2022-02-03T00:44:51Z",
       "pushed_at": "2022-02-03T00:44:56Z"
-    },
-    {
-      "name": "app_teste",
-      "description": null,
-      "html_url": "https://github.com/elvisea/app_teste",
-      "homepage": null,
-      "language": null,
-      "topics": [],
-      "stargazers_count": 0,
-      "fork": false,
-      "archived": false,
-      "private": false,
-      "created_at": "2026-03-27T20:46:55Z",
-      "pushed_at": "2026-03-27T20:46:55Z"
     },
     {
       "name": "app-angular",
@@ -196,62 +168,6 @@
       "private": false,
       "created_at": "2021-01-12T23:57:23Z",
       "pushed_at": "2021-06-18T01:39:09Z"
-    },
-    {
-      "name": "bensystem",
-      "description": null,
-      "html_url": "https://github.com/elvisea/bensystem",
-      "homepage": null,
-      "language": "TypeScript",
-      "topics": [],
-      "stargazers_count": 0,
-      "fork": false,
-      "archived": false,
-      "private": false,
-      "created_at": "2021-02-06T21:50:22Z",
-      "pushed_at": "2021-02-06T22:25:14Z"
-    },
-    {
-      "name": "bensystem-app",
-      "description": null,
-      "html_url": "https://github.com/elvisea/bensystem-app",
-      "homepage": null,
-      "language": "TypeScript",
-      "topics": [],
-      "stargazers_count": 0,
-      "fork": false,
-      "archived": false,
-      "private": false,
-      "created_at": "2021-02-06T22:40:53Z",
-      "pushed_at": "2021-02-06T22:43:33Z"
-    },
-    {
-      "name": "bensystem-plataform-backend",
-      "description": null,
-      "html_url": "https://github.com/elvisea/bensystem-plataform-backend",
-      "homepage": null,
-      "language": "TypeScript",
-      "topics": [],
-      "stargazers_count": 0,
-      "fork": false,
-      "archived": false,
-      "private": false,
-      "created_at": "2021-02-11T23:54:35Z",
-      "pushed_at": "2021-02-12T23:07:52Z"
-    },
-    {
-      "name": "bensystem-plataform-frontend",
-      "description": null,
-      "html_url": "https://github.com/elvisea/bensystem-plataform-frontend",
-      "homepage": "bensystem-plataform-frontend.elvisea.vercel.app",
-      "language": "CSS",
-      "topics": [],
-      "stargazers_count": 0,
-      "fork": false,
-      "archived": false,
-      "private": false,
-      "created_at": "2021-02-11T23:55:26Z",
-      "pushed_at": "2021-02-18T19:13:06Z"
     },
     {
       "name": "blue-finder",
@@ -506,6 +422,20 @@
       "pushed_at": "2022-11-28T02:17:40Z"
     },
     {
+      "name": "elvisea",
+      "description": "README exibido no meu perfil do GitHub. Sem código.",
+      "html_url": "https://github.com/elvisea/elvisea",
+      "homepage": null,
+      "language": null,
+      "topics": [],
+      "stargazers_count": 0,
+      "fork": false,
+      "archived": false,
+      "private": false,
+      "created_at": "2026-09-22T22:42:00Z",
+      "pushed_at": "2026-09-22T22:42:12Z"
+    },
+    {
       "name": "elvisea_portfolio",
       "description": "Um portfólio profissional moderno construído com Next.js 15, apresentando projetos, habilidades e experiências de forma elegante e responsiva. Projetado para destacar competências técnicas e experiências profissionais, com foco em recrutadores e oportunidades de trabalho.",
       "html_url": "https://github.com/elvisea/elvisea_portfolio",
@@ -524,14 +454,14 @@
       "description": "Site pessoal de Elvis Erison Amancio: experiência, projetos e blog (Next.js 16 + Bun)",
       "html_url": "https://github.com/elvisea/elvisea.dev",
       "homepage": "https://elvisea.dev",
-      "language": null,
+      "language": "TypeScript",
       "topics": [],
       "stargazers_count": 0,
       "fork": false,
       "archived": false,
       "private": false,
       "created_at": "2026-09-17T00:26:43Z",
-      "pushed_at": "2026-09-17T00:57:26Z"
+      "pushed_at": "2026-10-02T02:47:36Z"
     },
     {
       "name": "EnjoyTicketsAffiliates",
@@ -574,20 +504,6 @@
       "private": false,
       "created_at": "2026-03-25T04:16:07Z",
       "pushed_at": "2026-03-26T18:46:53Z"
-    },
-    {
-      "name": "envio-de-mensagens-em-massa",
-      "description": null,
-      "html_url": "https://github.com/elvisea/envio-de-mensagens-em-massa",
-      "homepage": null,
-      "language": "TypeScript",
-      "topics": [],
-      "stargazers_count": 0,
-      "fork": false,
-      "archived": false,
-      "private": false,
-      "created_at": "2025-04-29T22:39:42Z",
-      "pushed_at": "2025-05-14T16:02:53Z"
     },
     {
       "name": "example-modern-date-time-picker",
@@ -658,34 +574,6 @@
       "private": false,
       "created_at": "2022-01-14T22:16:29Z",
       "pushed_at": "2022-01-14T22:16:33Z"
-    },
-    {
-      "name": "expo-freela-jobs-partner-teste",
-      "description": null,
-      "html_url": "https://github.com/elvisea/expo-freela-jobs-partner-teste",
-      "homepage": null,
-      "language": "Java",
-      "topics": [],
-      "stargazers_count": 0,
-      "fork": false,
-      "archived": false,
-      "private": false,
-      "created_at": "2022-03-12T20:16:15Z",
-      "pushed_at": "2022-03-12T20:16:18Z"
-    },
-    {
-      "name": "expo-stripe-teste",
-      "description": null,
-      "html_url": "https://github.com/elvisea/expo-stripe-teste",
-      "homepage": null,
-      "language": "Java",
-      "topics": [],
-      "stargazers_count": 0,
-      "fork": false,
-      "archived": false,
-      "private": false,
-      "created_at": "2022-03-12T20:12:41Z",
-      "pushed_at": "2022-03-12T20:12:46Z"
     },
     {
       "name": "extrair-dados",
@@ -761,7 +649,7 @@
       "name": "frontend_lawyers_and_clients",
       "description": "Plataforma que conecta clientes a advogados especializados, facilitando a gestão de casos jurídicos e documentos.",
       "html_url": "https://github.com/elvisea/frontend_lawyers_and_clients",
-      "homepage": "https://lawyers-and-clients.bytefulcode.tech/",
+      "homepage": "",
       "language": "TypeScript",
       "topics": [],
       "stargazers_count": 0,
@@ -912,20 +800,6 @@
       "pushed_at": "2023-03-07T19:00:02Z"
     },
     {
-      "name": "info_linkedin",
-      "description": null,
-      "html_url": "https://github.com/elvisea/info_linkedin",
-      "homepage": null,
-      "language": null,
-      "topics": [],
-      "stargazers_count": 0,
-      "fork": false,
-      "archived": false,
-      "private": false,
-      "created_at": "2026-04-09T15:15:22Z",
-      "pushed_at": "2026-04-09T15:35:08Z"
-    },
-    {
       "name": "JQUERY_TESTE",
       "description": null,
       "html_url": "https://github.com/elvisea/JQUERY_TESTE",
@@ -938,62 +812,6 @@
       "private": false,
       "created_at": "2021-07-28T16:55:15Z",
       "pushed_at": "2021-07-28T16:55:20Z"
-    },
-    {
-      "name": "landing-page-ben-system",
-      "description": null,
-      "html_url": "https://github.com/elvisea/landing-page-ben-system",
-      "homepage": null,
-      "language": "TypeScript",
-      "topics": [],
-      "stargazers_count": 0,
-      "fork": false,
-      "archived": false,
-      "private": false,
-      "created_at": "2021-01-27T01:40:48Z",
-      "pushed_at": "2021-01-27T01:40:55Z"
-    },
-    {
-      "name": "landing-page-bensystem",
-      "description": "A landing page da Bensystem foi desenvolvida com Next.js 15 e Tailwind CSS, oferecendo uma experiência de usuário moderna e responsiva. ",
-      "html_url": "https://github.com/elvisea/landing-page-bensystem",
-      "homepage": "https://landing-page-bensystem.vercel.app/",
-      "language": "TypeScript",
-      "topics": [],
-      "stargazers_count": 0,
-      "fork": false,
-      "archived": false,
-      "private": false,
-      "created_at": "2025-03-18T05:54:18Z",
-      "pushed_at": "2025-03-18T06:51:30Z"
-    },
-    {
-      "name": "landing-page-byteful-code",
-      "description": "Uma landing page moderna e multilíngue para a BytefulCode, empresa especializada em desenvolvimento web e mobile.",
-      "html_url": "https://github.com/elvisea/landing-page-byteful-code",
-      "homepage": "https://bytefulcode.tech/",
-      "language": "TypeScript",
-      "topics": [],
-      "stargazers_count": 0,
-      "fork": false,
-      "archived": false,
-      "private": false,
-      "created_at": "2025-02-25T19:18:58Z",
-      "pushed_at": "2026-01-03T22:21:21Z"
-    },
-    {
-      "name": "local-infra",
-      "description": null,
-      "html_url": "https://github.com/elvisea/local-infra",
-      "homepage": null,
-      "language": "Makefile",
-      "topics": [],
-      "stargazers_count": 0,
-      "fork": false,
-      "archived": false,
-      "private": false,
-      "created_at": "2026-05-10T01:49:06Z",
-      "pushed_at": "2026-07-04T17:04:45Z"
     },
     {
       "name": "materialize-firebase",
@@ -1078,20 +896,6 @@
       "private": false,
       "created_at": "2023-05-27T23:06:33Z",
       "pushed_at": "2023-06-20T22:11:19Z"
-    },
-    {
-      "name": "my-bun-app-test",
-      "description": null,
-      "html_url": "https://github.com/elvisea/my-bun-app-test",
-      "homepage": null,
-      "language": "TypeScript",
-      "topics": [],
-      "stargazers_count": 0,
-      "fork": false,
-      "archived": false,
-      "private": false,
-      "created_at": "2026-01-31T17:56:28Z",
-      "pushed_at": "2026-01-31T17:56:31Z"
     },
     {
       "name": "my-project",
@@ -1204,20 +1008,6 @@
       "private": false,
       "created_at": "2021-07-28T16:50:23Z",
       "pushed_at": "2021-07-28T16:50:35Z"
-    },
-    {
-      "name": "openvpn",
-      "description": null,
-      "html_url": "https://github.com/elvisea/openvpn",
-      "homepage": null,
-      "language": null,
-      "topics": [],
-      "stargazers_count": 0,
-      "fork": false,
-      "archived": false,
-      "private": false,
-      "created_at": "2025-01-04T06:24:48Z",
-      "pushed_at": "2025-01-04T06:35:11Z"
     },
     {
       "name": "plant-manager",
@@ -1388,20 +1178,6 @@
       "pushed_at": "2022-02-01T00:04:26Z"
     },
     {
-      "name": "repo-teste",
-      "description": "repo-teste",
-      "html_url": "https://github.com/elvisea/repo-teste",
-      "homepage": null,
-      "language": null,
-      "topics": [],
-      "stargazers_count": 0,
-      "fork": false,
-      "archived": false,
-      "private": false,
-      "created_at": "2022-01-25T14:21:41Z",
-      "pushed_at": "2022-01-25T14:21:42Z"
-    },
-    {
       "name": "Responsive",
       "description": null,
       "html_url": "https://github.com/elvisea/Responsive",
@@ -1514,20 +1290,6 @@
       "pushed_at": "2021-10-27T18:23:37Z"
     },
     {
-      "name": "trafego-mestre",
-      "description": "Landing page para serviços de tráfego pago, focada em gerar leads qualificados e aumentar conversões para negócios.",
-      "html_url": "https://github.com/elvisea/trafego-mestre",
-      "homepage": "https://trafego-mestre.vercel.app",
-      "language": "TypeScript",
-      "topics": [],
-      "stargazers_count": 0,
-      "fork": false,
-      "archived": false,
-      "private": false,
-      "created_at": "2025-03-18T01:18:53Z",
-      "pushed_at": "2025-03-18T01:37:23Z"
-    },
-    {
       "name": "typeorm-mongodb",
       "description": null,
       "html_url": "https://github.com/elvisea/typeorm-mongodb",
@@ -1540,34 +1302,6 @@
       "private": false,
       "created_at": "2021-06-28T01:14:18Z",
       "pushed_at": "2021-06-28T01:30:27Z"
-    },
-    {
-      "name": "umbrella-trio-lottopar",
-      "description": null,
-      "html_url": "https://github.com/elvisea/umbrella-trio-lottopar",
-      "homepage": "",
-      "language": "Elixir",
-      "topics": [],
-      "stargazers_count": 0,
-      "fork": false,
-      "archived": false,
-      "private": false,
-      "created_at": "2025-08-30T20:25:42Z",
-      "pushed_at": "2025-09-01T20:19:05Z"
-    },
-    {
-      "name": "viki_assistant_minio",
-      "description": "Infraestrutura MinIO (S3 compatível) para o Viki Assistant, usada pela API e Evolution API.",
-      "html_url": "https://github.com/elvisea/viki_assistant_minio",
-      "homepage": "https://vikiassistant.com.br/",
-      "language": "Shell",
-      "topics": ["minio", "s3", "storage", "viki-assistant"],
-      "stargazers_count": 0,
-      "fork": false,
-      "archived": false,
-      "private": false,
-      "created_at": "2025-07-31T03:11:07Z",
-      "pushed_at": "2025-12-27T05:34:39Z"
     },
     {
       "name": "web-service-gin",
