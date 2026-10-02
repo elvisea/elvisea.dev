@@ -79,9 +79,14 @@ Com posts publicados, incluir o post mais recente (`/blog/<slug>`).
 - **Termos proibidos** no HTML gerado (regras de conteúdo do `AGENTS.md`):
 
   ```bash
+  bun run check:forbidden          # termos sensíveis: lista em FORBIDDEN_TERMS (.env.local)
   find .next/server/app -name '*.html' -print0 | xargs -0 grep -oiE \
-    "viki|stayclose|lottopar|aerobi|probitech|licita[çc]|sal[aá]rio" | sort | uniq -c
+    "licita[çc]|sal[aá]rio" | sort | uniq -c
   ```
+
+  A lista de nichos e empregadores não fica no repositório (que é público):
+  vem de `FORBIDDEN_TERMS`, no `.env.local` e no secret da CI. O script
+  informa só "termo N de M", nunca o termo.
 
   "solicitações" contém "licitaç": conferir o contexto antes de reportar.
 

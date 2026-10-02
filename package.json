@@ -19,6 +19,7 @@
     "docker:stop": "docker compose down",
     "typecheck": "bun --bun next typegen && tsc --noEmit",
     "sync:github": "bun run scripts/sync-github.ts",
+    "check:forbidden": "bun run scripts/check-forbidden-terms.ts",
     "teaser": "bun --conditions=react-server run scripts/teaser.ts"
   },
   "dependencies": {
