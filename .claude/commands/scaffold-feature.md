@@ -9,6 +9,10 @@ Cria o esqueleto de uma feature seguindo o padrão do `AGENTS.md` § Arquitetura
 **Modelo de referência:** `features/services` (catálogo + detalhe), com testes.
 Abra os arquivos dele antes de gerar e replique a forma, não o conteúdo.
 
+É a versão deste projeto do `stack:scaffold` do agent-harness
+(`stack.reference.next-feature` em `.harness/config.json`), com as convenções
+de MVVM e design atômico daqui. Para feature deste repositório, use este.
+
 ## Quando usar
 
 - Feature nova com dados próprios (lista, detalhe, formulário).
@@ -93,10 +97,10 @@ Fluxo interativo no cliente: `view-model/use-<feature>-<fluxo>-view-model.ts`
 4. Validar:
 
    ```bash
-   bun run format:check && bun run lint && bun run typecheck && bun test && bun --bun run build
+   gates   # security, format, lint, typecheck, test e build (plugin flow)
    ```
 
-5. Commit via [`commit.md`](./commit.md), por exemplo
+5. Commit via `/flow:commit`, por exemplo
    `feat(<escopo>): estrutura MVVM de <feature>`.
 
 ## Regras

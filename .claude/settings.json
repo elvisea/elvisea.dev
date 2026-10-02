@@ -66,10 +66,34 @@
       "Bash(docker rm:*)",
       "Bash(docker rmi:*)",
       "Bash(docker logs:*)",
-      "mcp__chrome-devtools"
+      "mcp__chrome-devtools",
+      "Bash(forge:*)",
+      "Bash(pm:*)",
+      "Bash(gates:*)",
+      "Bash(wt:*)",
+      "Bash(harness doctor:*)"
+    ],
+    "deny": [
+      "Bash(git push --force:*)",
+      "Bash(git push -f:*)",
+      "Bash(git commit --no-verify:*)"
     ]
   },
   "worktree": {
     "baseRef": "head"
+  },
+  "extraKnownMarketplaces": {
+    "agent-harness": {
+      "source": {
+        "source": "github",
+        "repo": "elvisea/agent-harness"
+      }
+    }
+  },
+  "enabledPlugins": {
+    "flow@agent-harness": true,
+    "qa@agent-harness": true,
+    "sdd@agent-harness": true,
+    "stack@agent-harness": true
   }
 }

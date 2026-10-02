@@ -1,0 +1,47 @@
+{
+  "$schema": "https://raw.githubusercontent.com/elvisea/agent-harness/main/templates/harness/config.schema.json",
+  "profile": "next",
+  "branches": {
+    "integration": "develop",
+    "production": "main",
+    "pattern": "{type}/{issue}"
+  },
+  "worktree": {
+    "deps": "install",
+    "ports": {
+      "PORT": 3000
+    }
+  },
+  "app": {
+    "url": "http://localhost:3000"
+  },
+  "stack": {
+    "reference": {
+      "next-feature": "features/services"
+    }
+  },
+  "deps": {
+    "day": "monday",
+    "cooldownDays": 7,
+    "ignoreMajors": [
+      {
+        "name": "@types/node",
+        "reason": "fixado em ^22 no package.json: os tipos acompanham a API de Node usada no código (o runtime é o Bun), não a última major; ignore permanente",
+        "issue": null
+      },
+      {
+        "name": "typescript",
+        "reason": "TypeScript 7 fica para quando o typescript-eslint (usado pelo eslint-config-next) suportá-lo (AGENTS.md § Stack)",
+        "issue": "#96"
+      },
+      {
+        "name": "conventional-changelog-conventionalcommits",
+        "reason": "a 10 exige conventional-changelog-writer 9, que o @semantic-release/release-notes-generator ainda não usa (AGENTS.md § Stack)",
+        "issue": "#97"
+      }
+    ]
+  },
+  "merge": {
+    "approval": "all"
+  }
+}
