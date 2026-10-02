@@ -2,9 +2,14 @@ import { describe, expect, it } from "bun:test";
 
 import { projectsConfig } from "@/content/pt-BR/projetos/config";
 import snapshotJson from "@/content/pt-BR/projetos/github-snapshot.json";
+import {
+  findForbiddenTerms,
+  forbiddenTermsFromEnv,
+  warnIfSkipped,
+} from "@/lib/content/forbidden-terms";
 
 import { curateProjects, languageCounts, pickFeatured } from "./curation";
-import { GithubSnapshotSchema, type GithubRepo } from "./schema";
+import { GithubSnapshotSchema, HIDE_TOPIC, type GithubRepo } from "./schema";
 import type { ProjectsConfig } from "./types";
 
 function repo(name: string, extra: Partial<GithubRepo> = {}): GithubRepo {
@@ -162,11 +167,16 @@ describe("snapshot e configuração reais", () => {
     }
   });
 
-  it("nenhum projeto exibido cita termos proibidos", () => {
-    // Nichos e empregadores que nunca podem aparecer, mesmo após novo sync.
-    const forbidden = /viki|stayclose|aerobi|lottopar|\btrio\b|massa|byteful/i;
-    const shown = curateProjects(snapshot.repos, config);
-    for (const p of shown) {
+  it(`o snapshot não traz repositório marcado com o tópico ${HIDE_TOPIC}`, () => {
+    // Só a contagem: o nome de um repositório escondido não pode ir ao log da CI.
+    const hidden = snapshot.repos.filter((r) => r.topics.includes(HIDE_TOPIC));
+    expect(hidden.length).toBe(0);
+  });
+
+  it("nenhum projeto exibido cita marca descontinuada ou empregador", () => {
+    // Termos que podem ficar no código; os sensíveis vêm de FORBIDDEN_TERMS.
+    const forbidden = /\btrio\b|massa|byteful/i;
+    for (const p of curateProjects(snapshot.repos, config)) {
       const text = [p.slug, p.title, p.summary ?? "", p.liveUrl ?? ""].join(
         " ",
       );
@@ -176,6 +186,23 @@ describe("snapshot e configuração reais", () => {
       });
     }
   });
+
+  const sensitive = forbiddenTermsFromEnv();
+  warnIfSkipped(sensitive);
+  it.skipIf(!sensitive.required && sensitive.terms.length === 0)(
+    "nenhum projeto exibido cita termo sensível (FORBIDDEN_TERMS)",
+    () => {
+      expect(sensitive.terms.length).toBeGreaterThan(0);
+      // Sem slug nem texto no resultado: denunciariam o termo no log da CI.
+      const found = curateProjects(snapshot.repos, config).flatMap((p, i) =>
+        findForbiddenTerms(
+          [p.slug, p.title, p.summary ?? "", p.liveUrl ?? ""].join(" "),
+          sensitive.terms,
+        ).map((hit) => `projeto ${i + 1}: ${hit}`),
+      );
+      expect(found).toEqual([]);
+    },
+  );
 
   it("nada da lista de exclusão aparece no resultado", () => {
     const shown = new Set(

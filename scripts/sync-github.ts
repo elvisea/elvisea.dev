@@ -8,6 +8,10 @@
  * públicos independentemente do token. Pagina pelo header `Link`, valida com
  * zod e grava JSON ordenado por nome para o diff do PR ficar legível.
  *
+ * Repositórios com o tópico `no-portfolio` (`HIDE_TOPIC`) ficam fora do
+ * snapshot: é assim que o site esconde um repositório sem citar o nome dele
+ * neste repositório público.
+ *
  * O site nunca chama a API em runtime: o snapshot é versionado e revisado.
  */
 import { writeFile } from "node:fs/promises";
@@ -16,6 +20,7 @@ import path from "node:path";
 import {
   GithubRepoSchema,
   GithubSnapshotSchema,
+  HIDE_TOPIC,
   type GithubRepo,
 } from "../features/projects/repository/schema";
 
@@ -90,8 +95,14 @@ export async function fetchAllRepos(
   return repos;
 }
 
+/** Tira os repositórios marcados com `HIDE_TOPIC`. */
+export function publishableRepos(repos: readonly GithubRepo[]): GithubRepo[] {
+  return repos.filter((repo) => !repo.topics.includes(HIDE_TOPIC));
+}
+
 async function main() {
-  const repos = await fetchAllRepos();
+  const all = await fetchAllRepos();
+  const repos = publishableRepos(all);
   const snapshot = GithubSnapshotSchema.parse({
     user: USER,
     repos: repos
@@ -100,7 +111,8 @@ async function main() {
   });
   await writeFile(OUTPUT, `${JSON.stringify(snapshot, null, 2)}\n`, "utf8");
   console.log(
-    `${snapshot.repos.length} repositórios públicos gravados em ${OUTPUT}`,
+    `${snapshot.repos.length} repositórios públicos gravados em ${OUTPUT} ` +
+      `(${all.length - repos.length} com o tópico ${HIDE_TOPIC} ficaram de fora)`,
   );
 }
 

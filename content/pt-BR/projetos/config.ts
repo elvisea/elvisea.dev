@@ -1,7 +1,8 @@
 /**
  * Curadoria dos projetos exibidos em `/projetos` e na home.
  *
- * Hoje: todos os repositórios públicos do snapshot, menos `exclude`. Para
+ * Hoje: todos os repositórios públicos do snapshot (os marcados com o tópico
+ * `no-portfolio` no GitHub nem chegam a ele), menos `exclude`. Para
  * mudar a estratégia depois, basta editar este arquivo:
  * - `mode: "curated"` + `include` para listar só os escolhidos;
  * - `hideForks` / `hideWithoutDescription` para filtros gerais;
@@ -17,27 +18,14 @@ import type { ProjectsConfig } from "@/features/projects/repository/types";
 export const projectsConfig = {
   mode: "all",
   include: [],
+  // Para esconder um repositório, marque-o no GitHub com o tópico
+  // `no-portfolio` (HIDE_TOPIC) e rode `bun run sync:github`: ele sai do
+  // snapshot e o nome não precisa aparecer aqui. Isso vale para código de
+  // empregador ou cliente, produtos de nicho, infraestrutura própria e testes.
+  // `exclude` fica para casos sem esse problema.
   exclude: [
-    // Dados pessoais (backup do LinkedIn).
-    "info_linkedin",
-    // Código ligado a empregadores (Trio e ATZ AERO).
-    "umbrella-trio-lottopar",
-    "aerobi-poc",
-    // Produtos próprios que não devem ser associados ao site (nicho do produto)
-    // ou cujo nome, sem README, passa a ideia errada (disparo em massa).
-    "viki_assistant_minio",
-    "envio-de-mensagens-em-massa",
-    // Byteful Code: marca descontinuada, domínio fora do ar.
-    "landing-page-byteful-code",
-    // Detalhes de infraestrutura própria.
-    "local-infra",
-    "openvpn",
-    // Repositórios de teste.
-    "app_teste",
-    "my-bun-app-test",
-    "repo-teste",
-    "expo-stripe-teste",
-    "expo-freela-jobs-partner-teste",
+    // README do perfil do GitHub, sem código.
+    "elvisea",
   ],
   hideForks: false,
   hideWithoutDescription: false,
