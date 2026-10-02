@@ -2,6 +2,10 @@
 
 -
 
+## Para revisar
+
+<!-- Texto público novo, decisão que o dono precisa confirmar, risco conhecido. Omitir se não houver. -->
+
 ## Issue relacionada
 
 Closes #
@@ -15,13 +19,17 @@ Closes #
 - [ ] Documentação (docs)
 - [ ] Hotfix em produção (hotfix)
 
+## Verificação
+
+<!-- Só o que foi realmente executado: comandos e resultado (gates, testes, build), o que foi conferido no navegador ou no build de produção. No PR de release, o relatório do qa:release-check. -->
+
+-
+
 ## Checklist
 
-- [ ] Revisão de código (fluxo `/review` ou agente `code-reviewer`) sem pontos **críticos** pendentes
-- [ ] `bun run lint` e `bun run format:check` passam
-- [ ] `bun --bun run build` passa (quando o escopo não for só texto/config local)
-- [ ] `bun test` passa
-- [ ] Responsividade verificada (mobile / tablet / desktop) quando há UI
+- [ ] Revisão de código (`/flow:review` ou agente `code-reviewer`) sem pontos **críticos** pendentes
+- [ ] `gates` verde: `bun audit`, `format:check`, `lint`, `typecheck`, `bun test` e `bun --bun run build`
+- [ ] Responsividade e temas claro e escuro verificados (`qa:smoke`) quando há UI
 - [ ] Sem `.env`, segredos ou dados sensíveis no diff
 - [ ] Commits no padrão adotado na `main` (**Conventional Commits** — usado pelo **semantic-release**)
 - [ ] Se alterou Dockerfile ou compose: `docker compose`/build local validado
