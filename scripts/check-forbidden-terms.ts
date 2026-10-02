@@ -5,8 +5,10 @@
  *   bun run check:forbidden <pasta>
  *
  * Lê `.html`, `.rsc`, `.xml`, `.txt` e `.json` da pasta. Os achados saem como
- * "termo N de M", nunca como o termo. Sai com 1 se achar algo e com 2 se a
- * lista não estiver definida (`.env.local` ou secret da CI).
+ * "termo N de M", nunca como o termo; na CI, nem o caminho do arquivo sai,
+ * porque uma rota com o termo o denunciaria no log público. Sai com 1 se achar
+ * algo e com 2 se a lista não estiver definida (`.env.test.local` ou secret da
+ * CI).
  */
 import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
@@ -28,10 +30,10 @@ async function* walk(dir: string): AsyncGenerator<string> {
 
 async function main() {
   const dir = process.argv[2] ?? path.join(".next", "server", "app");
-  const { terms } = forbiddenTermsFromEnv();
+  const { terms, required: inCi } = forbiddenTermsFromEnv();
   if (terms.length === 0) {
     console.error(
-      "FORBIDDEN_TERMS não definida (.env.local ou secret da CI): nada a conferir.",
+      "FORBIDDEN_TERMS não definida (.env.test.local ou secret da CI): nada a conferir.",
     );
     process.exit(2);
   }
@@ -44,7 +46,7 @@ async function main() {
     });
     if (found.length > 0) {
       hits++;
-      console.error(`${file}: ${found.join(", ")}`);
+      console.error(`${inCi ? `arquivo ${files}` : file}: ${found.join(", ")}`);
     }
   }
   console.log(

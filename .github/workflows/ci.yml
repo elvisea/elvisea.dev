@@ -106,3 +106,8 @@ jobs:
 
       - name: Build
         run: bun --bun run build
+
+      - name: Termos sensíveis no build
+        run: bun run check:forbidden
+        env:
+          FORBIDDEN_TERMS: ${{ secrets.FORBIDDEN_TERMS }}

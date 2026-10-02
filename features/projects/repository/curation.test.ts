@@ -5,6 +5,7 @@ import snapshotJson from "@/content/pt-BR/projetos/github-snapshot.json";
 import {
   findForbiddenTerms,
   forbiddenTermsFromEnv,
+  warnIfSkipped,
 } from "@/lib/content/forbidden-terms";
 
 import { curateProjects, languageCounts, pickFeatured } from "./curation";
@@ -167,8 +168,9 @@ describe("snapshot e configuração reais", () => {
   });
 
   it(`o snapshot não traz repositório marcado com o tópico ${HIDE_TOPIC}`, () => {
+    // Só a contagem: o nome de um repositório escondido não pode ir ao log da CI.
     const hidden = snapshot.repos.filter((r) => r.topics.includes(HIDE_TOPIC));
-    expect(hidden.map((r) => r.name)).toEqual([]);
+    expect(hidden.length).toBe(0);
   });
 
   it("nenhum projeto exibido cita marca descontinuada ou empregador", () => {
@@ -186,19 +188,19 @@ describe("snapshot e configuração reais", () => {
   });
 
   const sensitive = forbiddenTermsFromEnv();
+  warnIfSkipped(sensitive);
   it.skipIf(!sensitive.required && sensitive.terms.length === 0)(
     "nenhum projeto exibido cita termo sensível (FORBIDDEN_TERMS)",
     () => {
       expect(sensitive.terms.length).toBeGreaterThan(0);
-      for (const p of curateProjects(snapshot.repos, config)) {
-        const text = [p.slug, p.title, p.summary ?? "", p.liveUrl ?? ""].join(
-          " ",
-        );
-        expect({
-          slug: p.slug,
-          found: findForbiddenTerms(text, sensitive.terms),
-        }).toEqual({ slug: p.slug, found: [] });
-      }
+      // Sem slug nem texto no resultado: denunciariam o termo no log da CI.
+      const found = curateProjects(snapshot.repos, config).flatMap((p, i) =>
+        findForbiddenTerms(
+          [p.slug, p.title, p.summary ?? "", p.liveUrl ?? ""].join(" "),
+          sensitive.terms,
+        ).map((hit) => `projeto ${i + 1}: ${hit}`),
+      );
+      expect(found).toEqual([]);
     },
   );
 

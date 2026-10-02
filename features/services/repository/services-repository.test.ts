@@ -11,6 +11,7 @@ import { defaultProjectsRepository } from "@/features/projects/repository/projec
 import {
   findForbiddenTerms,
   forbiddenTermsFromEnv,
+  warnIfSkipped,
 } from "@/lib/content/forbidden-terms";
 
 import {
@@ -91,6 +92,7 @@ describe("conteúdo de serviços", () => {
   );
 
   const sensitive = forbiddenTermsFromEnv();
+  warnIfSkipped(sensitive);
   it.skipIf(!sensitive.required && sensitive.terms.length === 0)(
     "não cita nicho sensível nem empregador interno (FORBIDDEN_TERMS)",
     () => {
