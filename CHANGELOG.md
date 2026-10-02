@@ -1,3 +1,9 @@
+## [1.5.2](https://github.com/elvisea/elvisea.dev/compare/v1.5.1...v1.5.2) (2026-10-02)
+
+### Bug Fixes
+
+* **projects:** repositórios escondidos por tópico no GitHub, sem nomes no código ([da8392e](https://github.com/elvisea/elvisea.dev/commit/da8392e374b674342371d916f09fa4eb7f1f5b40)), closes [#100](https://github.com/elvisea/elvisea.dev/issues/100)
+
 ## [1.5.1](https://github.com/elvisea/elvisea.dev/compare/v1.5.0...v1.5.1) (2026-10-02)
 
 ### Bug Fixes
